@@ -75,7 +75,7 @@ const PROJECTS = [
     blurb:   'Late-fusion multimodal classifier combining DINOv2 visual features, morphometrics, and SDSS photometry.',
     stats:   [['17,736', 'galaxy images'], ['10', 'morphology classes'], ['86.3 %', 'balanced accuracy']],
     finding: 'DINOv2 encodes colour R²=0.536',
-    href:    '/research-docs/docs/astrovision/overview',
+    href:    '/research-docs/astrovision/overview',
   },
   {
     glyph:   'ξ',
@@ -85,7 +85,7 @@ const PROJECTS = [
     blurb:   'Reproducible Bayesian MCMC pipeline comparing ΛCDM, CPL, and Ξosc dark-energy models.',
     stats:   [['1701', 'SN Ia (Pantheon+)'], ['12', 'DESI DR2 BAO pts'], ['3', 'dark energy models']],
     finding: 'Explicit limitation documentation',
-    href:    '/research-docs/docs/dark-energy/overview',
+    href:    '/research-docs/xi-dark-energy/overview',
   },
 ];
 
@@ -100,7 +100,7 @@ const PATHS = [
   { q: 'Understand the scientific motivation', href: '/research-docs/docs/ecosystem',                                          label: 'Research Ecosystem' },
   { q: 'Reproduce an AstroSpectro pipeline',   href: '/research-docs/docs/astrospectro/guides/quick-start',                    label: 'Quick Start' },
   { q: 'Deep dive into the SHAP finding',       href: '/research-docs/docs/astrospectro/science/shap-interpretability',         label: 'SHAP Analysis' },
-  { q: 'Explore galaxy morphology models',      href: '/research-docs/docs/astrovision/models/',                                     label: 'AstroVision Models' },
+  { q: 'Explore galaxy morphology models',      href: '/research-docs/astrovision/models/',                                     label: 'AstroVision Models' },
   { q: 'Browse all methods across projects',    href: '/research-docs/docs/atlas/methods-index',                                label: 'Methods Index' },
   { q: 'Look up a term or acronym',             href: '/research-docs/docs/atlas/glossary',                                     label: 'Glossary' },
 ];

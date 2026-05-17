@@ -120,9 +120,12 @@
 
 .heroTitle {
   font-family: var(--font-head);
-  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
   font-weight: 800;
   line-height: 1.1;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
   letter-spacing: -0.02em;
   color: var(--text-1);
   margin: 0 0 24px;
@@ -130,14 +133,11 @@
 }
 
 .heroTitle em {
-  word-break: keep-all;
-  overflow-wrap: normal;
   font-style: italic;
   color: transparent;
   background: linear-gradient(135deg, var(--accent-as) 0%, var(--accent-av) 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  font-size: clamp(2rem, 4.5vw, 3.6rem);
 }
 
 .heroSub {

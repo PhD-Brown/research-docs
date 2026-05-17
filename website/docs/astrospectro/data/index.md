@@ -1,0 +1,28 @@
+---
+title: "Data & Datasets"
+description: Overview of all datasets used in AstroSpectro — LAMOST DR5, Gaia DR3, and derived products.
+sidebar_position: 3
+---
+
+# Data & Datasets
+
+Overview of all datasets used in AstroSpectro — LAMOST DR5, Gaia DR3, and derived products.
+
+:::info Under construction
+This page is actively being developed. Core content is added progressively.
+:::
+
+## What this page covers
+
+- LAMOST DR5 survey overview and data access
+- Gaia DR3 cross-match methodology
+- Master catalog structure
+- Feature dataset (183 × N matrix)
+- Class taxonomy and filtering
+- Dataset versions and provenance
+
+## See also
+
+- [LAMOST DR5](./lamost-dr5)
+- [Gaia DR3](./gaia-dr3)
+- [Feature Catalogue](./feature-catalog)

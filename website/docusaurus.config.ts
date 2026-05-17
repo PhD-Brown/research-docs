@@ -1,185 +1,212 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-
-// Ce fichier tourne côté Node.js (pas de code navigateur ici !)
+import type { Config } from "@docusaurus/types";
+import type * as Preset from "@docusaurus/preset-classic";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 const config: Config = {
-  title: 'Astro-Spectro Docs',
-  tagline: 'Documentation pour la pipeline de classification spectrale LAMOST DR5',
-  favicon: 'img/favicon.ico',
+  title: "Alex Baker · Research Documentation",
+  tagline:
+    "Technical and scientific reference for astrophysics, astro-ML, and computational physics.",
+  favicon: "img/favicon.ico",
+
+  url: "https://phd-brown.github.io",
+  baseUrl: "/research-docs/",
+
+  organizationName: "PhD-Brown",
+  projectName: "research-docs",
+
+  onBrokenLinks: "warn",
+  onBrokenMarkdownLinks: "warn",
 
   trailingSlash: false,
 
-  // Flags futurs pour compatibilité Docusaurus v4+
   future: {
     v4: true,
   },
-  
+
   stylesheets: [
     {
-      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
-      type: 'text/css',
+      href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
+      type: "text/css",
       integrity:
-        'sha384-odtC+0UGzz0/zFqN82N020ZJ20BtcP81Ekt09yLff7fXz4eBtk0EihP+RkI5Gq0b',
-      crossorigin: 'anonymous',
+        "sha384-odtC4UGzz0/zFqN82N020ZJ20BtcP81Ekt09yLff7fXz4eBtk0EihP+RkI5Gq0b",
+      crossorigin: "anonymous",
     },
   ],
-  
-  url: 'https://phd-brown.github.io',
-  baseUrl: '/research-docs/',
 
-  organizationName: 'PhD-Brown', // Nom GitHub
-  projectName: 'research-docs', // Repo GitHub
-
-  onBrokenLinks: 'warn',
-
-  // NOUVELLE SECTION POUR ACTIVER MERMAID
   markdown: {
     mermaid: true,
-    hooks: {
-      onBrokenMarkdownLinks: 'warn',
-    },
   },
-
-  // NOUVEAU THÈME AJOUTÉ À LA LISTE
-  themes: ['@docusaurus/theme-mermaid'],
 
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
 
+  // ── Main preset (AstroSpectro docs + theme) ──────────────────────────────
   presets: [
     [
-      'classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      "classic",
+      {
         docs: {
-          sidebarPath: require.resolve('./sidebars.ts'),
-          editUrl: undefined,
+          path: "docs",
+          routeBasePath: "docs",
+          sidebarPath: "./sidebars.ts",
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
         },
         blog: {
-          path: './blog',
-          routeBasePath: 'journal',
+          path: "blog",
+          routeBasePath: "journal",
+          blogTitle: "Journal de Bord",
+          blogDescription: "Research log — AstroSpectro, AstroVision, ξ Dark Energy.",
+          postsPerPage: 10,
+          blogSidebarTitle: "Recent entries",
           showReadingTime: true,
-          blogSidebarTitle: 'Dernières entrées',
-          blogSidebarCount: 'ALL',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: "./src/css/custom.css",
         },
-      }),
+      } satisfies Preset.Options,
     ],
   ],
 
+  // ── Additional doc instances ──────────────────────────────────────────────
+  plugins: [
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "astrovision",
+        path: "docs-astrovision",
+        routeBasePath: "astrovision",
+        sidebarPath: "./sidebars-astrovision.ts",
+        remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex],
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "xi-dark-energy",
+        path: "docs-xi",
+        routeBasePath: "xi-dark-energy",
+        sidebarPath: "./sidebars-xi.ts",
+        remarkPlugins: [remarkMath],
+      },
+    ],
+  ],
+
+  // ── Theme ─────────────────────────────────────────────────────────────────
   themeConfig: {
+    image: "img/social-card.png",
+
     navbar: {
-      title: 'AstroSpectro Docs',
+      title: "Alex Baker",
       logo: {
-        alt: 'Logo PhD-Brown AB',
-        src: 'img/logo.png',
+        alt: "AB Research",
+        src: "img/logo.png",
       },
       items: [
+        // ── Projects ──────────────────────────────────────────────────────
         {
-          to: '/docs',
-          label: 'Documentation',
-          position: 'left',
-          activeBasePath: 'docs',
+          type: "docSidebar",
+          sidebarId: "astrospectroSidebar",
+          position: "left",
+          label: "AstroSpectro",
         },
         {
-          to: '/journal',
-          activeBasePath: 'journal',
-          position: 'left',
-          label: 'Journal de Bord',
+          to: "/astrovision",
+          docsPluginId: "astrovision",
+          label: "AstroVision",
+          position: "left",
         },
         {
-          href: 'https://github.com/PhD-Brown/AstroSpectro/',
-          label: 'GitHub',
-          position: 'right',
+          to: "/xi-dark-energy",
+          docsPluginId: "xi-dark-energy",
+          label: "ξ Dark Energy",
+          position: "left",
         },
-      ],
-    },
-    
-    footer: {
-      style: 'dark',
-      links: [
+        // ── Other ─────────────────────────────────────────────────────────
         {
-          title: 'Navigation Rapide',
-          items: [
-            {
-              label: 'Démarrage Rapide',
-              to: '/docs/getting-started',
-            },
-            {
-              label: "Guides d'Utilisation",
-              to: '/docs/user-guides',
-            },
-            {
-              label: 'Référence API',
-              to: '/docs/api',
-            },
-          ],
+          to: "/journal",
+          label: "Journal",
+          position: "left",
         },
         {
-          title: 'Communauté',
-          items: [
-            {
-              label: 'Comment Contribuer',
-              to: '/docs/community/contributing',
-            },
-            {
-              label: 'Feuille de Route (Roadmap)',
-              to: '/docs/community/roadmap',
-            },
-            {
-              label: 'Foire Aux Questions (FAQ)',
-              to: '/docs/community/faq',
-            },
-          ],
+          to: "/docs",
+          label: "Docs home",
+          position: "left",
+        },
+        // ── Right ─────────────────────────────────────────────────────────
+        {
+          href: "https://phd-brown.github.io",
+          label: "Personal site",
+          position: "right",
         },
         {
-          title: 'Plus',
-          items: [
-            {
-              label: 'GitHub',
-              href: 'https://github.com/PhD-Brown/AstroSpectro',
-            },
-            {
-              label: 'Signaler un problème',
-              href: 'https://github.com/PhD-Brown/AstroSpectro/issues/new/choose',
-            },
-            {
-              label: 'Me Contacter',
-              href: 'mailto:alex.baker.1@ulaval.ca',
-            },
-          ],
+          href: "https://github.com/PhD-Brown",
+          label: "GitHub",
+          position: "right",
         },
       ],
-      // Logo et copyright en dessous des colonnes
-      logo: {
-        alt: 'Logo PhD-Brown AB',
-        src: 'img/logo.png',
-        href: 'https://github.com/PhD-Brown',
-        width: 50,
-        height: 50,
-      },
-      copyright: `Version 1.0.0 | Copyright © ${new Date().getFullYear()} Alex Baker. Built with Docusaurus. <br/> Licence MIT.`,
-    },
-    
-    prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
-    },
-    colorMode: {
-      defaultMode: 'dark',
-      respectPrefersColorScheme: true,
     },
 
+    footer: {
+      style: "dark",
+      links: [
+        {
+          title: "Projects",
+          items: [
+            { label: "AstroSpectro", to: "/docs/astrospectro/overview/" },
+            { label: "AstroVision", to: "/astrovision/" },
+            { label: "ξ Dark Energy", to: "/xi-dark-energy/" },
+          ],
+        },
+        {
+          title: "Reference",
+          items: [
+            { label: "Glossary", to: "/docs/atlas/glossary" },
+            { label: "Methods Index", to: "/docs/atlas/methods-index" },
+            { label: "Reading Paths", to: "/docs/reading-paths" },
+            { label: "Journal", to: "/journal" },
+          ],
+        },
+        {
+          title: "Links",
+          items: [
+            {
+              label: "Personal Site",
+              href: "https://phd-brown.github.io",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/PhD-Brown",
+            },
+            {
+              label: "ORCID",
+              href: "https://orcid.org/0009-0007-3242-1829",
+            },
+            {
+              label: "Contact",
+              href: "mailto:albak1@ulaval.ca",
+            },
+          ],
+        },
+      ],
+      copyright: `Copyright © ${new Date().getFullYear()} Alex Baker. Built with Docusaurus. MIT License.`,
+    },
+
+    prism: {
+      additionalLanguages: ["python", "bash", "yaml", "json"],
+    },
+
+    colorMode: {
+      defaultMode: "dark",
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
+    },
   } satisfies Preset.ThemeConfig,
 };
 

@@ -1,134 +1,137 @@
-// website/sidebars.ts
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
-
-/**
- * Cette configuration de sidebar est conçue pour être claire, évolutive et
- * inspirée des meilleures pratiques de documentation pour les projets
- * scientifiques et open-source.
- *
- * Structure par intention :
- * - Getting Started: Pour une prise en main rapide.
- * - Scientific Context: Pour comprendre le fond scientifique.
- * - User Guides: Pour réaliser des tâches spécifiques ("How-To").
- * - Concepts & Architecture: Pour comprendre le fonctionnement interne.
- * - API Reference: Pour les détails techniques du code.
- * - Community: Pour tout ce qui concerne la contribution et l'utilisation.
- */
 const sidebars: SidebarsConfig = {
-  // Le nom de notre sidebar principale.
-  // Assurez-vous qu'il correspond au sidebarId dans docusaurus.config.ts
-  docsSidebar: [
-    
-    // =====================================================================
-    // CATÉGORIE 1 : DÉMARRAGE RAPIDE
-    // =====================================================================
+  // ── Home & Atlas ──────────────────────────────────────────────────────────
+  homeSidebar: [
+    { type: "doc", id: "index", label: "🏠 Home" },
+    { type: "doc", id: "ecosystem", label: "Research Ecosystem" },
+    { type: "doc", id: "reading-paths", label: "Reading Paths" },
     {
-      type: 'category',
-      label: 'Démarrage Rapide',
-      link: {
-        type: 'doc',
-        id: 'getting-started/index', // Pointe vers une page d'accueil de section dédiée
-      },
+      type: "category", label: "Atlas",
       items: [
-        'getting-started/installation',
-        'getting-started/first-run',
+        "atlas/index", "atlas/glossary", "atlas/acronyms",
+        "atlas/methods-index", "atlas/datasets-index",
+        "atlas/figures-index", "atlas/notebook-atlas", "atlas/repository-map",
       ],
     },
+  ],
 
-    // =====================================================================
-    // CATÉGORIE 2 : CONTEXTE SCIENTIFIQUE (Le "Pourquoi")
-    // =====================================================================
+  // ── AstroSpectro ──────────────────────────────────────────────────────────
+  astrospectroSidebar: [
+    { type: "doc", id: "astrospectro/index", label: "🌟 AstroSpectro" },
     {
-      type: 'category',
-      label: 'Contexte Scientifique',
-      link: {
-        type: 'doc',
-        id: 'science/index',
-      },
+      type: "category", label: "Overview", collapsible: false,
       items: [
-        'science/lamost-dr5-data',
-        'science/methodology',
-        'science/features-list-183',
-        'science/pca-physical-interpretation',
-        'science/autoencoder',
-        'science/xgboost-comparison',
-        'science/dimensionality-reduction',
-        'science/dataset-dimred',
-        'science/results-analysis'
+        "astrospectro/overview/index",
+        "astrospectro/overview/scientific-motivation",
+        "astrospectro/overview/key-results",
+        "astrospectro/overview/project-map",
+        "astrospectro/overview/current-status",
       ],
     },
-
-    // =====================================================================
-    // CATÉGORIE 3 : GUIDES D'UTILISATION (Le "Comment")
-    // =====================================================================
     {
-      type: 'category',
-      label: 'Guides d\'Utilisation',
-      link: {
-        type: 'doc',
-        id: 'user-guides/index', 
-      },
+      type: "category", label: "Concepts & Architecture",
       items: [
-        'user-guides/downloading-data',
-        'user-guides/connexion-gaia',
-        'user-guides/preprocessing',
-        'user-guides/feature-extraction',
-        'user-guides/model-training',
-        'user-guides/visualization',
+        "astrospectro/concepts/index",
+        "astrospectro/concepts/pipeline-philosophy",
+        "astrospectro/concepts/spectro-only-mode",
+        "astrospectro/concepts/data-lifecycle",
+        "astrospectro/concepts/physical-purity",
+        "astrospectro/concepts/reproducibility",
       ],
     },
-    
-    // =====================================================================
-    // CATÉGORIE 4 : CONCEPTS & ARCHITECTURE (Le "Comment ça marche")
-    // =====================================================================
     {
-      type: 'category',
-      label: 'Concepts & Architecture',
-      link: {
-        type: 'doc',
-        id: 'concepts/index', 
-      },
+      type: "category", label: "Data & Datasets",
       items: [
-        'concepts/project-structure',
-        'concepts/pipeline-overview',
-        'concepts/feature-engineering-theory',
+        "astrospectro/data/index",
+        "astrospectro/data/lamost-dr5",
+        "astrospectro/data/gaia-dr3",
+        "astrospectro/data/master-catalog",
+        "astrospectro/data/feature-dataset",
+        "astrospectro/data/feature-catalog",
+        "astrospectro/data/class-taxonomy",
+        "astrospectro/data/quality-filters",
+        "astrospectro/data/dataset-versions",
       ],
     },
-
-    // =====================================================================
-    // CATÉGORIE 5 : RÉFÉRENCE DE L'API
-    // =====================================================================
     {
-      type: 'category',
-      label: 'API Reference',
-      link: {
-        type: 'doc',
-        id: 'api/index', 
-      },
+      type: "category", label: "Core Pipeline",
       items: [
-        'api/preprocessor',
-        'api/feature-engineer',
-        'api/classifier',
+        "astrospectro/pipeline/index",
+        "astrospectro/pipeline/preprocessing",
+        "astrospectro/pipeline/peak-detection",
+        "astrospectro/pipeline/feature-engineering",
+        "astrospectro/pipeline/processing-pipeline",
+        "astrospectro/pipeline/classification",
+        "astrospectro/pipeline/master-pipeline",
+        "astrospectro/pipeline/experiment-tracking",
       ],
     },
-    
-    // =====================================================================
-    // CATÉGORIE 6 : COMMUNAUTÉ & RESSOURCES
-    // =====================================================================
     {
-      type: 'category',
-      label: 'Communauté',
-      link: {
-        type: 'doc',
-        id: 'community/index',
-      },
+      type: "category", label: "Dimensionality Reduction",
       items: [
-        'community/acknowledgments',
-        'community/contributing',
-        'community/roadmap',
-        'community/citing',
-        'community/faq',
+        "astrospectro/dimred/index",
+        "astrospectro/dimred/data-loader",
+        "astrospectro/dimred/pca",
+        "astrospectro/dimred/umap-hdbscan",
+        "astrospectro/dimred/tsne",
+        "astrospectro/dimred/autoencoder",
+        "astrospectro/dimred/sensitivity",
+        "astrospectro/dimred/comparison",
+      ],
+    },
+    {
+      type: "category", label: "Scientific Analysis",
+      items: [
+        "astrospectro/science/index",
+        "astrospectro/science/validation",
+        { type: "doc", id: "astrospectro/science/shap-interpretability", label: "⭐ SHAP Interpretability" },
+        "astrospectro/science/classification-performance",
+        "astrospectro/science/feature-physics",
+        "astrospectro/science/fg-confusion",
+        "astrospectro/science/limitations",
+      ],
+    },
+    {
+      type: "category", label: "Guides",
+      items: [
+        "astrospectro/guides/index",
+        "astrospectro/guides/installation",
+        "astrospectro/guides/quick-start",
+        "astrospectro/guides/downloading-data",
+        "astrospectro/guides/preprocessing",
+        "astrospectro/guides/feature-extraction",
+        "astrospectro/guides/model-training",
+        "astrospectro/guides/visualization",
+      ],
+    },
+    {
+      type: "category", label: "API Reference",
+      items: [
+        "astrospectro/api/index",
+        "astrospectro/api/preprocessor",
+        "astrospectro/api/feature-engineer",
+        "astrospectro/api/classifier",
+        "astrospectro/api/master-pipeline",
+        {
+          type: "category", label: "Dimred sub-package",
+          items: [
+            "astrospectro/api/dimred/data-loader",
+            "astrospectro/api/dimred/pca-analyzer",
+            "astrospectro/api/dimred/embedding",
+            "astrospectro/api/dimred/hdbscan-analyzer",
+          ],
+        },
+      ],
+    },
+    {
+      type: "category", label: "Community",
+      items: [
+        "astrospectro/community/roadmap",
+        "astrospectro/community/contributing",
+        "astrospectro/community/citing",
+        "astrospectro/community/faq",
+        "astrospectro/community/acknowledgements",
       ],
     },
   ],
