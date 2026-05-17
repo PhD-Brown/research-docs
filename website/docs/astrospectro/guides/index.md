@@ -23,5 +23,5 @@ This page is actively being developed. Core content is added progressively.
 
 ## See also
 
-- [Installation](./installation)
-- [Quick Start](./quick-start)
+- [Installation](/research-docs/docs/astrospectro/guides/installation)
+- [Quick Start](/research-docs/docs/astrospectro/guides/quick-start)

@@ -23,6 +23,6 @@ This page is actively being developed. Core content is added progressively.
 
 ## See also
 
-- [Preprocessing](./preprocessing)
-- [Feature Engineering](./feature-engineering)
-- [Classification](./classification)
+- [Preprocessing](/research-docs/docs/astrospectro/pipeline/preprocessing)
+- [Feature Engineering](/research-docs/docs/astrospectro/pipeline/feature-engineering)
+- [Classification](/research-docs/docs/astrospectro/pipeline/classification)

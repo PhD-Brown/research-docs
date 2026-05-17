@@ -23,6 +23,6 @@ This page is actively being developed. Core content is added progressively.
 
 ## See also
 
-- [PCA](./pca)
-- [UMAP & HDBSCAN](./umap-hdbscan)
-- [Autoencoder](./autoencoder)
+- [PCA](/research-docs/docs/astrospectro/dimred/pca)
+- [UMAP & HDBSCAN](/research-docs/docs/astrospectro/dimred/umap-hdbscan)
+- [Autoencoder](/research-docs/docs/astrospectro/dimred/autoencoder)

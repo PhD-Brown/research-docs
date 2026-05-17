@@ -16,15 +16,15 @@ sidebar_position: 1
 
 | Section | What you'll find |
 |---------|-----------------|
-| [Overview](./overview/) | Scientific motivation, key results, project map |
-| [Concepts](./concepts/) | Architecture decisions, spectro_only mode, physical purity |
-| [Data](./data/) | LAMOST DR5, Gaia DR3, feature catalogue |
-| [Pipeline](./pipeline/) | Preprocessing, feature engineering, classification |
-| [Dimred](./dimred/) | PCA, UMAP, t-SNE, autoencoder, HDBSCAN |
-| [Science](./science/) | SHAP finding, validation, limitations |
-| [Guides](./guides/) | Installation, quick start, how-to guides |
-| [API](./api/) | Module reference |
-| [Community](./community/) | Roadmap, contributing, citing |
+| [Overview](/research-docs/docs/astrospectro/overview/) | Scientific motivation, key results, project map |
+| [Concepts](/research-docs/docs/astrospectro/concepts/) | Architecture decisions, spectro_only mode, physical purity |
+| [Data](/research-docs/docs/astrospectro/data/) | LAMOST DR5, Gaia DR3, feature catalogue |
+| [Pipeline](/research-docs/docs/astrospectro/pipeline/) | Preprocessing, feature engineering, classification |
+| [Dimred](/research-docs/docs/astrospectro/dimred/) | PCA, UMAP, t-SNE, autoencoder, HDBSCAN |
+| [Science](/research-docs/docs/astrospectro/science/) | SHAP finding, validation, limitations |
+| [Guides](/research-docs/docs/astrospectro/guides/) | Installation, quick start, how-to guides |
+| [API](/research-docs/docs/astrospectro/api/) | Module reference |
+| [Community](/research-docs/docs/astrospectro/community/) | Roadmap, contributing, citing |
 
 ## Key result
 

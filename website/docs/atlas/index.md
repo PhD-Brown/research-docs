@@ -11,10 +11,10 @@ It contains definitions, index tables, and cross-project resources.
 
 | Page | Contents |
 |------|---------|
-| [Glossary](./glossary) | All technical and scientific terms defined |
-| [Acronyms](./acronyms) | All acronyms used across projects |
-| [Methods Index](./methods-index) | All ML and statistical methods, cross-project |
-| [Datasets Index](./datasets-index) | All datasets with provenance |
-| [Figures Index](./figures-index) | All key figures with captions and source pages |
-| [Notebook Atlas](./notebook-atlas) | All Jupyter notebooks mapped to sections |
-| [Repository Map](./repository-map) | GitHub repos and their roles |
+| [Glossary](/research-docs/docs/atlas/glossary) | All technical and scientific terms defined |
+| [Acronyms](/research-docs/docs/atlas/acronyms) | All acronyms used across projects |
+| [Methods Index](/research-docs/docs/atlas/methods-index) | All ML and statistical methods, cross-project |
+| [Datasets Index](/research-docs/docs/atlas/datasets-index) | All datasets with provenance |
+| [Figures Index](/research-docs/docs/atlas/figures-index) | All key figures with captions and source pages |
+| [Notebook Atlas](/research-docs/docs/atlas/notebook-atlas) | All Jupyter notebooks mapped to sections |
+| [Repository Map](/research-docs/docs/atlas/repository-map) | GitHub repos and their roles |

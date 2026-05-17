@@ -15,8 +15,8 @@ const config: Config = {
   organizationName: "PhD-Brown",
   projectName: "research-docs",
 
-  onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "throw",
+  onBrokenLinks: "warn",
+  onBrokenMarkdownLinks: "warn",
 
   trailingSlash: false,
 

@@ -30,7 +30,7 @@ The project is designed to answer a fundamental question:
 
 ## Navigate this section
 
-- [Scientific Motivation](./scientific-motivation)
-- [Key Results at a Glance](./key-results)
-- [Project Map](./project-map)
-- [Current Status](./current-status)
+- [Scientific Motivation](/research-docs/docs/astrospectro/overview/scientific-motivation)
+- [Key Results at a Glance](/research-docs/docs/astrospectro/overview/key-results)
+- [Project Map](/research-docs/docs/astrospectro/overview/project-map)
+- [Current Status](/research-docs/docs/astrospectro/overview/current-status)

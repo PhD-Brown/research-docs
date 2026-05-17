@@ -23,5 +23,5 @@ This page is actively being developed. Core content is added progressively.
 
 ## See also
 
-- [SHAP Interpretability](./shap-interpretability)
-- [Limitations](./limitations)
+- [SHAP Interpretability](/research-docs/docs/astrospectro/science/shap-interpretability)
+- [Limitations](/research-docs/docs/astrospectro/science/limitations)

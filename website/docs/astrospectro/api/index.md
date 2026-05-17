@@ -22,6 +22,6 @@ This page is actively being developed. Core content is added progressively.
 
 ## See also
 
-- [Preprocessor](./preprocessor)
-- [FeatureEngineer](./feature-engineer)
-- [Classifier](./classifier)
+- [Preprocessor](/research-docs/docs/astrospectro/api/preprocessor)
+- [FeatureEngineer](/research-docs/docs/astrospectro/api/feature-engineer)
+- [Classifier](/research-docs/docs/astrospectro/api/classifier)

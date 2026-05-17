@@ -23,6 +23,6 @@ This page is actively being developed. Core content is added progressively.
 
 ## See also
 
-- [LAMOST DR5](./lamost-dr5)
-- [Gaia DR3](./gaia-dr3)
-- [Feature Catalogue](./feature-catalog)
+- [LAMOST DR5](/research-docs/docs/astrospectro/data/lamost-dr5)
+- [Gaia DR3](/research-docs/docs/astrospectro/data/gaia-dr3)
+- [Feature Catalogue](/research-docs/docs/astrospectro/data/feature-catalog)

@@ -38,4 +38,4 @@ The ΛCDM and CPL results are minimally affected by these limitations and can be
 ## See also
 
 - [Roadmap (planned v0.2)](#) — fix timeline
-- [Results](./index) — current outputs
+- [Results](/research-docs/xi-dark-energy/results/) — current outputs

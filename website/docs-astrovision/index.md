@@ -16,12 +16,12 @@ sidebar_position: 1
 
 | Section | What you'll find |
 |---------|-----------------|
-| [Overview](./overview/) | Scientific motivation, key results |
-| [Data](./data/) | Galaxy10 DECaLS, morphology classes, SDSS crossmatch |
-| [Models](./models/) | CNN, EfficientNet, DINOv2, Late-fusion |
-| [Results](./results/) | Benchmarking, uncertainty, physical interpretation |
-| [Guides](./guides/) | Installation, training, GradCAM, segmentation |
-| [API](./api/) | Module reference |
+| [Overview](/research-docs/astrovision/overview/) | Scientific motivation, key results |
+| [Data](/research-docs/astrovision/data/) | Galaxy10 DECaLS, morphology classes, SDSS crossmatch |
+| [Models](/research-docs/astrovision/models/) | CNN, EfficientNet, DINOv2, Late-fusion |
+| [Results](/research-docs/astrovision/results/) | Benchmarking, uncertainty, physical interpretation |
+| [Guides](/research-docs/astrovision/guides/) | Installation, training, GradCAM, segmentation |
+| [API](/research-docs/astrovision/api/) | Module reference |
 
 ## Key result
 
