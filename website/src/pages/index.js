@@ -65,7 +65,7 @@ const PROJECTS = [
     blurb:   'Interpretable machine-learning pipeline for stellar spectral classification using LAMOST DR5 × Gaia DR3.',
     stats:   [['43,019', 'spectra'], ['183', 'physical features'], ['87 %', 'balanced accuracy']],
     finding: 'Ca II H&K > Balmer (SHAP)',
-    href:    '/AstroSpectro/docs/astrospectro/overview',
+    href:    '/research-docs/docs/astrospectro/overview',
   },
   {
     glyph:   '◎',
@@ -75,7 +75,7 @@ const PROJECTS = [
     blurb:   'Late-fusion multimodal classifier combining DINOv2 visual features, morphometrics, and SDSS photometry.',
     stats:   [['17,736', 'galaxy images'], ['10', 'morphology classes'], ['86.3 %', 'balanced accuracy']],
     finding: 'DINOv2 encodes colour R²=0.536',
-    href:    '/AstroSpectro/astrovision/overview',
+    href:    '/research-docs/docs/astrovision/overview',
   },
   {
     glyph:   'ξ',
@@ -85,7 +85,7 @@ const PROJECTS = [
     blurb:   'Reproducible Bayesian MCMC pipeline comparing ΛCDM, CPL, and Ξosc dark-energy models.',
     stats:   [['1701', 'SN Ia (Pantheon+)'], ['12', 'DESI DR2 BAO pts'], ['3', 'dark energy models']],
     finding: 'Explicit limitation documentation',
-    href:    '/AstroSpectro/xi-dark-energy/overview',
+    href:    '/research-docs/docs/dark-energy/overview',
   },
 ];
 
@@ -97,12 +97,12 @@ const STATS = [
 ];
 
 const PATHS = [
-  { q: 'Understand the scientific motivation', href: '/AstroSpectro/docs/ecosystem',                                          label: 'Research Ecosystem' },
-  { q: 'Reproduce an AstroSpectro pipeline',   href: '/AstroSpectro/docs/astrospectro/guides/quick-start',                    label: 'Quick Start' },
-  { q: 'Deep dive into the SHAP finding',       href: '/AstroSpectro/docs/astrospectro/science/shap-interpretability',         label: 'SHAP Analysis' },
-  { q: 'Explore galaxy morphology models',      href: '/AstroSpectro/astrovision/models/',                                     label: 'AstroVision Models' },
-  { q: 'Browse all methods across projects',    href: '/AstroSpectro/docs/atlas/methods-index',                                label: 'Methods Index' },
-  { q: 'Look up a term or acronym',             href: '/AstroSpectro/docs/atlas/glossary',                                     label: 'Glossary' },
+  { q: 'Understand the scientific motivation', href: '/research-docs/docs/ecosystem',                                          label: 'Research Ecosystem' },
+  { q: 'Reproduce an AstroSpectro pipeline',   href: '/research-docs/docs/astrospectro/guides/quick-start',                    label: 'Quick Start' },
+  { q: 'Deep dive into the SHAP finding',       href: '/research-docs/docs/astrospectro/science/shap-interpretability',         label: 'SHAP Analysis' },
+  { q: 'Explore galaxy morphology models',      href: '/research-docs/docs/astrovision/models/',                                     label: 'AstroVision Models' },
+  { q: 'Browse all methods across projects',    href: '/research-docs/docs/atlas/methods-index',                                label: 'Methods Index' },
+  { q: 'Look up a term or acronym',             href: '/research-docs/docs/atlas/glossary',                                     label: 'Glossary' },
 ];
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -136,10 +136,10 @@ export default function Home() {
           </p>
 
           <div className={styles.heroCtas}>
-            <Link className={styles.ctaPrimary} to="/AstroSpectro/docs/astrospectro/overview">
+            <Link className={styles.ctaPrimary} to="/research-docs/docs/astrospectro/overview">
               Explore AstroSpectro
             </Link>
-            <Link className={styles.ctaSecondary} to="/AstroSpectro/docs">
+            <Link className={styles.ctaSecondary} to="/research-docs/docs">
               Browse all projects
             </Link>
           </div>
@@ -213,7 +213,7 @@ export default function Home() {
               models learn from stellar spectra."
             </blockquote>
             <Link
-              to="/AstroSpectro/docs/astrospectro/science/shap-interpretability"
+              to="/research-docs/docs/astrospectro/science/shap-interpretability"
               className={styles.spotlightLink}
             >
               Read the full SHAP analysis →
@@ -243,7 +243,7 @@ export default function Home() {
           <div className={styles.noteGrid}>
             {[
               { icon: '◉', title: 'Personal site', text: 'Who I am, why these projects exist, publications, CV.', href: 'https://phd-brown.github.io', cta: 'phd-brown.github.io →' },
-              { icon: '◈', title: 'This site', text: 'How the projects work, how to reproduce them, results in detail.', href: '/AstroSpectro/docs', cta: 'Browse docs →' },
+              { icon: '◈', title: 'This site', text: 'How the projects work, how to reproduce them, results in detail.', href: '/research-docs/docs', cta: 'Browse docs →' },
               { icon: '◇', title: 'GitHub repos', text: 'Project entry points — README, code, releases.', href: 'https://github.com/PhD-Brown', cta: 'github.com/PhD-Brown →' },
             ].map(n => (
               <Link key={n.title} to={n.href} className={styles.noteCard}>

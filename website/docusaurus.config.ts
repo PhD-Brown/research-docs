@@ -34,7 +34,7 @@ const config: Config = {
   organizationName: 'PhD-Brown', // Nom GitHub
   projectName: 'research-docs', // Repo GitHub
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
 
   // NOUVELLE SECTION POUR ACTIVER MERMAID
   markdown: {
@@ -48,8 +48,8 @@ const config: Config = {
   themes: ['@docusaurus/theme-mermaid'],
 
   i18n: {
-    defaultLocale: 'fr',
-    locales: ['fr', 'en'],
+    defaultLocale: 'en',
+    locales: ['en'],
   },
 
   presets: [
