@@ -2,7 +2,7 @@
   "name": "research-docs",
   "version": "0.1.0",
   "private": true,
-  "description": "Documentation Docusaurus pour le projet Astro Spectro Classification (LAMOST DR5)",
+  "description": "Multi-project Docusaurus documentation for AstroSpectro, AstroVision, and Xi Dark Energy.",
   "author": "Alex Baker",
   "license": "MIT",
   "scripts": {

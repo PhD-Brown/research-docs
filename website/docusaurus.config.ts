@@ -75,6 +75,7 @@ const config: Config = {
 
   // ── Additional doc instances ──────────────────────────────────────────────
   plugins: [
+    "docusaurus-plugin-image-zoom", // <-- Ajout du plugin de zoom ici
     [
       "@docusaurus/plugin-content-docs",
       {
@@ -101,6 +102,19 @@ const config: Config = {
   // ── Theme ─────────────────────────────────────────────────────────────────
   themeConfig: {
     image: "img/social-card.png",
+
+    // <-- Configuration du zoom ajoutée ici
+    zoom: {
+      selector: '.markdown :not(em) > img',
+      background: {
+        light: 'rgb(255, 255, 255)',
+        dark: 'rgb(50, 50, 50)'
+      },
+      config: {
+        // Optionnel : ajuste l'espace autour de l'image zoomée
+        margin: 24
+      }
+    },
 
     navbar: {
       title: "Alex Baker",

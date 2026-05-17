@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "docusaurus-plugin-image-zoom": "^3.0.1"
+  }
+}

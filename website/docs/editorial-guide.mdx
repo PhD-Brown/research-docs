@@ -1,0 +1,551 @@
+---
+title: Editorial Guide
+description: Writing and structure rules for Alex Baker · Research Documentation.
+sidebar_position: 4
+---
+
+# Editorial Guide
+
+> This page defines the permanent writing, structure, and maintenance rules for **Alex Baker · Research Documentation**.
+
+---
+
+## 1. Purpose of this site
+
+This documentation site is the **technical and scientific reference layer** of the research ecosystem.
+
+It complements:
+
+- the **personal site** for narrative context, academic identity, publications, and project motivation;
+- the **GitHub repositories** for code, releases, and concise project entry points.
+
+### Three-layer model
+
+| Layer | Purpose | Typical question it answers |
+|---|---|---|
+| Personal site | Narrative hub | **Why** do these projects exist? |
+| This documentation site | Technical/scientific reference | **How** do they work? |
+| GitHub repositories | Code and entry point | **What** is in this repo? |
+
+### Golden rule
+
+**A piece of information should have one canonical home.**  
+Other pages may summarize it briefly, but they should link back to the canonical page instead of duplicating it.
+
+---
+
+## 2. Scope of the documentation
+
+This site currently documents three research projects:
+
+- **AstroSpectro** — interpretable machine learning for stellar spectral classification
+- **AstroVision** — deep learning for galaxy morphology
+- **ξ Dark Energy · BAO MCMC** — reproducible Bayesian cosmological inference
+
+It also includes:
+
+- a **Journal** for dated research notes;
+- an **Atlas** for cross-project reference material.
+
+---
+
+## 3. Core editorial principles
+
+## 3.1 One page = one mission
+
+A page must have **one primary role**.
+
+| Page type | What it should contain | What it should not contain |
+|---|---|---|
+| **Overview** | Purpose, scope, key results, navigation | Deep implementation details |
+| **Concepts** | Theory, design choices, rationale | Step-by-step tutorials |
+| **Data** | Dataset description, schema, filters, provenance | Results interpretation |
+| **Pipeline / Guides** | How to run something, commands, workflow | Long theoretical background |
+| **Results** | Metrics, figures, interpretation, caveats | API detail |
+| **API** | Classes, functions, parameters, return values | Long scientific narrative |
+| **Atlas** | Definitions, acronyms, indexes, maps | Project storytelling |
+| **Journal** | Dated progress notes, ideas, interim observations | Canonical reference content |
+
+---
+
+## 3.2 Canonical-page policy
+
+Every important concept, dataset, or result must have **one source of truth**.
+
+### Examples
+
+- Definition of the **183-feature catalogue** → `AstroSpectro / Data / Feature Catalog`
+- Definition of **`spectro_only=True`** → `AstroSpectro / Concepts / spectro_only mode`
+- Main SHAP interpretation → `AstroSpectro / Scientific Analysis / SHAP Interpretability`
+- AstroVision late-fusion model → `AstroVision / Models / Late-Fusion Multimodal`
+- Xi caveats → `ξ Dark Energy / Results / Known Limitations`
+
+Other pages may mention these briefly, but should link back instead of repeating them.
+
+---
+
+## 3.3 Stable documentation vs living journal
+
+Documentation and journal entries do **not** serve the same role.
+
+| Journal | Documentation |
+|---|---|
+| Dated | Stable |
+| Exploratory | Reference-quality |
+| Can be incomplete | Must be clear and deliberate |
+| Can contain tentative ideas | Should reflect the current intended understanding |
+| “What I found today” | “What this module / result / concept is” |
+
+Use the **Journal** for evolution.  
+Use the **Docs** for stabilized understanding.
+
+---
+
+## 4. Writing style rules
+
+## 4.1 Tone
+
+Write in a tone that is:
+
+- scientific
+- precise
+- sober
+- honest
+- readable
+
+Avoid:
+
+- hype
+- exaggerated claims
+- vague “breakthrough” language
+- overconfident interpretations
+
+### Preferred tone
+- “Current results suggest…”
+- “In this configuration…”
+- “Under the present dataset and preprocessing choices…”
+- “This remains exploratory.”
+- “This should not be interpreted as…”
+
+---
+
+## 4.2 Language
+
+- The primary language of the documentation is **English**
+- The **Journal** may remain bilingual when useful
+- Avoid mixing English and French inside the same documentation page unless strictly necessary
+
+---
+
+## 4.3 Short sentences first
+
+Lead with the clear version first.
+
+Bad:
+> In the context of the broader methodological architecture of the project, it becomes relevant to emphasize that...
+
+Better:
+> This module defines how the pipeline preprocesses raw spectra.
+
+---
+
+## 4.4 Show context before detail
+
+Whenever possible, structure sections in this order:
+
+1. **What it is**
+2. **Why it matters**
+3. **How it works**
+4. **Limitations / caveats**
+5. **Where to go next**
+
+---
+
+## 5. Rules for metrics and results
+
+## 5.1 Never report a metric without context
+
+A metric must always be tied to its context.
+
+Bad:
+> 87% balanced accuracy
+
+Better:
+> 87% balanced accuracy with XGBoost in `spectro_only=True` mode on the current 43,019-spectrum five-class AstroSpectro configuration.
+
+### Required context whenever relevant
+
+- model
+- mode / configuration
+- dataset size
+- class setup
+- run ID or version, if known
+- whether the result is exploratory or stable
+
+---
+
+## 5.2 Separate result from interpretation
+
+Use this pattern:
+
+### Result
+What was measured?
+
+### Interpretation
+What might it mean physically or methodologically?
+
+### Caveat
+What limits the interpretation?
+
+This avoids mixing observation and conclusion.
+
+---
+
+## 5.3 Use calibrated language for findings
+
+### Example: SHAP
+Do **not** write:
+
+> Ca II H&K beats Balmer lines.
+
+Prefer:
+
+> Current SHAP results suggest that Ca II H&K and Mg b features play a major role alongside classical Balmer temperature indicators in the learned classification structure.
+
+That wording is:
+- more accurate
+- more defensible
+- more future-proof
+
+---
+
+## 5.4 Exploratory work must be labeled explicitly
+
+If a result is preliminary, say so clearly.
+
+Recommended formulations:
+
+- `exploratory`
+- `under active development`
+- `current draft interpretation`
+- `not yet harmonized across all repos`
+- `subject to revision`
+
+---
+
+## 6. Page-level structure rules
+
+## 6.1 Recommended page template
+
+Each page should ideally answer these questions in order:
+
+### What is this page about?
+One clear introductory paragraph.
+
+### Why does it matter?
+Short explanation of relevance.
+
+### What is the core content?
+Method, result, concept, or workflow.
+
+### What are the limitations?
+Known caveats, missing pieces, uncertainty.
+
+### Where should the reader go next?
+Internal navigation links.
+
+---
+
+## 6.2 Frontmatter
+
+Every page should include at least:
+
+```yaml
+title: ...
+description: ...
+```
+
+Optional but recommended:
+- `sidebar_position`
+- tags or custom metadata if needed later
+
+---
+
+## 6.3 “Under construction” usage
+
+It is acceptable to use an under-construction box on seed pages, but it should remain informative.
+
+Good:
+- what the page will eventually cover
+- what already exists
+- what is missing
+
+Bad:
+- empty placeholder with no guidance
+
+Recommended pattern:
+
+```mdx
+:::info Under construction
+This page is being expanded. The current version defines the scope of the topic and the core questions it will document.
+:::
+```
+
+---
+
+## 7. Link and navigation rules
+
+## 7.1 Prefer internal doc links over raw URLs
+
+Inside the documentation, prefer internal links such as:
+
+```mdx
+[SHAP Interpretability](./shap-interpretability)
+```
+
+or
+
+```mdx
+[Feature Catalog](../data/feature-catalog)
+```
+
+Avoid raw deployed URLs unless linking across systems:
+- personal site
+- GitHub repo
+- ORCID
+- external survey/project websites
+
+---
+
+## 7.2 Link upward sparingly
+
+Pages should mostly link:
+- to sibling pages
+- to canonical source pages
+- to next-step navigation
+
+Avoid cluttering pages with too many unrelated links.
+
+---
+
+## 7.3 Broken links are release blockers
+
+A page is **not ready** if its internal links are broken.
+
+Before publishing changes:
+
+- run the local build
+- check link warnings
+- confirm relative paths
+- verify cross-instance links (`/docs`, `/astrovision`, `/xi-dark-energy`, `/journal`) carefully
+
+---
+
+## 8. Project-specific content rules
+
+## 8.1 AstroSpectro
+
+Emphasize:
+- physical interpretability
+- feature design
+- `spectro_only=True`
+- leakage control
+- SHAP interpretation
+- dimensionality reduction as structure analysis, not just visualization
+
+Avoid:
+- overselling the central SHAP result
+- mixing old feature counts and current feature counts without explanation
+- using Gaia-derived validation variables as if they were always model inputs
+
+---
+
+## 8.2 AstroVision
+
+Emphasize:
+- morphology as a physically meaningful representation problem
+- visual representation learning
+- multimodal fusion
+- uncertainty quantification
+- connections to AstroSpectro where relevant
+
+Avoid:
+- claiming that vision features “discover physics” without careful phrasing
+- reporting outdated benchmark numbers without version context
+
+---
+
+## 8.3 ξ Dark Energy · BAO MCMC
+
+Emphasize:
+- reproducibility
+- explicit model assumptions
+- transparent inference choices
+- diagnostics and caveats
+- exploratory status
+
+Avoid:
+- language that sounds like a detection claim
+- overstating weak preferences
+- burying limitations
+
+---
+
+## 9. Visual and figure rules
+
+## 9.1 Every figure must earn its place
+
+A figure should do at least one of these:
+
+- communicate a result more clearly than text
+- compare methods
+- support interpretation
+- document a workflow or architecture
+
+If it does none of these, do not include it.
+
+---
+
+## 9.2 Captions
+
+Captions should describe **what the figure shows**, not fully interpret it.
+
+Bad:
+> This figure proves the model learns real physics.
+
+Better:
+> UMAP projection of the current AstroSpectro feature space, coloured by effective temperature proxy.
+
+Interpretation belongs in the surrounding text.
+
+---
+
+## 9.3 Interactive figures
+
+Interactive figures are welcome when they genuinely help:
+- 3D UMAP / PCA
+- latent-space exploration
+- rich comparative plots
+
+But pages must still make sense **without** interacting.
+
+---
+
+## 10. API-page rules
+
+API pages should remain technical and minimal.
+
+Recommended sections:
+- Overview
+- Constructor / signature
+- Parameters
+- Returns
+- Methods
+- Example usage
+- Notes / edge cases
+
+Avoid putting long scientific discussion into API pages.  
+Link back to Concepts or Results pages instead.
+
+---
+
+## 11. Atlas rules
+
+The Atlas exists to reduce duplication across projects.
+
+Use it for:
+
+- glossary
+- acronyms
+- methods index
+- datasets index
+- figures index
+- notebook atlas
+- repository map
+
+If a term appears across multiple projects, define it in the Atlas and link to it when needed.
+
+---
+
+## 12. Version-awareness and honesty
+
+This documentation is part of an active research workflow.  
+Not every page reflects a final result.
+
+Therefore:
+
+- state the maturity level when relevant
+- distinguish current draft from stable reference
+- update pages when key architectural decisions change
+- prefer explicit uncertainty over silent inconsistency
+
+---
+
+## 13. Minimum quality checklist before publishing a page
+
+- [ ] Clear title
+- [ ] Frontmatter with description
+- [ ] One primary mission
+- [ ] No obvious placeholder sentence left behind
+- [ ] Internal links checked
+- [ ] Metrics include context
+- [ ] Interpretation is calibrated
+- [ ] Limitations are acknowledged when relevant
+- [ ] Page is in English unless intentionally part of the journal
+- [ ] The page points to the next useful place
+
+---
+
+## 14. Short examples
+
+## Example A — good results sentence
+
+> In the current AstroSpectro configuration, XGBoost reaches 87% balanced accuracy in `spectro_only=True` mode on the working five-class dataset.
+
+Why this is good:
+- model named
+- metric named
+- mode named
+- scope implied
+
+---
+
+## Example B — bad results sentence
+
+> AstroSpectro achieves excellent performance and proves the approach works.
+
+Why this is bad:
+- vague
+- overconfident
+- no metric
+- no context
+
+---
+
+## Example C — good caveat sentence
+
+> This interpretation remains contingent on the present feature definition, class taxonomy, and preprocessing choices.
+
+---
+
+## 15. Final principle
+
+This site is not meant to be a marketing layer.  
+It is meant to be a **research-quality reference**.
+
+That means:
+
+- clear structure
+- traceable claims
+- honest caveats
+- stable navigation
+- minimal duplication
+- careful wording
+
+When unsure, prefer:
+
+> **clear over clever**  
+> **precise over impressive**  
+> **honest over dramatic**
+
+---

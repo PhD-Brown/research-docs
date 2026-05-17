@@ -63,7 +63,7 @@ const PROJECTS = [
     accent:  '#4B9FE1',
     tag:     'Stellar Spectroscopy · ML',
     blurb:   'Interpretable machine-learning pipeline for stellar spectral classification using LAMOST DR5 × Gaia DR3.',
-    stats:   [['43,019', 'spectra'], ['183', 'physical features'], ['87 %', 'balanced accuracy']],
+    stats:   [['43,019', 'spectra'], ['183', 'physical features'], ['?? %', 'balanced accuracy']],
     finding: 'Ca II H&K > Balmer (SHAP)',
     href:    '/research-docs/docs/astrospectro/overview',
   },
@@ -73,7 +73,7 @@ const PROJECTS = [
     accent:  '#A78BFA',
     tag:     'Galaxy Morphology · Deep Learning',
     blurb:   'Late-fusion multimodal classifier combining DINOv2 visual features, morphometrics, and SDSS photometry.',
-    stats:   [['17,736', 'galaxy images'], ['10', 'morphology classes'], ['86.3 %', 'balanced accuracy']],
+    stats:   [['17,736', 'galaxy images'], ['10', 'morphology classes'], ['?? %', 'balanced accuracy']],
     finding: 'DINOv2 encodes colour R²=0.536',
     href:    '/research-docs/astrovision/overview',
   },
@@ -92,8 +92,8 @@ const PROJECTS = [
 const STATS = [
   { n: '43k+',  label: 'spectra\nprocessed' },
   { n: '183',   label: 'physical\nfeatures' },
-  { n: '87 %',  label: 'AstroSpectro\nbalanced acc.' },
-  { n: '86 %',  label: 'AstroVision\nbalanced acc.' },
+  { n: '?? %',  label: 'AstroSpectro\nbalanced acc.' },
+  { n: '?? %',  label: 'AstroVision\nbalanced acc.' },
 ];
 
 const PATHS = [
