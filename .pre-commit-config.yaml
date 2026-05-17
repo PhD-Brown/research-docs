@@ -1,0 +1,49 @@
+repos:
+  # ── General file hygiene ────────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=2048]     # Block files > 2MB
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: no-commit-to-branch
+        args: [--branch=main]    # Force PRs / feature branches
+
+  # ── Markdown linting ────────────────────────────────────────────────────────
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
+    hooks:
+      - id: markdownlint
+        args:
+          - --config=.markdownlint.json
+          - --ignore=node_modules
+          - --ignore=build
+        types: [markdown]
+
+  # ── Prettier (JS / TS / CSS / MDX) ─────────────────────────────────────────
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        types_or: [javascript, jsx, ts, tsx, css, scss, json, yaml]
+        args: [--write]
+        exclude: |
+          (?x)^(
+            build/|
+            \.docusaurus/|
+            node_modules/
+          )
+
+  # ── Secrets detection ───────────────────────────────────────────────────────
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks

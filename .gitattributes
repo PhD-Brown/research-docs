@@ -1,0 +1,48 @@
+# ── Line endings ──────────────────────────────────────────────────────────────
+* text=auto
+*.js    text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.jsx   text eol=lf
+*.css   text eol=lf
+*.scss  text eol=lf
+*.md    text eol=lf
+*.mdx   text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.json  text eol=lf
+*.toml  text eol=lf
+
+# Binary files — no line-ending conversion
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.svg  binary
+*.ico  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+
+# ── GitHub Linguist — Documentation sources ───────────────────────────────────
+# Exclude documentation markdown/MDX from language stats
+docs/**          linguist-documentation
+docs-astrovision/** linguist-documentation
+docs-xi/**       linguist-documentation
+blog/**          linguist-documentation
+*.md             linguist-documentation
+*.mdx            linguist-documentation
+
+# Custom React landing page counts as source code (keep it)
+# src/pages/index.js  ← intentionally NOT marked as documentation
+
+# ── GitHub Linguist — Generated files ─────────────────────────────────────────
+# Exclude Docusaurus build output from language stats
+build/**         linguist-generated
+.docusaurus/**   linguist-generated
+
+# Static assets (figures, images) — not code
+static/img/**    linguist-documentation
+
+# ── GitHub Linguist — Vendored ────────────────────────────────────────────────
+node_modules/**  linguist-vendored

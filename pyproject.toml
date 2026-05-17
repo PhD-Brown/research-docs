@@ -1,0 +1,44 @@
+[project]
+name = "research-docs"
+version = "2.0.0"
+description = "Research documentation site for Alex Baker's astrophysics and astro-ML projects"
+authors = [{ name = "Alex Baker", email = "albak1@ulaval.ca" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+
+# No Python runtime dependencies — this is a Docusaurus (Node.js) project.
+# pyproject.toml is used here for tooling configuration only.
+dependencies = []
+
+[project.urls]
+Homepage    = "https://phd-brown.github.io/research-docs/"
+Repository  = "https://github.com/PhD-Brown/research-docs"
+"Personal Site" = "https://phd-brown.github.io"
+
+# ── Ruff (linter, if any utility scripts are added) ───────────────────────────
+[tool.ruff]
+line-length    = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]  # line length handled by formatter
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ── pre-commit metadata ───────────────────────────────────────────────────────
+# Config lives in .pre-commit-config.yaml
+# Install hooks: pip install pre-commit && pre-commit install
+
+# ── Markdownlint config reference ────────────────────────────────────────────
+# Config lives in .markdownlint.json (create alongside this file)
+# Recommended content:
+# {
+#   "default": true,
+#   "MD013": false,
+#   "MD033": false,
+#   "MD041": false
+# }
