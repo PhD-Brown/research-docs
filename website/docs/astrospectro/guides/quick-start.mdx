@@ -1,0 +1,185 @@
+---
+title: Quick Start
+sidebar_position: 2
+---
+
+{/* Complete for v1.0.0 release */}
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownload, faCogs, faPoll, faSpinner, faTrophy, faBookOpen } from '@fortawesome/free-solid-svg-icons'
+import Admonition from '@theme/Admonition';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+# <FontAwesomeIcon icon={faSpinner} /> First Run: From A to Z
+
+Now that your environment is configured, we will run the complete pipeline through the main notebook: `00_master_pipeline.ipynb`.
+This notebook orchestrates every step, from data selection to the generation of a session report.
+
+<Admonition type="info" title="Codespaces Users">
+  <p>
+    If you are using a Codespace, the environment is already ready.
+    Open <code>notebooks/</code> and launch <code>00_master_pipeline.ipynb</code>.
+    A small demonstration dataset may already be available depending on the Codespace configuration.
+  </p>
+</Admonition>
+
+<Admonition type="tip" title="Checklist (30 seconds)">
+  <ul>
+    <li>You are running the notebook with the <b>AstroSpectro (Py3.11)</b> kernel, or an equivalent environment.</li>
+    <li>Your <code>.env</code> file is configured if you use external credentials; see <a href="/research-docs/docs/astrospectro/guides/connexion-gaia">Gaia Connection</a>.</li>
+    <li>Locally, <code>data/raw/</code> contains spectra. If not, complete Step 1 first.</li>
+  </ul>
+</Admonition>
+
+## <FontAwesomeIcon icon={faDownload} /> Step 1: Acquire Data (if needed)
+
+If this is your very first local run, the `data/raw/` directory will be empty:
+
+1. Open the notebook `notebooks/01_download_spectra.ipynb`.
+2. Use the interface below to start the download. For a quick test, select around 1000 spectra.
+
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img
+    src={useBaseUrl('/img/getting-started/01_download_spectra.png')}
+    alt="Figure 1: The interactive interface used to configure and start data acquisition."
+    style={{maxWidth: '900px', borderRadius: '12px'}}
+  />
+  <p style={{opacity: 0.8, marginTop: '0.5rem'}}>
+    <small>Figure 1: The interactive interface used to configure and start data acquisition.</small>
+  </p>
+</div>
+
+> Need the advanced options — workers, scrapes, tqdm, auto-throttle, FITS validation, or dry-run mode?
+> They are documented in **[User Guides → Downloading Data](/docs/astrospectro/guides/downloading-data)**.
+
+## <FontAwesomeIcon icon={faCogs} /> Step 2: Run the Complete Pipeline
+
+Once you have data:
+
+1. Open the main notebook: `notebooks/00_master_pipeline.ipynb`.
+2. **Run all cells from top to bottom.**
+
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img
+    src={useBaseUrl('/img/getting-started/master.png')}
+    alt="Figure 2: The main orchestrator (`00_master_pipeline`) ready to use."
+    style={{maxWidth: '900px', borderRadius: '12px'}}
+  />
+  <p style={{opacity: 0.8, marginTop: '0.5rem'}}>
+    <small>Figure 2: The main orchestrator (`00_master_pipeline`) ready to use.</small>
+  </p>
+</div>
+
+The notebook runs the `MasterPipeline` sequentially:
+
+- **It initializes the environment**, sets up access to **Gaia**, and creates or validates the required directory structure. The first connection may take a little while.
+- **Batch selection:** simply define the number of desired spectra, for example `batch_size=1000`, and keep the default strategy, `random`.
+- **Local catalog generation** for the selected batch.
+- **Processing & feature extraction**, with several dozen possible features depending on the configuration.
+- **Training & evaluation** through an interactive interface.
+
+### Training (recommended first run)
+
+In the training interface, you can choose several models, such as `XGBoost`, `RandomForest`, `SVM`, `ExtraTrees`, `KNN`, `MLP`, and others, and adjust their hyperparameters.
+
+> **Goal:** validate that the full chain works, not optimize performance.
+
+For a **first run**, keep things simple:
+
+- For an initial run, we recommend **XGBoost** or **RandomForest**. They are fast and robust. You can explore the other models afterward.
+- Keep the default values, or use a template/preset if one is available.
+- Launch the batch/run.
+
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img
+    src={useBaseUrl('/img/getting-started/training.png')}
+    alt="Figure 3: The control panel used to choose your model (XGBoost/RF) without touching the code."
+    style={{maxWidth: '900px', borderRadius: '12px'}}
+  />
+  <p style={{opacity: 0.8, marginTop: '0.5rem'}}>
+    <small>Figure 3: The control panel used to choose your model (XGBoost/RF) without touching the code.</small>
+  </p>
+</div>
+
+> The complete documentation on templates/presets, hyperparameter search, calibration, model choice, and related options is available in **[User Guides → Model Training](/docs/astrospectro/guides/model-training)**.
+
+
+## <FontAwesomeIcon icon={faPoll} /> Step 3: Review the Results
+
+At the end of the run, several artifacts are produced:
+
+- A **CSV** file in `data/processed/`, containing features ready for analysis.
+- A **`.pkl`** model in `data/models/`.
+- A **JSON session report** in `data/reports/`, along with result-analysis figures such as `feature_importance`, `roc`, `confusion_matrix`, `precision_recall`, and others.
+
+<br />
+
+<br />
+
+<div className="shadow--md" style={{
+  border: '1px solid var(--ifm-color-primary)', 
+  borderRadius: '15px', 
+  padding: '2rem',
+  backgroundColor: 'var(--ifm-background-surface-color)' 
+}}>
+
+  {/* --- TOP SECTION: CONGRATULATIONS --- */}
+  <div style={{display: 'flex', alignItems: 'center', marginBottom: '2rem'}}>
+    <div style={{marginRight: '1.5rem', color: 'var(--ifm-color-primary)'}}>
+      {/* Your icon in primary color (blue) */}
+      <FontAwesomeIcon icon={faTrophy} size="3x" />
+    </div>
+    <div>
+      <h2 style={{margin: 0}}>Congratulations!</h2>
+      <p style={{margin: 0, fontSize: '1.1rem', opacity: 0.9}}>
+        You have run the pipeline from end to end and obtained your first classifications. <br/>
+        You are now ready to explore the project in greater depth!
+      </p>
+    </div>
+  </div>
+
+  {/* DISCREET SEPARATOR LINE */}
+  <hr style={{borderColor: 'var(--ifm-color-emphasis-200)', margin: '2rem 0'}} />
+
+  {/* --- BOTTOM SECTION: CARDS --- */}
+  <h3 style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+    🧭 What next? Choose your path:
+  </h3>
+
+  <div className="row">
+    {/* SCIENCE CARD */}
+    <div className="col col--6" style={{marginBottom: '1rem'}}>
+      <div className="card shadow--lw" style={{height: '100%'}}>
+        <div className="card__header">
+          <h3>🔭 Understand the Science</h3>
+        </div>
+        <div className="card__body">
+          <p>Discover the astrophysical concepts behind the code: spectral classification, flux normalization, and equations.</p>
+        </div>
+        <div className="card__footer">
+          <a href="../science" className="button button--primary button--block">
+            Explore the Context →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {/* EXPERT CARD */}
+    <div className="col col--6" style={{marginBottom: '1rem'}}>
+      <div className="card shadow--lw" style={{height: '100%'}}>
+        <div className="card__header">
+          <h3>⚡ Become an Expert</h3>
+        </div>
+        <div className="card__body">
+          <p>Learn how to configure <em>workers</em>, optimize downloads, and create your own training presets.</p>
+        </div>
+        <div className="card__footer">
+          <a href="../guides" className="button button--primary button--block">
+            Read the Guides →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

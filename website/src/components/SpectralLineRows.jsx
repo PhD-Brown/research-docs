@@ -62,7 +62,7 @@ export default function SpectralLineRows({ color = '#60A5FA', columns, rows, foo
           gridTemplateColumns: columns.map((_, i) => {
             if (i === 0) return '90px';
             if (columns[i] === 'λ (Å)') return '80px';
-            if (columns[i] === 'Espèce') return '60px';
+            if (columns[i] === 'Species') return '60px';
             if (columns[i] === 'Position') return '80px';
             return '1fr';
           }).join(' '),
@@ -97,7 +97,7 @@ export default function SpectralLineRows({ color = '#60A5FA', columns, rows, foo
                 gridTemplateColumns: columns.map((col, ci) => {
                   if (ci === 0) return '90px';
                   if (col === 'λ (Å)') return '80px';
-                  if (col === 'Espèce') return '60px';
+                  if (col === 'Species') return '60px';
                   if (col === 'Position') return '80px';
                   return '1fr';
                 }).join(' '),
@@ -147,7 +147,7 @@ export default function SpectralLineRows({ color = '#60A5FA', columns, rows, foo
                     </div>
                   );
                 }
-                if (col === 'Espèce') {
+                if (col === 'Species') {
                   return (
                     <div key={ci}>
                       {row.tag ? (

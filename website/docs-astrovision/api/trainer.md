@@ -4,13 +4,13 @@ description: "AstroVision API: trainer.py."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # trainer.py
 
 AstroVision API: trainer.py.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

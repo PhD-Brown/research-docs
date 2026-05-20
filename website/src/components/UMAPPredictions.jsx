@@ -5,46 +5,46 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 const CLASS_POSITIONS = [
   {
     letter: 'A',
-    label: 'Péninsule chaude',
+    label: 'Hot peninsula',
     color: '#93C5FD',
-    desc: 'Supérieure gauche — étoiles A-F chaudes',
-    teff: '> 7 500 K',
+    desc: 'Upper left — hot A-F stars',
+    teff: '> 7,500 K',
     x: '15%',
     y: '12%',
   },
   {
     letter: 'F',
-    label: 'Transition chaude',
+    label: 'Hot transition',
     color: '#FEF9C3',
-    desc: 'Zone intermédiaire haute',
-    teff: '6 000–7 500 K',
+    desc: 'Upper intermediate zone',
+    teff: '6,000–7,500 K',
     x: '30%',
     y: '25%',
   },
   {
     letter: 'G',
-    label: 'Masse centrale',
+    label: 'Central mass',
     color: '#FDE68A',
-    desc: 'Masse principale centrale',
-    teff: '5 200–6 000 K',
+    desc: 'Central main mass',
+    teff: '5,200–6,000 K',
     x: '52%',
     y: '42%',
   },
   {
     letter: 'K',
-    label: 'Périphérie froide',
+    label: 'Cool periphery',
     color: '#FB923C',
-    desc: 'Bordure froide de la masse centrale',
-    teff: '3 700–5 200 K',
+    desc: 'Cool edge of the central mass',
+    teff: '3,700–5,200 K',
     x: '68%',
     y: '58%',
   },
   {
     letter: 'M',
-    label: 'Extrémité froide',
+    label: 'Cool endpoint',
     color: '#F87171',
-    desc: 'Branche inférieure — naines M',
-    teff: '< 3 700 K',
+    desc: 'Lower branch — M dwarfs',
+    teff: '< 3,700 K',
     x: '80%',
     y: '75%',
   },
@@ -131,13 +131,13 @@ export default function UMAPPredictions() {
   const imgs = {
     predictions: {
       src: predictionsSrc,
-      label: 'Prédictions XGBoost',
-      desc: 'Chaque point coloré par le type spectral prédit par XGBoost',
+      label: 'XGBoost predictions',
+      desc: 'Each point colored by the spectral type predicted by XGBoost',
     },
     fg_confusion: {
       src: fgConfusionSrc,
-      label: 'Confusion F/G',
-      desc: 'Zone de confusion F/G — continuité physique à 5 500–6 200 K',
+      label: 'F/G confusion',
+      desc: 'F/G confusion zone — physical continuity at 5,500–6,200 K',
     },
   };
 
@@ -212,7 +212,7 @@ export default function UMAPPredictions() {
                 fontSize: '12px',
                 fontFamily: 'monospace',
               }}>
-                Chargement…
+                Loading…
               </div>
             )}
             {imgError && (
@@ -241,7 +241,7 @@ export default function UMAPPredictions() {
               }}
               onError={() => {
                 setImgLoaded(false);
-                setImgError('Image introuvable ou chemin invalide.');
+                setImgError('Image not found or invalid path.');
               }}
               style={{
                 width: '100%',
@@ -274,7 +274,7 @@ export default function UMAPPredictions() {
             color: 'var(--ifm-font-color-base)',
             marginBottom: '4px',
           }}>
-            Géographie des classes
+            Class geography
           </div>
           {CLASS_POSITIONS.map((c) => <ClassBadge key={c.letter} {...c} />)}
 
@@ -290,8 +290,8 @@ export default function UMAPPredictions() {
             opacity: 0.8,
             lineHeight: 1.5,
           }}>
-            <strong style={{ color: '#34D399' }}>Confiance médiane 96,3 %</strong><br/>
-            La géographie XGBoost dans UMAP est cohérente avec la structure non supervisée : supervisé et non supervisé capturent la <em>même physique</em>.
+            <strong style={{ color: '#34D399' }}>Median confidence 96.3%</strong><br/>
+            The XGBoost geography in UMAP is consistent with the unsupervised structure: supervised and unsupervised methods capture the <em>same physics</em>.
           </div>
         </div>
       </div>

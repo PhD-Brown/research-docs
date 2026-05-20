@@ -4,13 +4,13 @@ description: Structure and content of the master_catalog CSV — the main data p
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Master Catalog
 
 Structure and content of the master_catalog CSV — the main data product linking LAMOST and Gaia.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

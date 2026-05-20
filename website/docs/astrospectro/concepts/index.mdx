@@ -1,0 +1,66 @@
+---
+id: index
+title: "Concepts & Architecture"
+---
+
+{/* Complete for v1.0.0 release */}
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCubes, faProjectDiagram, faCogs, faLayerGroup } from '@fortawesome/free-solid-svg-icons'
+
+# <h1><FontAwesomeIcon icon={faLayerGroup} /> Concepts & Architecture</h1>
+
+Welcome to the engine room of the **Astro-Spectro** project. This section is intended for those who want to understand the **"how"**: how the code is organized, how the different parts interact, and which design choices underlie the pipeline.
+
+> This part of the documentation is more technical and is intended for developers and potential contributors.
+
+
+### Explore the Architecture
+
+<div className="container" style={{padding: '0'}}>
+  <div className="row">
+    <div className="col col--7 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header">
+          <h3><FontAwesomeIcon icon={faProjectDiagram} /> Project Structure</h3>
+        </div>
+        <div className="card__body">
+          <p>An overview of the file tree and the role of each folder (`src`, `notebooks`, `data`, etc.).</p>
+        </div>
+        <div className="card__footer">
+          <a href="./concepts/project-structure" className="button button--primary button--block">Understand the Organization</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--5 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header">
+          <h3><FontAwesomeIcon icon={faCogs} /> Pipeline Overview</h3>
+        </div>
+        <div className="card__body">
+          <p>Understand the end-to-end data flow, from raw spectra ingestion to prediction output.</p>
+        </div>
+        <div className="card__footer">
+          <a href="./concepts/pipeline-overview" className="button button--primary button--block">Follow the Flow</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--12 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header">
+          <h3><FontAwesomeIcon icon={faCubes} /> Feature Extraction Theory</h3>
+        </div>
+        <div className="card__body">
+          <p>Explore the logic behind line detection and the transformation of a spectrum into a numerical feature vector for Machine Learning.</p>
+        </div>
+        <div className="card__footer">
+          <a href="./concepts/feature-engineer" className="button button--primary button--block">Dive into the Features</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+:::info[For code-level details]
+This section focuses on high-level concepts. For a detailed description of classes and functions, see the **[API Reference](../docs/api)**.
+:::

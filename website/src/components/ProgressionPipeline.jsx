@@ -6,21 +6,21 @@ const STEPS = [
     label: 'Baseline',
     accuracy: 32,
     model: 'Random Forest',
-    mode: '4 features binaires',
+    mode: '4 binary features',
     modeColor: '#94A3B8',
     color: '#94A3B8',
-    note: 'Preuve de concept initiale',
+    note: 'Initial proof of concept',
     current: false,
   },
   {
     step: 2,
-    label: 'Features V1 + métadonnées',
+    label: 'Features V1 + metadata',
     accuracy: '75–84',
     model: 'RF / XGBoost',
-    mode: 'Avec ra, dec, Gaia',
+    mode: 'With ra, dec, Gaia',
     modeColor: '#F59E0B',
     color: '#F59E0B',
-    note: 'Amélioration mais fuite de données',
+    note: 'Improvement but data leakage',
     current: false,
     warning: true,
   },
@@ -32,7 +32,7 @@ const STEPS = [
     mode: 'spectro_only=True',
     modeColor: '#34D399',
     color: '#34D399',
-    note: 'Physique intrinsèque uniquement',
+    note: 'Intrinsic physics only',
     current: true,
   },
 ];
@@ -72,10 +72,9 @@ function Step({ step, label, accuracy, model, mode, modeColor, color, note, curr
           borderRadius: '0 0 5px 5px',
           letterSpacing: '0.05em',
           textTransform: 'uppercase',
-        }}>ACTUEL</div>
+        }}>CURRENT</div>
       )}
 
-      {/* Step badge */}
       <div style={{
         width: '28px',
         height: '28px',
@@ -91,7 +90,6 @@ function Step({ step, label, accuracy, model, mode, modeColor, color, note, curr
         boxShadow: `0 0 0 3px ${color}25`,
       }}>{step}</div>
 
-      {/* Label */}
       <div style={{
         fontWeight: '700',
         fontSize: '12px',
@@ -101,7 +99,6 @@ function Step({ step, label, accuracy, model, mode, modeColor, color, note, curr
         lineHeight: 1.3,
       }}>{label}</div>
 
-      {/* Accuracy */}
       <div style={{
         fontFamily: "'JetBrains Mono', monospace",
         fontSize: '36px',
@@ -112,7 +109,6 @@ function Step({ step, label, accuracy, model, mode, modeColor, color, note, curr
         letterSpacing: '-1px',
       }}>{accuracy}%</div>
 
-      {/* Accuracy bar */}
       <div style={{
         height: '5px',
         background: 'rgba(255,255,255,0.06)',
@@ -129,7 +125,6 @@ function Step({ step, label, accuracy, model, mode, modeColor, color, note, curr
         }} />
       </div>
 
-      {/* Model */}
       <div style={{
         fontSize: '12px',
         fontFamily: 'monospace',
@@ -138,7 +133,6 @@ function Step({ step, label, accuracy, model, mode, modeColor, color, note, curr
         marginBottom: '6px',
       }}>{model}</div>
 
-      {/* Mode chip */}
       <div style={{
         display: 'inline-block',
         background: `${modeColor}15`,
@@ -152,7 +146,6 @@ function Step({ step, label, accuracy, model, mode, modeColor, color, note, curr
         marginBottom: '8px',
       }}>{mode}</div>
 
-      {/* Note */}
       <div style={{
         fontSize: '11px',
         color: 'var(--ifm-font-color-base)',
@@ -193,7 +186,6 @@ export default function ProgressionPipeline() {
         ))}
       </div>
 
-      {/* Key insight */}
       <div style={{
         marginTop: '14px',
         padding: '12px 16px',
@@ -205,7 +197,7 @@ export default function ProgressionPipeline() {
         opacity: 0.85,
         lineHeight: 1.6,
       }}>
-        <strong style={{ color: '#34D399' }}>Contre-intuitif :</strong> passer de 84 % à 87 % en <em>supprimant</em> des features — <code>ra</code>, <code>dec</code>, <code>redshift</code> apportaient un signal corrélé via les biais observationnels de LAMOST (programmes d'observation ciblés par type spectral), pas via la physique réelle. Leur suppression force le modèle à apprendre de vrais indicateurs physiques → meilleure généralisation.
+        <strong style={{ color: '#34D399' }}>Counter-intuitive:</strong> going from 84% to 87% by <em>removing</em> features — <code>ra</code>, <code>dec</code>, <code>redshift</code> provided a correlated signal via LAMOST observational biases (observation programs targeted by spectral type), not via real physics. Removing them forces the model to learn true physical indicators → better generalisation.
       </div>
     </div>
   );

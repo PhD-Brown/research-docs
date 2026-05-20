@@ -4,13 +4,13 @@ description: How LAMOST DR5 spectra are cross-matched with Gaia DR3 astrometry a
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Gaia DR3 Cross-match
 
 How LAMOST DR5 spectra are cross-matched with Gaia DR3 astrometry and astrophysical parameters.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -38,6 +38,8 @@ const config: Config = {
     mermaid: true,
   },
 
+  themes: ['@docusaurus/theme-mermaid'],
+  
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -54,7 +56,7 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
-          showLastUpdateTime: true,
+          showLastUpdateTime: false,
           showLastUpdateAuthor: true,
         },
         blog: {

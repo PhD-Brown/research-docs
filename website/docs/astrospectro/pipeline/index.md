@@ -4,13 +4,13 @@ description: Overview of the AstroSpectro processing pipeline — from FITS to c
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Core Pipeline
 
 Overview of the AstroSpectro processing pipeline — from FITS to classifier.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -4,13 +4,13 @@ description: Processing Pipeline in the AstroSpectro pipeline.
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Processing Pipeline
 
 Processing Pipeline in the AstroSpectro pipeline.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

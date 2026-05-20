@@ -1,0 +1,241 @@
+---
+id: results-analysis
+title: Results Analysis
+sidebar_label: Results Analysis
+sidebar_position: 3
+description: "Complete AstroSpectro results: dimensionality reduction (PCA, UMAP, t-SNE, HDBSCAN), supervised XGBoost classification (87% balanced accuracy, ROC-AUC ~0.964) and SHAP validation (97.9% physical features in top-30)."
+tags: [results, pca, umap, tsne, hdbscan, xgboost, shap, lamost]
+---
+
+import ResultsHero from '@site/src/components/ResultsHero';
+import MethodComparison from '@site/src/components/MethodComparison';
+import ProcrustesStability from '@site/src/components/ProcrustesStability';
+import HDBSCANClusters from '@site/src/components/HDBSCANClusters';
+import SHAPTop10 from '@site/src/components/SHAPTop10';
+import FigureGallery from '@site/src/components/FigureGallery';
+import RelatedPages from '@site/src/components/RelatedPages';
+import ClassifierMetrics from '@site/src/components/ClassifierMetrics';
+import ProgressionPipeline from '@site/src/components/ProgressionPipeline';
+import PCAvsXGBoost from '@site/src/components/PCAvsXGBoost';
+import PCAVarianceMilestones from '@site/src/components/PCAVarianceMilestones';
+
+# Results Analysis
+
+This page presents the results obtained by the AstroSpectro pipeline on N = 43,019 LAMOST DR5 × Gaia DR3 spectra described by p = 183 spectroscopic features. Results cover two complementary axes: unsupervised analysis through dimensionality reduction (PCA, UMAP, t-SNE, HDBSCAN) and supervised classification (XGBoost with SHAP validation).
+
+<ResultsHero />
+
+---
+
+## Axis 1 — Unsupervised dimensionality reduction
+
+### PCA — The linear baseline
+
+PCA on the 183 standardised features reveals **high intrinsic dimensionality**: 91 components are needed to capture 95% of variance, with no clear elbow in the eigenvalue spectrum.
+
+| Threshold V(K) | Components K | Interpretation |
+|:---:|:---:|:---|
+| 28.8% | 2 | PC1 + PC2 only — visualisation |
+| 80% | 51 | Fast analysis |
+| **95%** | **91** | **Retained threshold for UMAP/t-SNE** |
+| 99% | 100 | Near-total variance |
+
+<PCAVarianceMilestones />
+
+**PC1 (16.9%, λ₁ = 30.19) — Thermal axis:** ρ(PC1, Teff) = +0.831. Dominated by Balmer lines (31.5%) and ionised calcium (22.4%). Hot stars (A-F, > 7,000 K) occupy the positive side; cool stars (K-M, < 5,000 K) the negative side.
+
+**PC2 (12.0%, λ₂ = 21.39) — Metallicity axis (partially contaminated):** Dominated by iron and metals (43.3%). The correlation ρ(PC2, SNRr) = −0.310 reveals instrumental contamination — PC2 is not a pure metallicity axis.
+
+| K components | MSE(K) | Variance captured |
+|:---:|:---:|:---:|
+| 2 | 0.696 | 30.4% |
+| 10 | 0.494 | 50.6% |
+| 50 | 0.196 | 80.4% |
+| **91** | **~0.050** | **95.0%** |
+
+**Eigenspectra on raw flux (10,000 spectra, 3,921 channels):** Three components are sufficient to explain 91.3% of raw flux variance (vs 91 components for the 183 features). PC1_flux = colour slope (Teff) · PC2_flux = infrared rise cool stars · PC3_flux = blue/red instrumental cut.
+
+For the complete interpretation, see [Physical interpretation of PCA](./pca-physical-interpretation).
+
+export const pcaFigures = [
+  { src: '/img/dimred/pca_variance_explained.png',    title: 'Explained variance', desc: 'Individual + cumulative · 80/90/95/99% thresholds', tag: 'PCA' },
+  { src: '/img/dimred/pca_eigenspectra.png',          title: 'Raw flux eigenspectra', desc: 'PC1 = T_eff · PC2 = IR · PC3 = instrument cut', tag: 'PCA' },
+  { src: '/img/dimred/pca_scores_classes.png',        title: 'PC1/PC2 projection', desc: 'Coloured by LAMOST spectral type', tag: 'PCA' },
+  { src: '/img/dimred/pca_reconstruction_error.png',  title: 'MSE(K) error', desc: 'Reconstruction decay as a function of K', tag: 'PCA' },
+  { src: '/img/dimred/hr_diagram_pca_pc1.png',        title: 'HR diagram coloured PC1', desc: 'Teff gradient along the main sequence', tag: 'HR' },
+  { src: '/img/dimred/pca_scores_grid.png',           title: 'PC1/PC2/PC3 grid', desc: 'Cross-projections of the first 3 components', tag: 'PCA' },
+];
+
+<FigureGallery figures={pcaFigures} columns={3} />
+
+---
+
+### UMAP — Topological structure and HDBSCAN clusters
+
+UMAP is applied to the 91 PCA components with `n_neighbors=15`, `min_dist=0.1`, 200 epochs (t = 40.1 s, Ryzen 9 5950X). The projection reveals a **"continuous continent" structure** where the Harvard sequence (M-K-G-F-A) unfolds without supervision.
+
+**Correlations:** ρ(UMAP axis 1, Teff) = +0.464. The luminosity class (dwarfs vs giants) induces a visible topological bifurcation when coloured by log g.
+
+**Negative control:** UMAP applied to data with randomly permuted columns → compact homogeneous cloud with no structure. The observed structure is of **physical origin**, not an algorithmic artefact.
+
+#### HDBSCAN clusters — 20 groups without any label
+
+<HDBSCANClusters />
+
+:::tip[Original astrophysical result]
+Without any label or log g information, UMAP organises spectra such that HDBSCAN **recovers the dwarf/subgiant distinction at fixed Teff**. Clusters C19, C1 and C12 are spectrally distinguished by strengthened Ca II lines and weakened Balmer lines — the signature of lower radiation pressure at giant surfaces.
+:::
+
+export const umapFigures = [
+  { src: '/img/dimred/umap_classes.png',                   title: 'UMAP coloured by spectral type', desc: 'Harvard sequence emergent without supervision', tag: 'UMAP' },
+  { src: '/img/dimred/umap_hdbscan_clusters.png',          title: 'HDBSCAN clusters', desc: '20 clusters · 6.14% noise · C11 = 16,716 stars', tag: 'HDBSCAN' },
+  { src: '/img/dimred/umap_hdbscan_hr.png',                title: 'Clusters on HR diagram', desc: 'C19/C1/C12 = subgiants · C13 = K dwarfs', tag: 'HR' },
+  { src: '/img/dimred/umap_negative_control.png',          title: 'Negative control', desc: 'Permuted data → homogeneous cloud without structure', tag: 'Validation' },
+  { src: '/img/dimred/umap_hdbscan_feature_heatmap.png',   title: 'Feature heatmap per cluster', desc: 'Distinctive spectral profiles of each cluster', tag: 'HDBSCAN' },
+  { src: '/img/dimred/synthesis_pca_umap_ae.png',          title: 'PCA/UMAP/AE synthesis', desc: 'Comparison of the 3 latent spaces', tag: 'Synthesis' },
+];
+
+<FigureGallery figures={umapFigures} columns={3} />
+
+---
+
+### t-SNE — Probabilistic structure and stability
+
+t-SNE is applied to the same 91 PCA components with `perplexity=30`, `init='pca'`, 1,000 iterations (t = 80.2 s, i.e. 2× UMAP). The projection produces an **"archipelago" of compact separated masses**, opposite to the continuous UMAP structure.
+
+- Hot stars (A-F, Teff > 7,000 K) form a distinct isolated cluster
+- The central mass groups K-G main-sequence stars
+- Log g colouring reveals partially isolated subgiant clusters
+
+t-SNE excels at **sharp separation of discrete sub-populations**, while UMAP better preserves **continuous gradients** (Teff, [Fe/H]).
+
+---
+
+### Stability comparison — Procrustes
+
+<ProcrustesStability />
+
+---
+
+### Comparative synthesis — PCA · UMAP · t-SNE
+
+<MethodComparison />
+
+export const tsneFigures = [
+  { src: '/img/dimred/tsne_grid.png',                     title: 't-SNE projection', desc: 'Archipelago coloured by spectral type, T_eff, log g, [Fe/H]', tag: 't-SNE' },
+  { src: '/img/dimred/hr_diagram_tsne_ax1.png',           title: 'HR diagram coloured t-SNE axis 1', desc: 'Thermal correlation in t-SNE space', tag: 'HR' },
+  { src: '/img/dimred/tsne_sensitivity_perplexity.png',   title: 'Perplexity sensitivity', desc: 'Robust for perplexity in [15, 50]', tag: 'Sensitivity' },
+  { src: '/img/dimred/stability_umap.png',                title: 'UMAP stability (4 seeds)', desc: 'd_P ~ 0.030 — significant run-to-run variability', tag: 'Procrustes' },
+  { src: '/img/dimred/stability_tsne.png',                title: 't-SNE stability (4 seeds)', desc: 'd_P ~ 5×10⁻⁴ — 60× more stable than UMAP', tag: 'Procrustes' },
+  { src: '/img/dimred/umap_all_classes_pair.png',         title: 'UMAP vs t-SNE side by side', desc: 'Continuous continent vs compact archipelago', tag: 'Comparison' },
+];
+
+<FigureGallery figures={tsneFigures} columns={3} />
+
+---
+
+## Axis 2 — Supervised XGBoost classification
+
+### Global performance (`spectro_only=True` mode)
+
+The XGBoost classifier trained on the **same 183 spectral features** (without Gaia, without `ra`/`dec`/`redshift`) achieves:
+
+<ClassifierMetrics />
+
+### Historical pipeline progression
+
+<ProgressionPipeline />
+
+### Supervised / unsupervised coherence
+
+The geographic distribution of XGBoost predictions in UMAP space is coherent with the emergent unsupervised structure: A-type stars in a hot "peninsula", G at the centre, K at the cool periphery. Both approaches capture the **same physical structure** — the UMAP projection is a qualitative validation space for the classifier.
+
+export const xgbFigures = [
+  { src: '/img/dimred/umap_xgboost_predictions.png',   title: 'XGBoost predictions in UMAP', desc: 'Geographic coherence supervised/unsupervised', tag: 'XGBoost' },
+  { src: '/img/dimred/umap_xgboost_FG_confusion.png',  title: 'F/G confusion', desc: 'Continuous transition zone at 5500–6200 K', tag: 'XGBoost' },
+];
+
+<FigureGallery figures={xgbFigures} columns={2} />
+
+---
+
+## Axis 3 — SHAP validation
+
+### Central result
+
+SHAP (*SHapley Additive exPlanations*) analysis on the `spectro_only=True` model reveals that **97.9% of the 30 most important features are physical spectral features**. This is the **central scientific validation** of the AstroSpectro pipeline: the model has learned to classify stars using exactly the same spectroscopic information that astrophysicists use manually.
+
+<SHAPTop10 />
+
+### PCA vs XGBoost — two complementary questions
+
+<PCAvsXGBoost />
+
+### Top SHAP features per class
+
+| Class | Dominant features | Physical interpretation |
+|:---:|:---|:---|
+| **A** | Hα EW weak, Hβ FWHM broad | Very broad Balmer lines — hot stars |
+| **F** | Intermediate Hα EW, moderate Ca II K | Balmer → Ca II transition |
+| **G** | Strong Ca II K + H, Mg b | Metallicity + solar temperature |
+| **K** | Very strong Ca II K, nascent TiO | Cool metal-rich stars |
+| **M** | TiO/VO/CaH bands, weak Balmer | Molecular band signatures |
+
+export const shapFigures = [
+  { src: '/img/dimred/class_feature_heatmap.png',       title: 'Feature heatmap per class', desc: 'Relative SHAP importance — Ca II dominates A/F/G/K', tag: 'SHAP' },
+  { src: '/img/dimred/class_specific_importance.png',   title: 'Class-specific importance', desc: 'Top discriminating features for each spectral type', tag: 'SHAP' },
+  { src: '/img/dimred/caIIK_prom_vs_mh.png',            title: 'Ca II K prominence vs [Fe/H]', desc: 'Correlation of Ca II K with Gaia DR3 metallicity', tag: 'SHAP' },
+];
+
+<FigureGallery figures={shapFigures} columns={3} />
+
+---
+
+## Limitations and next steps
+
+**Class imbalance:** Galaxies (56) and QSOs (7) are too rare for HDBSCAN analysis and are not included in the 5-class classification.
+
+**Intrinsic dimensionality:** The 91 components needed for 95% variance indicate that spectral diversity is genuinely high-dimensional. The 2D projection is an extreme compression (183 → 2), and the emergence of the Harvard sequence in these two dimensions is a non-trivial result.
+
+**Next steps:**
+- Characterisation of the 20 HDBSCAN clusters by cross-matching with rare object catalogues (variable stars, RGB giants, spectroscopic binaries)
+- Large-scale Optuna optimisation on the ~139k available FITS files
+- Anomaly analysis: intersection of HDBSCAN noise ∩ top 1% MSE autoencoder
+- Extension to LAMOST DR10 (~10⁷ spectra) or SDSS
+
+---
+
+<RelatedPages pages={[
+  {
+    href: './pca-physical-interpretation',
+    title: 'Physical interpretation of PCA',
+    desc: 'Variance, eigenspectra, Gaia DR3 correlations, HR diagram coloured by PC1',
+    category: 'science',
+    badge: 'ρ = +0.831',
+  },
+  {
+    href: './dimensionality-reduction',
+    title: 'Dimensionality Reduction',
+    desc: 'Methods, hyperparameters, sensitivity, Procrustes stability',
+    category: 'science',
+  },
+  {
+    href: './xgboost-comparison',
+    title: 'XGBoost — supervised comparison',
+    desc: 'Complete 87% results · SHAP · UMAP coherence',
+    category: 'science',
+    badge: '87% BA',
+  },
+  {
+    href: './features-list-183',
+    title: 'Catalogue of 183 features',
+    desc: 'PCA top loadings, spectral families, SHAP top-30 features',
+    category: 'science',
+  },
+  {
+    href: '../user-guides/model-training',
+    title: 'Guide — Model training',
+    desc: 'SpectralClassifier, GridSearchCV/Optuna tuning, W&B, artefacts',
+    category: 'guides',
+  },
+]} />

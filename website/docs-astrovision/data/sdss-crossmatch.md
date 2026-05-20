@@ -4,13 +4,13 @@ description: "AstroVision data: sdss dr16 crossmatch."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # SDSS DR16 Crossmatch
 
 AstroVision data: sdss dr16 crossmatch.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

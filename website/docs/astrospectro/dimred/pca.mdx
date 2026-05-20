@@ -1,0 +1,183 @@
+---
+id: pca
+title: Physical Interpretation of PCA
+sidebar_label: PCA — physical interpretation
+sidebar_position: 4
+description: "Detailed analysis of PCA principal axes applied to the 183 LAMOST DR5 features: explained variance, raw flux eigenspectra, loadings by spectral family, Gaia DR3 correlations and HR diagram."
+tags: [pca, astrophysics, eigenspectra, lamost, gaia, temperature, metallicity]
+---
+
+import PCAxisCards from '@site/src/components/PCAxisCards';
+import VarianceChart from '@site/src/components/VarianceChart';
+import FamilyContributions from '@site/src/components/FamilyContributions';
+import EigenspectraContrast from '@site/src/components/EigenspectraContrast';
+import GaiaCorrelations from '@site/src/components/GaiaCorrelations';
+import LoadingsBars from '@site/src/components/LoadingsBars';
+import RelatedPages from '@site/src/components/RelatedPages';
+
+# Physical Interpretation of PCA
+
+This page presents the astrophysical interpretation of the Principal Component Analysis (PCA) applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra. It documents the physical meaning of each principal axis, confirmed by cross-correlation with independent Gaia DR3 parameters.
+
+## Summary of the two main axes
+
+<PCAxisCards />
+
+---
+
+## Mathematical foundations of PCA
+
+PCA seeks the orthogonal directions $\mathbf{w}_k \in \mathbb{R}^p$ that successively maximise the projected variance of the centred data $\mathbf{X} \in \mathbb{R}^{N \times p}$. This problem is equivalent to diagonalising the empirical covariance matrix:
+
+$$
+\mathbf{C} = \frac{1}{N-1}\mathbf{X}^\top\mathbf{X} \in \mathbb{R}^{p \times p}
+$$
+
+The spectral theorem guarantees $\mathbf{C} = \mathbf{W}\mathbf{\Lambda}\mathbf{W}^\top$ with $\lambda_1 \geq \cdots \geq \lambda_p \geq 0$. Projection onto the K first components gives scores $\mathbf{Z} = \mathbf{X}\mathbf{W}_K$.
+
+In practice, truncated SVD is preferred: $\mathbf{X} \approx \mathbf{U}_K\mathbf{\Sigma}_K\mathbf{W}_K^\top$ (Lanczos algorithm for $N = 43{,}019$, $p = 183$). The Eckart-Young theorem guarantees that this truncation is the best rank-K approximation in the Frobenius norm sense:
+
+$$
+\mathbf{X}_K = \underset{\text{rank}(M) \leq K}{\arg\min} \|\mathbf{X} - M\|_F
+$$
+
+---
+
+## Explained variance
+
+### Characteristic thresholds and reconstruction error
+
+The cumulative explained variance reveals the **high intrinsic dimensionality** of the 183-feature space: the eigenvalue spectrum decays smoothly, without a clear elbow — unlike what is observed on raw fluxes.
+
+<VarianceChart />
+
+**The first 2 components capture only 28.8% of total variance** (PC1: 16.9%, $\lambda_1 = 30.19$; PC2: 12.0%, $\lambda_2 = 21.39$). **91 components** are needed to reach 95%, indicating that the spectral manifold occupies an effective space of at least ten dimensions.
+
+This has an important practical implication: UMAP and t-SNE are applied to the **first 91 PCA components** (95% threshold) rather than the 183 raw features. This pre-reduction eliminates noise from late components while preserving the essential structure.
+
+---
+
+## PCA eigenspectra on raw flux
+
+In addition to the engineered features, PCA was also applied directly to the **raw flux** of 10,000 LAMOST spectra (3,921 channels). The resulting eigenvectors — the *eigenspectra* — are interpretable as basis spectra in flux space.
+
+### Contrast with the features
+
+<EigenspectraContrast />
+
+### Physical interpretation of the 3 first eigenspectra
+
+**PC1 (46.6% of flux variance) — Colour slope (Teff):**
+Dominated by a quasi-uniform continuum in the blue (3700–6500 Å) that collapses toward the red. This is the global continuum slope, directly related to effective temperature. Hot stars (A-F types) contribute positively; cool stars (K-M types) negatively.
+
+**PC2 (31.8%) — Infrared rise (cool stars):**
+Captures the progressive flux increase toward the near-infrared (> 6500 Å). This is the distinctive signature of cool K-M stars whose blackbody emission peaks in the red.
+
+**PC3 (12.9%) — Blue/red instrumental transition:**
+Isolates an abrupt transition around 6500–7000 Å, corresponding to the LAMOST spectrograph's blue/red arm junction. This is an instrumental artefact, not a physical property.
+
+:::caution[PC3 artefact]
+The presence of an instrumental artefact in PC3 (LAMOST blue/red cut 6500–7000 Å) illustrates a fundamental limitation of unsupervised PCA: it maximises *total* variance, including instrumental variations that can mask physical signals. This problem does not disappear in the 183 features, but is diluted across late components.
+:::
+
+**Figure reference:** `pca_eigenspectra.png`
+
+---
+
+## PC1/PC2 projection and physical interpretation
+
+### Spearman correlations with Gaia DR3 parameters
+
+The following table quantifies the alignment between principal axes and independent Gaia DR3 astrophysical parameters (N = 43,019). Colour intensity is proportional to |ρ| — hover over a cell for the interpretation.
+
+<GaiaCorrelations />
+
+**Reading the results:**
+
+The correlation ρ(PC1, Teff) = +0.831 is significant: it means that **effective temperature is the dominant source of variance** in the 183-feature space. This is consistent with the MK classification scheme — Balmer line strengths and continuum slope vary massively between O and M types, far beyond metallicity effects.
+
+The correlation ρ(PC1, [Fe/H]) = −0.548 indicates a natural co-regulation: cool stars (K-M) tend to be more metal-rich than hot stars (A-F), which linear PCA inevitably absorbs into the same axis.
+
+### PC1/PC2 projection coloured by Teff
+
+Colouring by Teff in the PC1/PC2 space visually confirms the thermal nature of PC1: hot stars (> 7,000 K, A-F types) occupy the positive side of PC1; cool stars (< 5,000 K, K-M types) the negative side; with a continuous gradient along the main sequence.
+
+Colouring by log g reveals a distinct branch of subgiants and giants (log g < 3.5) in the upper part of the projection — PC2 partially encodes the luminosity class.
+
+**Figure references:** `pca_scores_classes.png`, `pca_scores_grid.png`, `pca_correlation_heatmap.png`
+
+---
+
+## Contribution by spectroscopic family to PCA axes
+
+The decomposition of PC1 and PC2 variance by feature family reveals the relative contributions of each line group. The ★ bars identify the dominant family of each axis.
+
+<FamilyContributions />
+
+---
+
+## Top-5 absolute *loadings* of PC1 and PC2
+
+The *loadings* $w_{kj}$ measure the correlation between the $j$-th feature and the $k$-th principal component. The larger $|w_{kj}|$, the more this feature contributes to defining the axis. Signed bars show the direction (positive = toward hot stars for PC1, toward metals for PC2) and amplitude.
+
+<LoadingsBars />
+
+**PC1 — W(Hα) at top**: the Hα equivalent width is one of the most robust temperature indicators in the MK spectral classification. Its positive sign means that *hot* stars (strong Hα) have a high PC1 score.
+
+**PC2 — all metallicity indices**: the five top *loadings* of PC2 are all chemical composition indices — consistent confirmation of the interpretation as a composition axis.
+
+**Figure references:** `pca_loadings_pc1.png`, `pca_loadings_pc2.png`, `pca_loadings_heatmap.png`
+
+---
+
+## HR diagram coloured by PC1
+
+The correlation ρ(PC1, Teff) = +0.831 can be visualised directly on the Hertzsprung-Russell diagram (Teff vs log g). The PC1 colour gradient follows the main sequence precisely from right (cool, negative PC1) to left (hot, positive PC1), **visually validating the thermal interpretation of PC1**.
+
+Evolved stars (log g < 3) show intermediate PC1 values — they have left the main sequence and their spectra present a combination of thermal and gravity characteristics not captured linearly by PC1 alone. This is a concrete limitation of the optimal linear estimator that is PCA.
+
+**Figure references:** `hr_diagram_pca_pc1.png`, `hr_diagram_pca_pc2.png`
+
+---
+
+## Limitations of PCA
+
+**Linearity.** PCA is blind to any non-linear structure. The relationships between Teff, log g and [Fe/H] in spectral space are not strictly linear — this is why UMAP and t-SNE reveal additional structures (subgiant clusters, dwarf/giant bifurcation) that PCA flattens into a continuous projection.
+
+**L₂ optimality only.** The Eckart-Young theorem guarantees that PCA truncation is the best rank-K approximation in the Frobenius norm — not in terms of neighbourhood preservation or cluster separation.
+
+**Sensitivity to outliers in late components.** PC1 and PC2 are robust as they maximise global variance. In contrast, late components (PC80–PC183) are sensitive to outlier spectra that maximise residual variance.
+
+**Physical mixing in PC1.** The correlation ρ(PC1, [Fe/H]) = −0.548 (moderate) reveals that PC1 is not a *pure* temperature axis: the natural Teff/[Fe/H] co-variation (cool K-M stars are generally more metal-rich than A-F stars) is inevitably absorbed into the first axis.
+
+---
+
+<RelatedPages pages={[
+  {
+    href: './features-list-183',
+    title: 'Catalogue of 183 features',
+    desc: 'PC1/PC2 loading definitions · 6 spectral families · λ positions',
+    category: 'science',
+    badge: '183 features',
+  },
+  {
+    href: './dimensionality-reduction',
+    title: 'Dimensionality Reduction',
+    desc: 'UMAP, t-SNE — non-linear structures beyond PCA · Procrustes stability',
+    category: 'science',
+  },
+  {
+    href: './dataset-dimred',
+    title: 'PHY-3500 Dataset',
+    desc: 'N = 43,019 dataset composition · quality filters · z-score standardisation',
+    category: 'science',
+    badge: '43,019 spectra',
+  },
+  {
+    href: './xgboost-comparison',
+    title: 'XGBoost — supervised comparison',
+    desc: '87% accuracy on the same 183 features · SHAP validation',
+    category: 'science',
+    badge: '87% BA',
+  },
+]} />

@@ -4,13 +4,13 @@ description: "AstroVision: key results."
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Key Results
 
 AstroVision: key results.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

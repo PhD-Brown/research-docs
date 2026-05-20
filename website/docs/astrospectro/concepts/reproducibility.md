@@ -4,13 +4,13 @@ description: "How AstroSpectro ensures reproducibility — W&B experiment tracki
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Reproducibility
 
 How AstroSpectro ensures reproducibility — W&B experiment tracking, seeds, and versioning.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -4,13 +4,13 @@ description: "ξ Dark Energy: key findings (v0.1.0)."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Key Findings (v0.1.0)
 
 ξ Dark Energy: key findings (v0.1.0).
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

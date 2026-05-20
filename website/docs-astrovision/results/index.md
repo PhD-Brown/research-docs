@@ -4,13 +4,13 @@ description: Summary of all AstroVision results.
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Results Overview
 
 Summary of all AstroVision results.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

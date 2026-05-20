@@ -4,13 +4,13 @@ description: "AstroVision API: models.py."
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # models.py
 
 AstroVision API: models.py.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

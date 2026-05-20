@@ -4,13 +4,13 @@ description: "ξ Dark Energy: scientific motivation."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Scientific Motivation
 
 ξ Dark Energy: scientific motivation.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

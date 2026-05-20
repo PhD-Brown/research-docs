@@ -4,13 +4,14 @@ description: Hyperparameter sensitivity analysis for UMAP, t-SNE, and HDBSCAN.
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Sensitivity & Reproducibility
 
 Hyperparameter sensitivity analysis for UMAP, t-SNE, and HDBSCAN.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
+
 
 ## What this page covers
 

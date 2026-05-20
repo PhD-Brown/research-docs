@@ -4,12 +4,12 @@ import { useBaseUrlUtils } from '@docusaurus/useBaseUrl';
 const VIEWS = [
   {
     id: 'classes',
-    label: 'Types spectraux',
+    label: 'Spectral types',
     src: '/img/dimred/umap3d_classes.html',
     color: '#38BDF8',
     icon: '★',
-    desc: 'Séquence de Harvard A→M — émergence spontanée sans supervision',
-    highlight: 'La séquence de Harvard s\'organise en spirale continue dans l\'espace 3D',
+    desc: 'Harvard sequence A→M — spontaneous unsupervised emergence',
+    highlight: 'The Harvard sequence organizes itself into a continuous spiral in 3D space',
   },
   {
     id: 'teff',
@@ -17,8 +17,8 @@ const VIEWS = [
     src: '/img/dimred/umap3d_teff.html',
     color: '#F59E0B',
     icon: '🌡',
-    desc: 'Gradient de température effective — validation de l\'axe thermique',
-    highlight: 'ρ(UMAP ax.1, Teff) = +0,464 — gradient continu le long de la structure principale',
+    desc: 'Effective-temperature gradient — validation of the thermal axis',
+    highlight: 'ρ(UMAP ax.1, Teff) = +0.464 — continuous gradient along the main structure',
   },
   {
     id: 'feh',
@@ -26,8 +26,8 @@ const VIEWS = [
     src: '/img/dimred/umap3d_feh.html',
     color: '#A78BFA',
     icon: 'Fe',
-    desc: 'Gradient de métallicité — validation de l\'axe composition chimique',
-    highlight: 'Gradient [Fe/H] lisible perpendiculairement à l\'axe thermique',
+    desc: 'Metallicity gradient — validation of the chemical-composition axis',
+    highlight: 'Readable [Fe/H] gradient perpendicular to the thermal axis',
   },
 ];
 
@@ -63,7 +63,7 @@ export default function UMAP3DViewer() {
             opacity: 0.4,
             color: 'var(--ifm-font-color-base)',
           }}>
-            Visualisation interactive 3D — Plotly · LAMOST DR5 × Gaia DR3 · N = 43 019
+            Interactive 3D visualization — Plotly · LAMOST DR5 × Gaia DR3 · N = 43,019
           </div>
         </div>
         <div style={{
@@ -75,7 +75,7 @@ export default function UMAP3DViewer() {
           color: 'var(--ifm-font-color-base)',
           fontFamily: 'monospace',
         }}>
-          <span>🖱 Pivoter · Scroller pour zoomer · Double-cliquer pour reset</span>
+          <span>🖱 Rotate · Scroll to zoom · Double-click to reset</span>
         </div>
       </div>
 
@@ -158,7 +158,7 @@ export default function UMAP3DViewer() {
               color: 'var(--ifm-font-color-base)',
               opacity: 0.5,
             }}>
-              Chargement du graphe 3D interactif…
+              Loading interactive 3D graph…
             </div>
             <div style={{
               fontSize: '10px',
@@ -166,7 +166,7 @@ export default function UMAP3DViewer() {
               opacity: 0.3,
               fontFamily: 'monospace',
             }}>
-              43 019 points · Plotly.js
+              43,019 points · Plotly.js
             </div>
           </div>
         )}

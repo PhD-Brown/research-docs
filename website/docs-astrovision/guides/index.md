@@ -4,13 +4,13 @@ description: "AstroVision guide: guides."
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Guides
 
 AstroVision guide: guides.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

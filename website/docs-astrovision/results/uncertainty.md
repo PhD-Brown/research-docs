@@ -4,13 +4,13 @@ description: "AstroVision results: uncertainty quantification."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Uncertainty Quantification
 
 AstroVision results: uncertainty quantification.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

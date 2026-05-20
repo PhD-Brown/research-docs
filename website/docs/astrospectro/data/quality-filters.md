@@ -4,13 +4,13 @@ description: The filtering criteria applied to LAMOST DR5 spectra before analysi
 sidebar_position: 7
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Quality Filters
 
 The filtering criteria applied to LAMOST DR5 spectra before analysis.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

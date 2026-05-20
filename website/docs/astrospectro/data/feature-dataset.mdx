@@ -1,0 +1,328 @@
+---
+id: feature-dataset
+title: Catalogue of 183 Spectral Features
+sidebar_label: Feature Catalogue
+sidebar_position: 2
+description: "Complete annotated list of the 183 spectroscopic features used in AstroSpectro (PHY-3500 x LAMOST DR5 x Gaia DR3), organised by physical family."
+tags: [features, spectroscopy, pca, lamost, gaia]
+---
+
+import FamilyOverview from '@site/src/components/FamilyOverview';
+import SpectralCoverage from '@site/src/components/SpectralCoverage';
+import LoadingsBars from '@site/src/components/LoadingsBars';
+import GaiaCorrelations from '@site/src/components/GaiaCorrelations';
+import MetalsTable from '@site/src/components/MetalsTable';
+import LickIndexTable from '@site/src/components/LickIndexTable';
+import MolecularBands from '@site/src/components/MolecularBands';
+import RelatedPages from '@site/src/components/RelatedPages';
+import SpectralLineRows from '@site/src/components/SpectralLineRows';
+import ContinuumDescriptors from '@site/src/components/ContinuumDescriptors';
+import FigureGallery from '@site/src/components/FigureGallery';
+import ExcludedVariables from '@site/src/components/ExcludedVariables';
+
+# Catalogue of 183 Spectral Features
+
+This document catalogues the **183 spectroscopic features** that form the central data matrix of the AstroSpectro project. They were extracted from N = 43,019 LAMOST DR5 spectra and validated by cross-matching with Gaia DR3. PCA, UMAP, t-SNE and the XGBoost classifier are all applied to this feature set.
+
+:::info[PHY-3500 Context]
+This catalogue corresponds exactly to the dataset described in the Baker, Caillat & Jean report, *"Does dimensionality reduction preserve the essential physical information of stellar spectra?"*, PHY-3500, Université Laval, 28 April 2026.
+:::
+
+---
+
+## Overview
+
+### Two reading levels
+
+The 183 features can be read according to two complementary frameworks.
+
+The **physical framework** (6 families, used in the PHY-3500 report) groups features by the astrophysical observable they measure — this is the framework used to interpret PCA *loadings* and HDBSCAN clusters.
+
+The **technical framework** (9 families, from the `feature_engineering.py` V2 module) reflects the code architecture — this is the framework useful for understanding how features are computed.
+
+### Distribution of the 183 features by physical family
+
+<FamilyOverview />
+
+:::note[Exact count]
+The exact number of active features is determined at the first call to `FeatureEngineer.extract_features()` via `_populate_feature_names()` (stable alphabetical order). The `feature_engineering.py` V2 module declares **174 pure spectral features**; the remaining 9 come from post-merge functions (`add_gaia_derived_features`, `add_photometric_composites`) called after cross-matching with the catalogue.
+:::
+
+---
+
+## Spectral coverage — line positions on the LAMOST spectrum
+
+The visualisation below shows where each family's lines are located within the LAMOST spectral coverage (3,690–9,100 Å). The vertical bar indicates the separation between the blue and red arms of the spectrograph.
+
+<SpectralCoverage />
+
+---
+
+## Variables excluded from the PHY-3500 dataset
+
+Before any analysis, the following variables were **removed** from the initial dataset:
+
+<ExcludedVariables />
+
+:::warning[`spectro_only=True` mode]
+In the supervised AstroSpectro pipeline, these variables are excluded via the `spectro_only=True` parameter of `SpectralClassifier`. They constitute an example of *feature leakage*: their discriminative power comes from the observation context, not from the intrinsic physical properties of the star. The published results (87% balanced accuracy, ROC-AUC ~0.964) use exclusively spectral features.
+:::
+
+---
+
+## Detailed physical families
+
+### Family 1 — Balmer lines (Hα–Hθ)
+
+The Balmer series lines (transitions to the n=2 level of hydrogen) are the most powerful temperature indicators in the LAMOST spectral space. **They contribute 31.5% of the variance of PC1** (thermal axis) in the PCA analysis of the 183-feature set.
+
+export const balmerRows = [
+  { label: 'Hα',  lambda: 6562.8, desc: 'prominence, FWHM, W(Hα), presence, full profile (10 metrics)', highlight: true },
+  { label: 'Hβ',  lambda: 4861.3, desc: 'prominence, FWHM, W(Hβ), presence' },
+  { label: 'Hγ',  lambda: 4340.5, desc: 'W(Hγ), γ/β ratio' },
+  { label: 'Hδ',  lambda: 4101.7, desc: 'W(Hδ), δ/γ ratio' },
+  { label: 'Hε',  lambda: 3970.1, desc: 'prominence' },
+  { label: 'H8',  lambda: 3889.0, desc: 'prominence' },
+  { label: 'H9',  lambda: 3835.4, desc: 'prominence' },
+  { label: 'H10', lambda: 3797.9, desc: 'prominence' },
+];
+
+<SpectralLineRows
+  color="#60A5FA"
+  columns={['Line', 'λ (Å)', 'Position', 'Extracted features']}
+  rows={balmerRows}
+  footer="Position in LAMOST spectrum 3690–9100 Å — Hα in the red, H10 in the near-UV"
+/>
+
+**Extracted Balmer line ratios:**
+- `feature_balmer_ratio_gamma_beta`: W(Hγ) / W(Hβ)
+- `feature_balmer_ratio_delta_gamma`: W(Hδ) / W(Hγ)
+- `feature_balmer_temperature_index`: (γ/β + δ/γ) / 2 — hot stars tend toward 1, cool stars exceed 1
+
+**Link to PCA:** ρ(PC1, Teff) = **+0.831** (Spearman, N = 43,019). W(Hα) is the top absolute loading of PC1 (w = +0.173).
+
+---
+
+### Family 2 — Ionised calcium — Ca II H&K and IR triplet
+
+The Ca II H (3968 Å) and K (3934 Å) lines are metallicity and surface gravity indicators. The IR triplet (8498, 8542, 8662 Å) is sensitive to the chromosphere and magnetic activity.
+
+export const caiiRows = [
+  { label: 'Ca II K',  lambda: 3933.7, tag: 'Ca II', desc: 'prominence, FWHM, W(CaIIK), full profile (10 metrics)', highlight: true },
+  { label: 'Ca II H',  lambda: 3968.5, tag: 'Ca II', desc: 'prominence, FWHM, W(CaIIH)', highlight: true },
+  { label: 'Ca 8498',  lambda: 8498.0, tag: 'Ca II', desc: 'EW via CaII_triplet index' },
+  { label: 'Ca 8542',  lambda: 8542.1, tag: 'Ca II', desc: 'EW via CaII_triplet index' },
+  { label: 'Ca 8662',  lambda: 8662.1, tag: 'Ca II', desc: 'EW via CaII_triplet index' },
+];
+
+<SpectralLineRows
+  color="#C084FC"
+  columns={['Line', 'λ (Å)', 'Species', 'Position', 'Extracted features']}
+  rows={caiiRows}
+  footer="H and K lines in the near-UV (LAMOST blue arm) · IR triplet in the deep red (red arm)"
+/>
+
+**Composite Ca II indices:**
+- `EW_CaHK_sum`: W(Ca II K) + W(Ca II H) — global metallicity proxy
+- `ratio_EW_CaK_CaH`: H/K equivalent width ratio
+- `feature_ratio_prom_CaK_Hbeta`: prominence(Ca II K) / prominence(Hβ) — robust temperature proxy
+
+**Contribution to PCA axes:** Calcium contributes **22.4%** of the variance of PC1 (second group after Balmer), confirming its role as a thermal indicator. The correlation ρ(PC1, [Fe/H]) = −0.548 shows that PC1 also captures part of the metallicity.
+
+---
+
+### Family 3 — Magnesium and α-elements — Mg b, Mg 5184, [α/Fe]
+
+The Mg b triplet (around 5175 Å) and α-indices are sensitive to metallicity and the relative abundance of α-elements compared to iron — an indicator of the star's chemical history (populations I/II).
+
+export const mgRows = [
+  { label: 'Mg b',        lambda: 5175.0, desc: 'prominence, FWHM, W(Mg b) — triplet 5167/5173/5184 Å', highlight: true },
+  { label: 'Mg b Lick',   lambda: 5175.0, desc: 'Lick index feature_index_Mgb_index · window 5160–5190 Å' },
+  { label: 'Mg 1 Lick',   lambda: 5102.0, desc: 'feature_index_Mg_1 · window 5069–5135 Å' },
+  { label: 'Mg 2 Lick',   lambda: 5176.0, desc: 'feature_index_Mg_2 · window 5154–5197 Å' },
+];
+
+<SpectralLineRows
+  color="#34D399"
+  columns={['Line / Index', 'λ (Å)', 'Position', 'Extracted features']}
+  rows={mgRows}
+  footer="Mg b triplet at ~5175 Å — visible mid-range · [Mg/Fe] and stellar population indicator"
+/>
+
+**Ratios involving Mg b:**
+- `feature_ratio_prom_Mgb_Hbeta`: prominence(Mg b) / prominence(Hβ)
+- `ratio_EW_MgB_NaD`: ratio W(Mg b) / W(Na D)
+- `contrast_metals_vs_balmer`: Mg/Ca vs Balmer contrast — [Fe/H] proxy
+
+**Composite proxies:**
+- `feature_FeH_proxy`: estimated from the combined metallicity index
+- `feature_alpha_Fe_proxy`: log10(α_index / iron_index), bounded between −0.5 and +0.5
+
+---
+
+### Family 4 — Iron peak metals — Fe, Cr, V, Ni, Ba, Sr, Al, Co
+
+This family groups iron-peak element lines, sensitive to overall metallicity [Fe/H]. **It dominates PC2 with 43.3% of the variance** — PC2 is the metallicity axis of the feature set.
+
+<MetalsTable />
+
+---
+
+### Family 5 — Composite metallicity indices — Lick, SDSS, CaII triplet
+
+Spectral indices are standardised flux measurements in narrow spectral windows, computed relative to a local pseudo-continuum. They allow direct comparisons with stellar population libraries (Lick/IDS, SDSS).
+
+<LickIndexTable />
+
+---
+
+### Family 6 — Continuum features — slopes, curvatures, jumps, colours
+
+Continuum features capture the global spectral morphology without focusing on individual lines. They encode effective temperature (slope and colour), luminosity class (jumps), and observation quality.
+
+#### Local slopes (sigma-clipped, σ = 2.5)
+
+<ContinuumDescriptors />
+
+---
+
+### Molecular bands — TiO, VO, CN, CH, CaH, MgH
+
+Molecular bands are the spectral signatures of the coolest stars (late K and M types). They appear in the HDBSCAN clusters corresponding to K-M dwarfs in UMAP space.
+
+<MolecularBands />
+
+---
+
+## Correlations with Gaia DR3 parameters
+
+The following table presents Spearman correlations between PC1/PC2 and Gaia DR3 astrophysical parameters (N = 43,019 stars). Colour intensity reflects |ρ| — hover over a cell to see the interpretation.
+
+<GaiaCorrelations />
+
+---
+
+## Top-5 *loadings* of PC1 and PC2
+
+Extracted from the PHY-3500 report, Table 2. Signed bars show the direction and amplitude of each feature's contribution to its principal axis.
+
+<LoadingsBars />
+
+---
+
+## Reference figures
+
+The following figures illustrate the relative importance of feature families and the PCA loading structure. Click an image to enlarge.
+
+export const pcaFigures = [
+  {
+    src: '/img/dimred/pca_loadings_family_bar.png',
+    title: 'Family contributions — PC1 vs PC2',
+    desc: 'Normalised quadratic contribution — Balmer dominates PC1, Fe/metals dominate PC2',
+    tag: 'PCA loadings',
+  },
+  {
+    src: '/img/dimred/pca_loadings_family_donut.png',
+    title: 'Donut distribution by family',
+    desc: 'Circular view of relative contributions PC1 (left) and PC2 (right)',
+    tag: 'PCA loadings',
+  },
+  {
+    src: '/img/dimred/pca_eigenspectra.png',
+    title: 'PCA eigenspectra on raw flux',
+    desc: 'PC1 = Teff slope · PC2 = IR rise cool stars · PC3 = instrumental cut',
+    tag: 'Raw flux',
+  },
+  {
+    src: '/img/dimred/pca_loadings_pc1.png',
+    title: 'Top loadings PC1 — thermal axis',
+    desc: 'W(Hα) at top (w = +0.173) · Balmer + Ca II + continuum dominate',
+    tag: 'PC1 · Teff',
+  },
+  {
+    src: '/img/dimred/pca_loadings_pc2.png',
+    title: 'Top loadings PC2 — metallicity axis',
+    desc: '[Fe/H]proxy at top (w = +0.205) · All chemical composition indicators',
+    tag: 'PC2 · [Fe/H]',
+  },
+  {
+    src: '/img/dimred/pca_loadings_heatmap.png',
+    title: 'Complete loadings heatmap',
+    desc: 'Matrix 183 features × K components — structure and eigenspectrum decay',
+    tag: 'Heatmap 183×K',
+  },
+];
+
+<FigureGallery figures={pcaFigures} columns={3} />
+
+---
+
+## Code reference
+
+```python
+from src.pipeline.feature_engineering import FeatureEngineer
+
+fe = FeatureEngineer()
+
+# Extraction for one spectrum
+vec = fe.extract_features(matched_lines, wl, flux_norm, invvar)
+
+# Number of features (determined at first call)
+print(len(fe.feature_names))   # → 174 (pure spectral)
+
+# Post-merge: add derived Gaia features
+from src.pipeline.feature_engineering import (
+    add_gaia_derived_features,
+    add_photometric_composites,
+    add_line_composites,
+)
+
+df, new_cols = add_gaia_derived_features(df)   # bp_g, M_G, v_tan, etc.
+df, mod_cols = add_photometric_composites(df)  # bp_g, color_ug, Q_parameter
+df, lc_cols  = add_line_composites(df)         # EW_CaHK_sum, EW/FWHM ratios
+```
+
+To activate pure spectroscopic mode (without Gaia, without `redshift`/`ra`/`dec`):
+
+```python
+from src.pipeline.classifier import SpectralClassifier
+
+clf = SpectralClassifier(model_type="XGBoost", prediction_target="main_class")
+clf.train_and_evaluate(features_df, spectro_only=True)
+```
+
+---
+
+<RelatedPages pages={[
+  {
+    href: './dataset-dimred',
+    title: 'PHY-3500 Dataset',
+    desc: 'LAMOST DR5 × Gaia DR3 — quality filters, final composition, standardisation',
+    category: 'science',
+  },
+  {
+    href: './pca-physical-interpretation',
+    title: 'Physical interpretation of PCA',
+    desc: 'Eigenspectra, Gaia DR3 correlations, HR diagram coloured by PC1',
+    category: 'science',
+    badge: 'ρ = +0.831',
+  },
+  {
+    href: './dimensionality-reduction',
+    title: 'Dimensionality Reduction',
+    desc: 'PCA, UMAP, t-SNE, HDBSCAN — the 183 features in action',
+    category: 'science',
+  },
+  {
+    href: '../user-guides/feature-extraction',
+    title: 'Feature extraction guide',
+    desc: 'Practical guide — parameters, pipeline, new spectra',
+    category: 'guides',
+  },
+  {
+    href: '../api/feature-engineer',
+    title: 'API — FeatureEngineer',
+    desc: 'Complete class reference — methods, attributes, examples',
+    category: 'api',
+  },
+]} />

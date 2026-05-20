@@ -4,13 +4,14 @@ description: Analysis of the F/G spectral class confusion — why it is physical
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # F/G Confusion Analysis
 
 Analysis of the F/G spectral class confusion — why it is physically expected and not a classifier failure.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
+
 
 ## What this page covers
 

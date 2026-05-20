@@ -4,13 +4,13 @@ description: "AstroVision results: limitations."
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Limitations
 
 AstroVision results: limitations.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

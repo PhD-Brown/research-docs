@@ -26,7 +26,7 @@ For Galactic stars, `redshift` ≈ radial velocity / c ≈ 0. It is correlated w
 
 ### 4. Gaia-derived features: `teff_gspphot`, `logg_gspphot`
 
-:::caution Partially circular features
+:::caution[Partially circular features]
 Gaia's GSP-Phot derives `teff_gspphot` from BP/RP photometry and spectra. Using this to predict spectral class (which is itself a temperature sequence) creates a partially circular inference chain. These features are excluded in `spectro_only=True` mode.
 :::
 

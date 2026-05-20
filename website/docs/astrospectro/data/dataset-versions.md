@@ -4,13 +4,13 @@ description: History of AstroSpectro dataset versions — what changed and why.
 sidebar_position: 8
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Dataset Versions
 
 History of AstroSpectro dataset versions — what changed and why.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

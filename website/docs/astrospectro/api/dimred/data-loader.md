@@ -4,13 +4,13 @@ description: API reference for DataLoader in the dimred sub-package.
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # DataLoader API
 
 API reference for DataLoader in the dimred sub-package.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

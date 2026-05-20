@@ -1,0 +1,205 @@
+---
+id: model-training
+title: Guide — Model Training
+sidebar_label: Training
+sidebar_position: 5
+description: >
+  Complete guide to training a spectral classifier with SpectralClassifier:
+  available models (XGBoost, LightGBM, CatBoost, ExtraTrees…), GridSearchCV
+  and Optuna tuning, W&B tracking, spectro_only mode, session artifacts.
+tags: [training, xgboost, lightgbm, optuna, wandb, classification, spectro-only]
+---
+
+import ModelSelector from '@site/src/components/ModelSelector';
+import TrainingPipelineFlow from '@site/src/components/TrainingPipelineFlow';
+import ArtifactsTree from '@site/src/components/ArtifactsTree';
+import ClassifierMetrics from '@site/src/components/ClassifierMetrics';
+import RelatedPages from '@site/src/components/RelatedPages';
+
+# Guide: Model Training
+
+Once the feature set has been extracted, the `SpectralClassifier` class orchestrates model training, optimization, and evaluation. It encapsulates a complete `scikit-learn` / `imblearn` pipeline, supports about a dozen models, and automatically logs results to Weights & Biases.
+
+:::info[Starting point]
+All training logic is in [`src/pipeline/classifier.py`](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/classifier.py). The orchestration notebook is `00_master_pipeline.ipynb`.
+:::
+
+---
+
+## Quick start
+
+```python
+from src.pipeline.classifier import SpectralClassifier
+
+# XGBoost training in pure spectroscopic mode
+clf = SpectralClassifier(model_type="XGBoost", prediction_target="main_class")
+clf, feature_cols, X, y = clf.train_and_evaluate(
+    features_df,
+    spectro_only=True,    # excludes ra, dec, redshift, Gaia — publication mode
+)
+
+# Save artifacts
+clf.save_model("data/models/spectral_classifier_xgboost.pkl")
+```
+
+**Reference result achieved in `spectro_only=True` mode:**
+
+<ClassifierMetrics />
+
+---
+
+## 1. Available models
+
+`SpectralClassifier` supports 11 classifiers through the `model_type` parameter. Switching models is trivial — the pipeline, tuning, and W&B logging adapt automatically.
+
+<ModelSelector />
+
+---
+
+## 2. The training process
+
+### Data preparation
+
+`SpectralClassifier` automatically prepares the data before training:
+
+1. **Cleaning:** Spectra without a valid `subclass` and classes with < 10 samples are excluded.
+2. **Feature selection:** In `spectro_only=True` mode, all non-spectral columns are filtered out.
+3. **Train/test split:** 80/20 stratified by class.
+
+### Pipeline and W&B tracking
+
+<TrainingPipelineFlow />
+
+### Hyperparameter tuning
+
+**Option A — GridSearchCV (default):**
+
+```python
+# Stratified cross-validation k=5 · metric: balanced_accuracy
+clf.train_and_evaluate(features_df, spectro_only=True)
+```
+
+**Option B — Optuna (Bayesian optimization):**
+
+The Optuna infrastructure is deployed for large-scale exploration. It is especially useful for exploring `n_estimators`, `max_depth`, `learning_rate`, `colsample`, `subsample`, `reg_alpha`/`lambda` on the ~139k available spectra.
+
+```python
+clf.train_and_evaluate(
+    features_df,
+    spectro_only=True,
+    tuner="optuna",
+    n_trials=200,
+)
+```
+
+---
+
+## 3. `spectro_only=True` mode
+
+:::caution[Required for publications]
+Enable this mode for all rigorous scientific results. It ensures that the model learns to classify stars from their **intrinsic physics only**, without any observational bias.
+:::
+
+```python
+clf.train_and_evaluate(features_df, spectro_only=True)
+```
+
+**Automatically excluded features:**
+- Angular coordinates: `ra`, `dec`
+- Observing conditions: `redshift`, `seeing`, `snr_*`, `jd`, `fiber_id`, `magnitude_*`
+- Gaia columns: `parallax`, `bp_rp`, `teff_gspphot`, `logg_gspphot`, `M_G`, `v_tan_kms`, etc.
+
+The improvement from 84% → 87% *after removing* these features is explained by the elimination of **data-leakage noise**: `ra`/`dec`/`redshift` provided a signal correlated with spectral types through LAMOST observational biases (observation programs targeted by type), not through real stellar physics.
+
+---
+
+## 4. Saving and artifacts
+
+At the end of each run, the pipeline automatically generates the following files:
+
+<ArtifactsTree />
+
+### Load and predict
+
+```python
+clf_loaded = SpectralClassifier.load_model(
+    "data/models/spectral_classifier_xgboost_20260213T225019Z.pkl"
+)
+
+# The loaded pipeline includes the scaler and imputer
+# No additional data preparation is required
+predictions   = clf_loaded.model_pipeline.predict(X_new)
+probabilities = clf_loaded.model_pipeline.predict_proba(X_new)
+```
+
+---
+
+## 5. Complete evaluation
+
+After training, `clf.evaluate()` automatically generates:
+
+```python
+clf.evaluate(X_test, y_test, plot=True)
+```
+
+| Output | Description |
+|:---|:---|
+| Classification report | Precision / Recall / F1 by class (A, F, G, K, M) |
+| Confusion matrix | Normalized — shows the expected F/G confusion |
+| ROC and PR curves | One-vs-rest by class |
+| ECE score | Expected Calibration Error — probability quality |
+| Feature importance | XGBoost gain or permutation importance |
+
+---
+
+## 6. Reproducibility
+
+Each run produces a unique ISO timestamp identifier. To reproduce an exact run:
+
+```python
+# Retrieve the training source file
+import json
+with open("data/reports/20260213T225019Z/spectral_classifier_xgboost_20260213T225019Z_meta.json") as f:
+    meta = json.load(f)
+
+print(meta["trained_on_file"])     # → features_20251217T160120Z.csv
+print(meta["best_params_"])        # → final hyperparameters
+print(meta["n_features_used"])     # → 183
+print(meta["balanced_accuracy"])   # → 0.87
+```
+
+---
+
+<RelatedPages pages={[
+  {
+    href: './feature-extraction',
+    title: 'Feature extraction',
+    desc: 'Prepare the input DataFrame — FeatureEngineer, spectro_only',
+    category: 'guides',
+  },
+  {
+    href: '../api/classifier',
+    title: 'API — SpectralClassifier',
+    desc: 'Complete reference — methods, parameters, attributes',
+    category: 'api',
+  },
+  {
+    href: '../science/xgboost-comparison',
+    title: 'XGBoost — supervised comparison',
+    desc: 'Detailed results 87% · SHAP · UMAP coherence',
+    category: 'science',
+    badge: '87% BA',
+  },
+  {
+    href: '../science/results-analysis',
+    title: 'Results Analysis',
+    desc: 'Complete PCA/UMAP/t-SNE/XGBoost/SHAP results',
+    category: 'science',
+  },
+  {
+    href: 'https://docs.wandb.ai',
+    title: 'W&B Documentation',
+    desc: 'Weights & Biases — visualization of the 85+ AstroSpectro runs',
+    category: 'external',
+  },
+]} />

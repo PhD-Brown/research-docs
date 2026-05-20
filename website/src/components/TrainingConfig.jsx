@@ -2,14 +2,14 @@ import React from 'react';
 
 const CONFIG = [
   {
-    key: 'Jeu de données',
+    key: 'Dataset',
     value: 'LAMOST DR5 × Gaia DR3',
-    sub: 'N = 43 019 spectres',
+    sub: 'N = 43,019 spectra',
     color: '#38BDF8',
     icon: '◎',
   },
   {
-    key: 'Descripteurs',
+    key: 'Descriptors',
     value: '183',
     sub: 'mode spectro_only=True',
     color: '#34D399',
@@ -17,16 +17,16 @@ const CONFIG = [
     mono: true,
   },
   {
-    key: 'Classes cibles',
+    key: 'Target classes',
     value: 'A · F · G · K · M',
-    sub: '5 types spectraux stellaires',
+    sub: '5 stellar spectral types',
     color: '#FBBF24',
     icon: '★',
   },
   {
-    key: 'Métrique',
+    key: 'Metric',
     value: 'balanced_accuracy',
-    sub: 'optimisation & évaluation',
+    sub: 'optimization & evaluation',
     color: '#A78BFA',
     icon: '≡',
     mono: true,
@@ -34,7 +34,7 @@ const CONFIG = [
   {
     key: 'Split train/test',
     value: '80 / 20',
-    sub: 'stratifié par classe',
+    sub: 'stratified by class',
     color: '#FB923C',
     icon: '⊘',
   },
@@ -167,7 +167,7 @@ export default function TrainingConfig() {
           letterSpacing: '0.07em',
           opacity: 0.4,
           color: 'var(--ifm-font-color-base)',
-        }}>Configuration expérimentale</div>
+        }}>Experimental configuration</div>
 
         {CONFIG.map((c) => <ConfigRow key={c.key} k={c.key} {...c} />)}
       </div>
@@ -193,7 +193,7 @@ export default function TrainingConfig() {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-          <span>Hyperparamètres XGBoost</span>
+          <span>XGBoost hyperparameters</span>
           <span style={{ fontSize: '9px', opacity: 0.6, textTransform: 'none', letterSpacing: 0, fontWeight: '400', fontFamily: 'monospace' }}>
             run 20260213T225019Z
           </span>
@@ -216,7 +216,7 @@ export default function TrainingConfig() {
           color: 'var(--ifm-font-color-base)',
           fontFamily: 'monospace',
         }}>
-          Tuning via GridSearchCV · tree_method hist = GPU/CPU
+          Tuning with GridSearchCV · tree_method hist = GPU/CPU
         </div>
       </div>
     </div>

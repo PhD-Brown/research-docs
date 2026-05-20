@@ -6,7 +6,7 @@ sidebar_position: 6
 
 # Known Limitations
 
-:::info Scientific integrity
+:::info[Scientific integrity]
 Documenting limitations is a core commitment of this project.
 All claims are calibrated to the evidence available.
 :::

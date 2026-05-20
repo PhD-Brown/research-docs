@@ -4,13 +4,13 @@ description: Cross-project datasets index.
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Datasets Index
 
 Cross-project datasets index.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

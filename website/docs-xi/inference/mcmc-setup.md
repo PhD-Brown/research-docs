@@ -4,13 +4,13 @@ description: "ξ Dark Energy inference: mcmc setup."
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # MCMC Setup
 
 ξ Dark Energy inference: mcmc setup.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -4,13 +4,13 @@ description: "ξ Dark Energy inference: convergence diagnostics."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Convergence Diagnostics
 
 ξ Dark Energy inference: convergence diagnostics.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -4,13 +4,13 @@ description: API reference for the Preprocessor module.
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Preprocessor API
 
 API reference for the Preprocessor module.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

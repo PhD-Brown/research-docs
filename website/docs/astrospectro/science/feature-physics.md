@@ -4,13 +4,14 @@ description: The astrophysical interpretation of AstroSpectro's spectroscopic fe
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Physical Meaning of Features
 
 The astrophysical interpretation of AstroSpectro's spectroscopic features.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
+
 
 ## What this page covers
 

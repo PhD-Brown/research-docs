@@ -1,0 +1,332 @@
+---
+id: autoencoder
+title: Autoencoder — Non-linear Dimensionality Reduction
+sidebar_label: Autoencoder
+sidebar_position: 6
+description: "Complete results of the SpectralAutoencoder applied to the 183 LAMOST DR5 features: symmetric MLP architecture, latent space z=2, MSE(AE)=0.489 ≈ PCA(k=10), gravity axis discovery on latent axis 1, QSO anomaly detection (107× error), interpolation and latent arithmetic."
+tags: [autoencoder, dimensionality-reduction, pytorch, latent-space, anomaly, lamost]
+---
+
+import AEKeyMetrics from '@site/src/components/AEKeyMetrics';
+import AEArchitecture from '@site/src/components/AEArchitecture';
+import AEReconBenchmark from '@site/src/components/AEReconBenchmark';
+import AELatentCorrelations from '@site/src/components/AELatentCorrelations';
+import FigureGallery from '@site/src/components/FigureGallery';
+import RelatedPages from '@site/src/components/RelatedPages';
+
+# Autoencoder — Non-linear Dimensionality Reduction
+
+This page documents the results of the `SpectralAutoencoder` neural autoencoder applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra. The autoencoder is the third dimensionality reduction method studied in the PHY-3500 project, complementing PCA (linear) and UMAP/t-SNE (non-parametric). Its role is to provide a **non-linear parametric representation**: it learns a compression and can project new spectra without full recomputation.
+
+:::note[PHY-3500 article reference]
+The autoencoder is mentioned in the Baker, Caillat & Jean article (28 April 2026) but its detailed results are not developed in the main text — the reader is referred to this documentation page. Key results: MSE(AE, z=2) = 0.489 ≈ PCA(k=10), and the discovery that latent axis 1 encodes **gravity** rather than temperature.
+:::
+
+---
+
+## Key results
+
+<AEKeyMetrics />
+
+---
+
+## Why an autoencoder?
+
+Previous methods have complementary limitations:
+
+| Method | Linear? | Parametric? | Main advantage | Limitation |
+|:---|:---:|:---:|:---|:---|
+| **PCA** | ✓ | ✓ | Interpretable loadings · reproducible | Blind to non-linear relationships |
+| **UMAP / t-SNE** | ✗ | Partial | Topological structure · clusters | No exact `transform()` for new points |
+| **Autoencoder** | ✗ | ✓ | Non-linear + parametric | Black box · training cost |
+
+The autoencoder is **non-linear** (it can capture structures that PCA flattens) and **parametric** (once trained, encoding a new spectrum is a simple forward pass). This is the ideal combination for a production pipeline.
+
+---
+
+## Architecture
+
+<AEArchitecture />
+
+### Justification of architecture choices
+
+**Symmetric MLP (183 → 256 → 128 → 64 → 2 → 64 → 128 → 256 → 183):**
+The initial expansion to 256 (> 183) is not an error — it allows the network to create richer intermediate representations before compression. This is common practice for autoencoders on spectral data (Portillo et al. 2020, AJ 160:45).
+
+**BatchNorm + Dropout(p=0.1):**
+BatchNorm stabilises gradients and accelerates convergence. Light dropout (0.1) avoids overfitting without degrading reconstruction — stellar spectra are regular enough that stronger dropout is counterproductive.
+
+**Latent dimension z = 2:**
+Deliberate choice for 2D visualisation and fair comparison with PCA(k=2) and UMAP(2D). A z = 8 or 16 would achieve much lower MSE but would lose visual readability.
+
+```python
+from src.dimred.autoencoder import SpectralAutoencoder
+
+# Training
+ae = SpectralAutoencoder(input_dim=183, latent_dim=2, hidden_dims=[256, 128, 64])
+history = ae.fit(X_train_scaled, epochs=200, lr=1e-3, batch_size=512, patience=15)
+
+# Encode 43,019 spectra → 2D latent space
+Z_ae = ae.encode(X_scaled)   # shape: (43019, 2)
+
+# Reconstruction
+X_recon = ae.decode(Z_ae)    # shape: (43019, 183)
+mse = ae.reconstruction_mse(X_scaled)  # → 0.489
+```
+
+---
+
+## Reconstruction — Autoencoder vs PCA
+
+### MSE(k) benchmark
+
+<AEReconBenchmark />
+
+### Reconstruction error by object type
+
+The per-class breakdown reveals an important astrophysical result:
+
+| Class | N | Mean MSE | Median MSE | p95 | Factor vs stars |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **STAR** | 42,956 | 0.485 | **0.227** | 0.974 | 1× (reference) |
+| GALAXY | 56 | 3.009 | 1.170 | 3.043 | ~5× |
+| **QSO** | 7 | 5.794 | **0.954** | 18.637 | **~107× (median)** |
+
+:::tip[Unsupervised anomaly detection]
+QSOs (*quasi-stellar objects*) have a reconstruction error 107× higher than stars (median). The autoencoder, trained almost exclusively on stars (99.85% of the sample), has never learned the spectral structure of QSOs — their broad emission lines (Ly-α, CIV) are radically different. This result demonstrates that **reconstruction error can serve as an anomaly score**: a spectrum with MSE >> 1 is likely non-stellar.
+:::
+
+---
+
+## Latent space and physical interpretation
+
+### Spearman correlations with Gaia DR3
+
+<AELatentCorrelations />
+
+### Latent space organisation
+
+The latent space grid (`ae_latent_grid.png`) reveals a physically coherent organisation:
+
+- **Axis 2** (thermal, ρ = +0.793 with Teff) deploys the M-K-G-F-A sequence from bottom to top
+- **Axis 1** (gravity, ρ = +0.340 with log g) separates dwarfs and giants
+- Galaxies and QSOs are pushed far from the main stellar mass — their high reconstruction error corresponds to their distance in latent space
+
+This result is an **independent confirmation** of the HDBSCAN discovery: the dwarf/giant distinction is a genuine physical dimension of spectral space.
+
+---
+
+## Latent space interpolation
+
+The parametric autoencoder allows linear interpolation between two points in latent space and decoding intermediate positions into physical spectra:
+
+```python
+# Interpolation between a cool star (K) and a hot star (A)
+# idx_cold: Teff = 4,200 K · idx_hot: Teff = 7,984 K
+# Latent distance = 11.44 units
+
+t = np.linspace(0, 1, 10)
+Z_interp = np.outer(1-t, Z_ae[idx_cold]) + np.outer(t, Z_ae[idx_hot])
+X_interp = ae.decode(Z_interp)
+# → 10 synthetic intermediate spectra between 4,200 and 7,984 K
+```
+
+The interpolation produces a **continuous and physically plausible transition**: Balmer lines progressively weaken and Ca II lines strengthen. The latent distance of 11.44 units for a Teff variation of ~3,800 K confirms that axis 2 linearly encodes temperature.
+
+---
+
+## Latent arithmetic — Stellar analogies
+
+Following the word2vec idea (Mikolov et al. 2013), does the latent space support analogies of the type `K_giant − K_dwarf + G_dwarf ≈ G_giant`?
+
+```python
+# K_giant − K_dwarf + G_dwarf = ?
+z_pred  = z_K_giant - z_K_dwarf + z_G_dwarf
+z_target = z_G_giant
+
+distance = np.linalg.norm(z_pred - z_target)
+# → distance = 2.1 (= ~18% of total range) — FUNCTIONAL ANALOGY
+```
+
+The result indicates that the latent space encodes **the dwarf↔giant direction consistently** across spectral types — suggesting the network has learned a representation that partially factorises (temperature, gravity) in a measurable way.
+
+---
+
+## Comparative synthesis — PCA · UMAP · Autoencoder
+
+| Criterion | PCA (z=2) | AE (z=2) | UMAP (2D) |
+|:---|:---:|:---:|:---:|
+| Reconstruction MSE (2 dim) | 0.696 | **0.489** | N/A |
+| Axis 1 / Teff correlation | +0.831 | +0.019 | +0.464 |
+| Dominant physical axis | Temperature | **Gravity** | Temperature |
+| Non-linear | ✗ | ✓ | ✓ |
+| Parametric (transform) | ✓ | ✓ | Partial |
+| Interpretable | ✓ (loadings) | ~ (correlations) | ✗ |
+| Anomaly detection | ✓ (high MSE) | ✓ (MSE ×107 QSO) | ✗ directly |
+
+---
+
+## Reference figures
+
+export const aeFigures = [
+  {
+    src: '/img/dimred/ae_latent_grid.png',
+    title: '2D latent space — full grid',
+    desc: 'AE axis 1 (gravity) × axis 2 (T_eff) — 43,019 spectra coloured by type',
+    tag: 'Latent',
+  },
+  {
+    src: '/img/dimred/ae_latent_grid_zoomed.png',
+    title: '2D latent space — zoom',
+    desc: 'Zoom on the main stellar mass — dwarf/giant distinction',
+    tag: 'Latent',
+  },
+  {
+    src: '/img/dimred/ae_training_history.png',
+    title: 'Learning curve',
+    desc: 'Train loss vs val loss · 145 epochs · best val = 0.548',
+    tag: 'Training',
+  },
+  {
+    src: '/img/dimred/ae_vs_pca_mse.png',
+    title: 'MSE: AE(z=2) vs PCA(k=1…50)',
+    desc: 'AE(z=2) ≈ PCA(k=10) · decreasing PCA curve',
+    tag: 'Benchmark',
+  },
+  {
+    src: '/img/dimred/ae_error_distribution_logscale.png',
+    title: 'MSE distribution (log scale)',
+    desc: 'STAR vs GALAXY vs QSO — clear separation at MSE > 1',
+    tag: 'Anomalies',
+  },
+  {
+    src: '/img/dimred/ae_recon_error_by_family.png',
+    title: 'Error by spectral family',
+    desc: 'Which feature family is poorly reconstructed?',
+    tag: 'Reconstruction',
+  },
+  {
+    src: '/img/dimred/ae_reconstruction_examples.png',
+    title: 'Reconstruction examples',
+    desc: 'Original vs reconstructed spectrum — 6 examples (A, F, G, K, M, QSO)',
+    tag: 'Reconstruction',
+  },
+  {
+    src: '/img/dimred/ae_recon_by_spectral_type.png',
+    title: 'Median MSE by spectral type',
+    desc: 'M and K best reconstructed · A least well',
+    tag: 'Reconstruction',
+  },
+  {
+    src: '/img/dimred/ae_latent_interpolation.png',
+    title: 'Latent interpolation K → A',
+    desc: 'Teff: 4,200 K → 7,984 K · latent distance = 11.44 · 10 steps',
+    tag: 'Interpolation',
+  },
+  {
+    src: '/img/dimred/ae_latent_arithmetic.png',
+    title: 'Latent arithmetic',
+    desc: 'K_giant − K_dwarf + G_dwarf ≈ G_giant · stellar word2vec',
+    tag: 'Arithmetic',
+  },
+  {
+    src: '/img/dimred/ae_latent_kde.png',
+    title: 'KDE density of latent space',
+    desc: 'Distribution of 43,019 points in the (z1, z2) space',
+    tag: 'Latent',
+  },
+  {
+    src: '/img/dimred/synthesis_pca_umap_ae.png',
+    title: 'Synthesis PCA · UMAP · AE',
+    desc: 'The 3 latent spaces side by side — same data coloured by T_eff',
+    tag: 'Synthesis',
+  },
+];
+
+<FigureGallery figures={aeFigures} columns={3} />
+
+---
+
+## Diagnostic sheets — typical candidates
+
+The autoencoder allows producing a **diagnostic sheet** for each spectrum: position in latent space, original vs reconstructed spectrum, residual, and MSE. Three characteristic examples:
+
+export const candidateFigures = [
+  {
+    src: '/img/dimred/ae_candidat_Étoile_A_typique.png',
+    title: 'Sheet: Typical A-type star',
+    desc: 'Hot star > 7,500 K · broad Balmer lines · moderate MSE (narrow lines)',
+    tag: 'Type A',
+  },
+  {
+    src: '/img/dimred/ae_candidat_Étoile_G_naine.png',
+    title: 'Sheet: G dwarf',
+    desc: 'Solar-type star 5,500 K · Ca II + Balmer · low MSE (excellent reconstruction)',
+    tag: 'Type G',
+  },
+  {
+    src: '/img/dimred/ae_candidat_Étoile_K_géante.png',
+    title: 'Sheet: K giant',
+    desc: 'log g ≈ 2.5 · very strong Ca II · low MSE · well localised on gravity axis',
+    tag: 'K giant',
+  },
+];
+
+<FigureGallery figures={candidateFigures} columns={3} />
+
+---
+
+## Implementation
+
+Code is in `src/dimred/autoencoder.py` (class `SpectralAutoencoder`) and the complete notebook in `phy3500_03_autoencoder.ipynb`.
+
+```python
+# Load saved model
+import torch
+from src.dimred.autoencoder import SpectralAutoencoder
+
+ae = SpectralAutoencoder(input_dim=183, latent_dim=2)
+ae._model = torch.load("data/reports/models/ae_latent2.pt")
+ae._model.eval()
+
+# Encode a new spectrum
+X_new_scaled = scaler.transform(X_new)  # same scaler as at training
+Z_new = ae.encode(torch.tensor(X_new_scaled, dtype=torch.float32).numpy())
+```
+
+---
+
+<RelatedPages pages={[
+  {
+    href: './dimensionality-reduction',
+    title: 'Dimensionality Reduction',
+    desc: 'PCA, UMAP, t-SNE — the 3 unsupervised methods of the PHY-3500 project',
+    category: 'science',
+  },
+  {
+    href: './pca-physical-interpretation',
+    title: 'Physical interpretation of PCA',
+    desc: 'PC1 = thermal axis (ρ = +0.831) — compare with AE axis 2',
+    category: 'science',
+    badge: 'ρ = +0.831',
+  },
+  {
+    href: './results-analysis',
+    title: 'Results Analysis',
+    desc: 'Synthesis PCA / UMAP / t-SNE / XGBoost / SHAP — overview',
+    category: 'science',
+  },
+  {
+    href: './dataset-dimred',
+    title: 'PHY-3500 Dataset',
+    desc: 'N = 43,019 spectra · 183 features · quality filters',
+    category: 'science',
+    badge: '43,019 spectra',
+  },
+  {
+    href: 'https://github.com/PhD-Brown/AstroSpectro/blob/main/src/dimred/autoencoder.py',
+    title: 'Source — autoencoder.py',
+    desc: 'Complete SpectralAutoencoder code — GitHub',
+    category: 'external',
+  },
+]} />

@@ -4,13 +4,13 @@ description: "ξ Dark Energy inference: model comparison."
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Model Comparison
 
 ξ Dark Energy inference: model comparison.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

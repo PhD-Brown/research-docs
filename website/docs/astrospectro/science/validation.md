@@ -4,13 +4,14 @@ description: How AstroSpectro validates that its results are physically meaningf
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Scientific Validation
 
 How AstroSpectro validates that its results are physically meaningful, not algorithmic artifacts.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
+
 
 ## What this page covers
 

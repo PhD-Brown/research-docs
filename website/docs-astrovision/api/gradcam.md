@@ -4,13 +4,13 @@ description: "AstroVision API: gradcam.py."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # gradcam.py
 
 AstroVision API: gradcam.py.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -4,13 +4,13 @@ description: "ξ Dark Energy data: covariance handling."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Covariance Handling
 
 ξ Dark Energy data: covariance handling.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

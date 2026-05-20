@@ -4,13 +4,13 @@ description: "AstroVision data: data overview."
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Data Overview
 
 AstroVision data: data overview.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

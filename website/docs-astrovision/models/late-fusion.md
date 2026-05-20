@@ -4,13 +4,13 @@ description: "AstroVision model: late-fusion multimodal ⭐."
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Late-Fusion Multimodal ⭐
 
 AstroVision model: late-fusion multimodal ⭐.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

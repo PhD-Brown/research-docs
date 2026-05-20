@@ -4,13 +4,13 @@ description: Cross-project repository map.
 sidebar_position: 7
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Repository Map
 
 Cross-project repository map.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

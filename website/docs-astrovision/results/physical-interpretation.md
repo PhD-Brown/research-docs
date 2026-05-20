@@ -4,13 +4,13 @@ description: "AstroVision results: physical interpretation."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Physical Interpretation
 
 AstroVision results: physical interpretation.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

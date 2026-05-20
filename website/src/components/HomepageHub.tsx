@@ -2,39 +2,37 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRocket, faBook, faVial, faUsers } from '@fortawesome/free-solid-svg-icons';
 
-// 1. On définit les données pour nos cartes dans un tableau
 const cardData = [
   {
     title: "Getting Started",
     icon: faRocket,
-    description: "Suivez un tutoriel complet pour installer le projet et lancer votre première classification en moins de 10 minutes.",
+    description: "Follow a complete tutorial to install the project and run your first classification in under 10 minutes.",
     link: "/AstroSpectro/docs/getting-started",
-    buttonText: "Commencer le Tutoriel"
+    buttonText: "Start the Tutorial"
   },
   {
     title: "User Guides",
     icon: faBook,
-    description: "Des tutoriels détaillés pour chaque étape clé : téléchargement, traitement, entraînement, et visualisation.",
+    description: "Detailed tutorials for each key step: downloading, processing, training, and visualisation.",
     link: "/AstroSpectro/docs/user-guides",
-    buttonText: "Consulter les Guides"
+    buttonText: "Browse the Guides"
   },
   {
     title: "Scientific Context",
     icon: faVial,
-    description: "Plongez dans le contexte astrophysique : catalogue LAMOST, types spectraux, et méthodologie.",
+    description: "Dive into the astrophysical context: LAMOST catalogue, spectral types, and methodology.",
     link: "/AstroSpectro/docs/science",
-    buttonText: "Explorer le Contexte"
+    buttonText: "Explore the Context"
   },
   {
     title: "Community & Contributing",
     icon: faUsers,
-    description: "Vous souhaitez contribuer, citer le projet ou poser une question ? Toutes les ressources sont ici.",
+    description: "Want to contribute, cite the project, or ask a question? All resources are here.",
     link: "/AstroSpectro/docs/community",
-    buttonText: "Rejoindre la Communauté"
+    buttonText: "Join the Community"
   }
 ];
 
-// 2. On crée un sous-composant pour une seule carte
 const HubCard = ({ title, icon, description, link, buttonText }) => (
   <div className="col col--6 margin-bottom--lg">
     <div className="card hub-card">
@@ -53,7 +51,6 @@ const HubCard = ({ title, icon, description, link, buttonText }) => (
   </div>
 );
 
-// 3. On crée le composant principal qui va générer la grille de cartes
 export default function HomepageHub() {
   return (
     <div className="container">

@@ -4,13 +4,13 @@ description: "AstroVision guide: train a classifier."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Train a Classifier
 
 AstroVision guide: train a classifier.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

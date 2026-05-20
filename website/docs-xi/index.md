@@ -12,7 +12,7 @@ sidebar_position: 1
 
 ---
 
-:::caution Exploratory release
+:::caution[Exploratory release]
 This project is released as `v0.1.0-exploratory`. The oscillating dark energy model (Ξosc)
 shows a marginal preference for non-zero oscillation amplitude, but this is **not sufficient
 to claim detection**. See [Known Limitations](/research-docs/xi-dark-energy/results/caveats).

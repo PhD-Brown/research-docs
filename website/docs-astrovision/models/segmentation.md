@@ -4,13 +4,13 @@ description: "AstroVision model: u-net segmentation."
 sidebar_position: 6
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # U-Net Segmentation
 
 AstroVision model: u-net segmentation.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

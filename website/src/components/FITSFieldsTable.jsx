@@ -1,31 +1,31 @@
 import React from 'react';
 
-const CATEGORIES = ['Tous', 'Identification', 'Observation', 'Spectral', 'Qualité'];
+const CATEGORIES = ['All', 'Identification', 'Observation', 'Spectral', 'Quality'];
 
 const FIELDS = [
   // Identification
-  { field: 'OBSID',      cat: 'Identification', type: 'int',    desc: 'Identifiant unique d\'observation',       role: 'Clé primaire de croisement', color: '#38BDF8' },
-  { field: 'DESIGNID',   cat: 'Identification', type: 'int',    desc: 'Identifiant du plan d\'observation',      role: 'Catalogue master',           color: '#38BDF8' },
-  { field: 'FILENAME',   cat: 'Identification', type: 'str',    desc: 'Nom du fichier FITS source',              role: 'Traçabilité',                color: '#38BDF8' },
-  { field: 'CLASS',      cat: 'Identification', type: 'str',    desc: 'Type spectral LAMOST (STAR/GALAXY/QSO)',  role: 'Cible de classification',    color: '#38BDF8' },
-  { field: 'SUBCLASS',   cat: 'Identification', type: 'str',    desc: 'Sous-classe spectrale (A, F, G, K, M…)', role: 'Cible de classification',    color: '#38BDF8' },
+  { field: 'OBSID',      cat: 'Identification', type: 'int',    desc: 'Unique observation identifier',          role: 'Primary cross-match key',    color: '#38BDF8' },
+  { field: 'DESIGNID',   cat: 'Identification', type: 'int',    desc: 'Observation plan identifier',            role: 'Master catalogue',           color: '#38BDF8' },
+  { field: 'FILENAME',   cat: 'Identification', type: 'str',    desc: 'Source FITS file name',                  role: 'Traceability',               color: '#38BDF8' },
+  { field: 'CLASS',      cat: 'Identification', type: 'str',    desc: 'LAMOST spectral type (STAR/GALAXY/QSO)', role: 'Classification target',      color: '#38BDF8' },
+  { field: 'SUBCLASS',   cat: 'Identification', type: 'str',    desc: 'Spectral subclass (A, F, G, K, M…)',    role: 'Classification target',      color: '#38BDF8' },
   // Observation
-  { field: 'RA',         cat: 'Observation',    type: 'float',  desc: 'Ascension droite (degrés J2000)',         role: 'Exclu — biais géographique',  color: '#F87171', excluded: true },
-  { field: 'DEC',        cat: 'Observation',    type: 'float',  desc: 'Déclinaison (degrés J2000)',              role: 'Exclu — biais géographique',  color: '#F87171', excluded: true },
-  { field: 'LMJD',       cat: 'Observation',    type: 'int',    desc: 'Date julienne modifiée LAMOST',          role: 'Métadonnée temporelle',      color: '#F59E0B' },
-  { field: 'PLANID',     cat: 'Observation',    type: 'str',    desc: 'ID du plan d\'observation nocturne',     role: 'Organisation téléchargement',color: '#F59E0B' },
-  { field: 'SEEING',     cat: 'Observation',    type: 'float',  desc: 'Seeing atmosphérique (arcsec)',           role: 'Exclu — biais instrumental',  color: '#F87171', excluded: true },
+  { field: 'RA',         cat: 'Observation',    type: 'float',  desc: 'Right ascension (degrees J2000)',        role: 'Excluded — geographic bias',  color: '#F87171', excluded: true },
+  { field: 'DEC',        cat: 'Observation',    type: 'float',  desc: 'Declination (degrees J2000)',            role: 'Excluded — geographic bias',  color: '#F87171', excluded: true },
+  { field: 'LMJD',       cat: 'Observation',    type: 'int',    desc: 'LAMOST Modified Julian Date',            role: 'Temporal metadata',          color: '#F59E0B' },
+  { field: 'PLANID',     cat: 'Observation',    type: 'str',    desc: 'Nightly observation plan ID',            role: 'Download organisation',      color: '#F59E0B' },
+  { field: 'SEEING',     cat: 'Observation',    type: 'float',  desc: 'Atmospheric seeing (arcsec)',             role: 'Excluded — instrumental bias',color: '#F87171', excluded: true },
   // Spectral
-  { field: 'Z',          cat: 'Spectral',       type: 'float',  desc: 'Redshift mesuré (vitesse radiale)',       role: 'Exclu — métadonnée LAMOST',  color: '#F87171', excluded: true },
-  { field: 'Z_ERR',      cat: 'Spectral',       type: 'float',  desc: 'Incertitude sur le redshift',            role: 'Métadonnée LAMOST',          color: '#A78BFA' },
-  { field: 'COEFF0',     cat: 'Spectral',       type: 'float',  desc: 'λ₀ du spectre (WCS — log ou linéaire)',  role: 'Reconstruction grille λ',    color: '#A78BFA' },
-  { field: 'COEFF1',     cat: 'Spectral',       type: 'float',  desc: 'Pas spectral dλ/dpixel',                 role: 'Reconstruction grille λ',    color: '#A78BFA' },
-  // Qualité
-  { field: 'SNR_U',      cat: 'Qualité',        type: 'float',  desc: 'Rapport signal/bruit bande u (~3700 Å)', role: 'Qualité UV',                 color: '#34D399' },
-  { field: 'SNR_G',      cat: 'Qualité',        type: 'float',  desc: 'Rapport signal/bruit bande g (~5000 Å)', role: 'Qualité visible vert',       color: '#34D399' },
-  { field: 'SNR_R',      cat: 'Qualité',        type: 'float',  desc: 'Rapport signal/bruit bande r (~6500 Å)', role: 'Seuil retenu : SNR_r > 10',  color: '#34D399', important: true },
-  { field: 'SNR_I',      cat: 'Qualité',        type: 'float',  desc: 'Rapport signal/bruit bande i (~7500 Å)', role: 'Qualité proche IR',          color: '#34D399' },
-  { field: 'SNR_Z',      cat: 'Qualité',        type: 'float',  desc: 'Rapport signal/bruit bande z (~9000 Å)', role: 'Qualité IR profond',         color: '#34D399' },
+  { field: 'Z',          cat: 'Spectral',       type: 'float',  desc: 'Measured redshift (radial velocity)',    role: 'Excluded — LAMOST metadata', color: '#F87171', excluded: true },
+  { field: 'Z_ERR',      cat: 'Spectral',       type: 'float',  desc: 'Redshift uncertainty',                   role: 'LAMOST metadata',            color: '#A78BFA' },
+  { field: 'COEFF0',     cat: 'Spectral',       type: 'float',  desc: 'λ₀ of spectrum (WCS — log or linear)',  role: 'λ grid reconstruction',      color: '#A78BFA' },
+  { field: 'COEFF1',     cat: 'Spectral',       type: 'float',  desc: 'Spectral step dλ/dpixel',               role: 'λ grid reconstruction',      color: '#A78BFA' },
+  // Quality
+  { field: 'SNR_U',      cat: 'Quality',        type: 'float',  desc: 'Signal-to-noise ratio band u (~3700 Å)', role: 'UV quality',                 color: '#34D399' },
+  { field: 'SNR_G',      cat: 'Quality',        type: 'float',  desc: 'Signal-to-noise ratio band g (~5000 Å)', role: 'Green visible quality',      color: '#34D399' },
+  { field: 'SNR_R',      cat: 'Quality',        type: 'float',  desc: 'Signal-to-noise ratio band r (~6500 Å)', role: 'Retained threshold: SNR_r > 10', color: '#34D399', important: true },
+  { field: 'SNR_I',      cat: 'Quality',        type: 'float',  desc: 'Signal-to-noise ratio band i (~7500 Å)', role: 'Near-IR quality',            color: '#34D399' },
+  { field: 'SNR_Z',      cat: 'Quality',        type: 'float',  desc: 'Signal-to-noise ratio band z (~9000 Å)', role: 'Deep IR quality',            color: '#34D399' },
 ];
 
 const TYPE_COLORS = {
@@ -35,10 +35,10 @@ const TYPE_COLORS = {
 };
 
 export default function FITSFieldsTable() {
-  const [activeCat, setActiveCat] = React.useState('Tous');
+  const [activeCat, setActiveCat] = React.useState('All');
   const [hovIdx, setHovIdx] = React.useState(null);
 
-  const visible = activeCat === 'Tous' ? FIELDS : FIELDS.filter((f) => f.cat === activeCat);
+  const visible = activeCat === 'All' ? FIELDS : FIELDS.filter((f) => f.cat === activeCat);
 
   return (
     <div style={{ margin: '28px 0' }}>
@@ -64,7 +64,7 @@ export default function FITSFieldsTable() {
               }}
             >
               {cat}
-              {cat !== 'Tous' && (
+              {cat !== 'All' && (
                 <span style={{ marginLeft: '5px', opacity: 0.5, fontFamily: 'monospace', fontSize: '10px' }}>
                   ({FIELDS.filter((f) => f.cat === cat).length})
                 </span>
@@ -82,7 +82,7 @@ export default function FITSFieldsTable() {
             </div>
           ))}
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', opacity: 0.5, color: '#F87171' }}>
-            ✗ exclu (spectro_only)
+            ✗ excluded (spectro_only)
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function FITSFieldsTable() {
           borderBottom: '1px solid rgba(255,255,255,0.07)',
           gap: '10px',
         }}>
-          {['Champ FITS', 'Type', 'Catégorie', 'Description', 'Rôle dans AstroSpectro'].map((h) => (
+          {['FITS Field', 'Type', 'Category', 'Description', 'Role in AstroSpectro'].map((h) => (
             <div key={h} style={{
               fontSize: '9.5px',
               fontWeight: '700',
@@ -138,7 +138,6 @@ export default function FITSFieldsTable() {
                 opacity: f.excluded ? 0.7 : 1,
               }}
             >
-              {/* Field name */}
               <code style={{
                 fontSize: '12px',
                 fontWeight: '700',
@@ -151,7 +150,6 @@ export default function FITSFieldsTable() {
                 {f.field}
               </code>
 
-              {/* Type chip */}
               <div>
                 <code style={{
                   fontSize: '10px',
@@ -163,12 +161,10 @@ export default function FITSFieldsTable() {
                 }}>{f.type}</code>
               </div>
 
-              {/* Category */}
               <div style={{ fontSize: '10.5px', opacity: 0.45, color: 'var(--ifm-font-color-base)', fontStyle: 'italic' }}>
                 {f.cat}
               </div>
 
-              {/* Description */}
               <div style={{
                 fontSize: '12px',
                 color: 'var(--ifm-font-color-base)',
@@ -176,7 +172,6 @@ export default function FITSFieldsTable() {
                 lineHeight: 1.4,
               }}>{f.desc}</div>
 
-              {/* Role */}
               <div style={{
                 fontSize: '11.5px',
                 fontWeight: f.important ? '700' : f.excluded ? '600' : '400',
@@ -190,7 +185,7 @@ export default function FITSFieldsTable() {
       </div>
 
       <div style={{ marginTop: '8px', fontSize: '11px', opacity: 0.4, color: 'var(--ifm-font-color-base)' }}>
-        ★ seuil de filtrage qualité retenu · ✗ exclu par <code>spectro_only=True</code>
+        ★ retained quality filter threshold · ✗ excluded by <code>spectro_only=True</code>
       </div>
     </div>
   );

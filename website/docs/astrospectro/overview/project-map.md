@@ -4,13 +4,13 @@ description: Visual map of AstroSpectro's components and their relationships.
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Project Map
 
 Visual map of AstroSpectro's components and their relationships.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

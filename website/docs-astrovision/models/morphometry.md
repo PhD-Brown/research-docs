@@ -4,13 +4,13 @@ description: "AstroVision model: non-parametric morphometrics."
 sidebar_position: 7
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Non-parametric Morphometrics
 
 AstroVision model: non-parametric morphometrics.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

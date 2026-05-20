@@ -45,7 +45,7 @@ export default function VarianceChart() {
           padding: '18px',
         }}>
           <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.4, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
-            Variance individuelle — PC1 à PC20
+            Individual variance — PC1 to PC20
           </div>
 
           {/* Bars */}
@@ -101,8 +101,8 @@ export default function VarianceChart() {
           {/* PC1 PC2 labels */}
           <div style={{ display: 'flex', gap: '12px', marginTop: '10px', flexWrap: 'wrap' }}>
             {[
-              { label: 'PC1 — Axe thermique', color: '#38BDF8', pct: 16.9 },
-              { label: 'PC2 — Axe métallicité', color: '#F59E0B', pct: 12.0 },
+              { label: 'PC1 — Thermal axis', color: '#38BDF8', pct: 16.9 },
+              { label: 'PC2 — Metallicity axis', color: '#F59E0B', pct: 12.0 },
             ].map((p) => (
               <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: p.color }} />
@@ -122,7 +122,7 @@ export default function VarianceChart() {
           padding: '18px',
         }}>
           <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.4, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
-            Seuils de variance cumulée requérant K composantes
+            Cumulative-variance thresholds requiring K components
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -160,7 +160,7 @@ export default function VarianceChart() {
                     }} />
                   </div>
                   <div style={{ fontSize: '10px', opacity: 0.4, marginTop: '4px', color: 'var(--ifm-font-color-base)' }}>
-                    {barWidth.toFixed(0)}% des composantes utilisées
+                    {barWidth.toFixed(0)}% of components used
                   </div>
                 </div>
               );
@@ -177,7 +177,7 @@ export default function VarianceChart() {
             color: 'var(--ifm-font-color-base)',
             opacity: 0.75,
           }}>
-            ↪ UMAP et t-SNE utilisent les <strong style={{ color: '#38BDF8' }}>91 premières composantes</strong> (seuil 95 %) comme entrée.
+            ↪ UMAP and t-SNE use the <strong style={{ color: '#38BDF8' }}>first 91 components</strong> (95% threshold) as input.
           </div>
         </div>
       </div>
@@ -227,7 +227,7 @@ export default function VarianceChart() {
                   }} />
                 </div>
                 <div style={{ fontSize: '9px', opacity: 0.4, marginTop: '3px', color: 'var(--ifm-font-color-base)' }}>
-                  {row.captured}% capturée
+                  {row.captured}% captured
                 </div>
               </div>
             );

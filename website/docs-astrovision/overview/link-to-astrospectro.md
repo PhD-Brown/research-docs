@@ -4,13 +4,13 @@ description: "AstroVision: bridge to astrospectro."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Bridge to AstroSpectro
 
 AstroVision: bridge to astrospectro.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

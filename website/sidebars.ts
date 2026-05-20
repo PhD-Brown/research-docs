@@ -33,6 +33,8 @@ const sidebars: SidebarsConfig = {
       type: "category", label: "Concepts & Architecture",
       items: [
         "astrospectro/concepts/index",
+        "astrospectro/concepts/project-structure",
+        "astrospectro/concepts/pipeline-overview",
         "astrospectro/concepts/pipeline-philosophy",
         "astrospectro/concepts/spectro-only-mode",
         "astrospectro/concepts/data-lifecycle",
@@ -59,6 +61,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "astrospectro/pipeline/index",
         "astrospectro/pipeline/preprocessing",
+        "astrospectro/pipeline/feature-engineering-theory",
         "astrospectro/pipeline/peak-detection",
         "astrospectro/pipeline/feature-engineering",
         "astrospectro/pipeline/processing-pipeline",
@@ -87,6 +90,7 @@ const sidebars: SidebarsConfig = {
         "astrospectro/science/validation",
         { type: "doc", id: "astrospectro/science/shap-interpretability", label: "⭐ SHAP Interpretability" },
         "astrospectro/science/classification-performance",
+        "astrospectro/science/results-analysis",
         "astrospectro/science/feature-physics",
         "astrospectro/science/fg-confusion",
         "astrospectro/science/limitations",
@@ -97,6 +101,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "astrospectro/guides/index",
         "astrospectro/guides/installation",
+        "astrospectro/guides/connexion-gaia",
         "astrospectro/guides/quick-start",
         "astrospectro/guides/downloading-data",
         "astrospectro/guides/preprocessing",

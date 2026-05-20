@@ -1,0 +1,227 @@
+---
+id: feature-engineering-theory
+title: Feature Extraction Theory
+sidebar_label: Feature Engineering
+sidebar_position: 2
+description: >
+  Theoretical foundations of spectroscopic feature extraction in
+  AstroSpectro: the Physics-Informed approach, the 6 descriptor families,
+  spectro_only mode, and SHAP validation (97.9% physical features).
+tags: [feature-engineering, spectroscopy, shap, physics, spectral-lines, xgboost]
+---
+
+import PhysicsVsBlackBox from '@site/src/components/PhysicsVsBlackBox';
+import DescriptorFamilies from '@site/src/components/DescriptorFamilies';
+import RelatedPages from '@site/src/components/RelatedPages';
+
+# Feature Extraction Theory
+
+Feature extraction (*feature engineering*) is the foundational step of the AstroSpectro pipeline. It consists of transforming a complex high-dimensional spectral signal — a spectrum with 3,921 flux channels — into a compact vector of **183 numerical descriptors** that machine learning algorithms can use in an interpretable and scientifically valid way.
+
+:::info[Key result]
+SHAP validation on the `spectro_only=True` model confirms that **97.9% of the 30 most important descriptors are physical spectral features**. The model learned to classify stars exactly as astrophysicists do.
+:::
+
+---
+
+## Our philosophy: Physics-Informed Machine Learning
+
+Rather than a "black box" approach (feeding raw spectra to a neural network), AstroSpectro adopts a **hybrid and interpretable** approach in three steps:
+
+1. **Inform with physics** — identify spectrally significant regions (absorption lines, continuum, molecular bands) from astrophysical knowledge
+2. **Quantify the information** — precisely measure the physical properties of each line (strength, width, profile) rather than simply knowing that it exists
+3. **Learn the relationships** — provide this rich and compact vector to XGBoost so it can discover the optimal decision boundaries between spectral types
+
+<PhysicsVsBlackBox />
+
+---
+
+## The 6 V2 descriptor families
+
+The V2 pipeline builds a matrix X ∈ ℝ^(43019 × 183) by combining six complementary descriptor families, each encoding a distinct aspect of stellar physics.
+
+<DescriptorFamilies />
+
+---
+
+## Concrete extraction — from spectrum to vector
+
+### Spectral lines: prominence, FWHM, equivalent width
+
+For each absorption line defined in the line dictionary (`feature_engineering.py`), three fundamental metrics are extracted:
+
+```python
+from specutils.analysis import equivalent_width, gaussian_fwhm
+
+# Example for Hα (6562.8 Å)
+window = SpectralRegion(6540 * u.AA, 6580 * u.AA)
+
+prominence_ha  = continuum - flux_minimum     # line strength
+fwhm_ha        = gaussian_fwhm(spectrum, window)  # full width at half maximum
+ew_ha          = equivalent_width(spectrum, window)  # equivalent width W(Hα)
+```
+
+**Physical interpretation:**
+- **Prominence**: line depth → strength of the atomic transition in the atmosphere
+- **FWHM**: width → atmospheric pressure, surface gravity, thermal velocity
+- **EW** — W(line): equivalent width → abundance of the ionic species, temperature
+
+### Line ratios — composite physical proxies
+
+Ratios between lines are computed because they have direct physical meaning:
+
+```python
+# Ca II K / Hβ — temperature proxy (varies with Teff)
+feature_ratio_CaK_Hbeta = prominence_CaII_K / prominence_Hbeta
+
+# W(Mg b) / W(Na D) — sensitive to [Mg/Fe] and gravity
+feature_ratio_EW_MgB_NaD = ew_mgb / ew_nad
+
+# Balmer index — temperature gradient along the series
+feature_balmer_temperature_index = (ratio_gamma_beta + ratio_delta_gamma) / 2
+```
+
+**Why ratios rather than absolute values?**
+Ratios are invariant to instrumental variations (flux normalization, seeing) and encode differences *between* populations rather than absolute levels.
+
+### Continuum — global spectrum morphology
+
+The shape of the continuum encodes temperature (blackbody slope) and luminosity class (spectral breaks):
+
+```python
+# Local slopes (sigma-clipped, σ = 2.5 — robust to lines)
+feature_slope_blue      = fit_slope(flux, 3800, 4200)   # UV → blue
+feature_slope_red       = fit_slope(flux, 5500, 6500)   # red visible
+feature_slope_deep_red  = fit_slope(flux, 6500, 7500)   # near IR
+
+# Blue/red asymmetry — direct Teff proxy
+feature_continuum_asymmetry = (f_blue - f_red) / (f_blue + f_red)
+
+# D4000 break — age and metallicity indicator
+feature_break_4000A_strength = flux_4050_4250 / flux_3750_3950
+```
+
+---
+
+## `spectro_only=True` mode — The scientific core
+
+The `spectro_only=True` mode is the **required condition** for scientifically rigorous results. It excludes all non-spectral variables from the feature vector.
+
+### Variables excluded and why
+
+| Variable | Type | Reason for exclusion |
+|:---:|:---:|:---|
+| `ra`, `dec` | Angular coordinates | Encode *where* the spectrum was observed, not the physics of the star |
+| `redshift` | LAMOST metadata | Correlated with observation programs targeted by spectral type |
+| `seeing`, `snr_*` | Instrumental conditions | Related to night quality, not stellar physics |
+| `parallax`, `teff_gspphot` | Gaia columns | Data leakage — these are targets/validation data, not features |
+
+:::caution[Feature leakage]
+Without `spectro_only=True`, `ra` and `dec` can artificially increase the apparent accuracy: LAMOST observing programs target certain sky regions according to the expected spectral type. A model then learns to classify by *position in the sky* rather than by *stellar physics*, which does not generalize.
+:::
+
+### Implementation in the pipeline
+
+```python
+from src.pipeline.classifier import SpectralClassifier
+
+clf = SpectralClassifier(
+    model_type="XGBoost",
+    prediction_target="main_class",   # A / F / G / K / M
+)
+
+# spectro_only=True guarantees that only the 183 spectral features are used
+clf.train_and_evaluate(features_df, spectro_only=True)
+
+# Result: 87% balanced accuracy · ROC-AUC ~0.964
+```
+
+---
+
+## SHAP validation — Physics confirmed
+
+SHAP analysis (*SHapley Additive exPlanations*) on the trained model makes it possible to verify *a posteriori* that the features being used are indeed physical.
+
+### Central result
+
+| Metric | Value |
+|:---|:---:|
+| Physical spectral features in top-30 | **97.9%** |
+| Non-physical features in top-30 | 2.1% |
+| SHAP ranks 1–5 | Ca II K prominence, EW, FWHM, Ca II H prominence, EW |
+
+### The discovery: Ca II > Balmer
+
+The Ca II H&K lines dominate the classifier’s decisions, outperforming the Balmer lines. This apparently surprising result is physically coherent:
+
+- **PCA** searches for the direction of *maximum variance* → Balmer varies more *within the full population* → thermal PC1
+- **XGBoost** searches for the *optimal decision boundary* → Ca II varies more *between classes* → better A/F/G/K/M separation
+
+```
+PCA     : Which feature varies the most overall?          → Balmer (T_eff)
+XGBoost : Which feature best separates the classes?       → Ca II ([Fe/H])
+```
+
+These two results are **consistent and complementary** — they answer different questions about the same physics.
+
+### Top SHAP features by spectral class
+
+| Class | Dominant SHAP features | Interpretation |
+|:---:|:---|:---|
+| **A** | Hα EW↓, Hβ FWHM↑, strong W(Hγ) | Very broad Balmer lines — hot stars > 7,500 K |
+| **F** | Moderate Hα, emerging Ca II K | Balmer → Ca II transition (6,000–7,500 K) |
+| **G** | Strong Ca II K+H, Mg b, W(Hα) | Solar-type star — metallicity + intermediate T_eff |
+| **K** | Very strong Ca II K, emerging TiO | Cool metal-rich stars (3,700–5,200 K) |
+| **M** | TiO, VO, CaH bands, Balmer↓ | Characteristic molecular bands < 3,700 K |
+
+---
+
+## Connection with the PHY-3500 results
+
+The set of 183 descriptors is exactly the one used in the Baker, Caillat & Jean report (April 28, 2026). The same features simultaneously feed:
+
+| Method | Use of the 183 features | Result |
+|:---|:---|:---|
+| PCA | 183×183 covariance matrix | PC1 = thermal axis (ρ(Teff) = +0.831) |
+| UMAP + t-SNE | 183D → 91 PCA → 2D projection | Emerging Harvard sequence |
+| HDBSCAN | Clustering in UMAP space | 20 clusters · dwarf/giant distinction |
+| XGBoost | 183 features → decision boundaries | 87% balanced accuracy |
+| SHAP | Attribution by feature | Scientific validation: 97.9% physical |
+
+---
+
+<RelatedPages pages={[
+  {
+    href: '../../science/features-list-183',
+    title: 'Catalogue of the 183 descriptors',
+    desc: 'Exhaustive list of features — 6 families, PCA loadings, λ positions',
+    category: 'science',
+    badge: '183 features',
+  },
+  {
+    href: './feature-extraction',
+    title: 'Guide — Feature extraction',
+    desc: 'Practical use of FeatureEngineer — parameters, spectro_only, post-merge',
+    category: 'guides',
+  },
+  {
+    href: '../../science/xgboost-comparison',
+    title: 'XGBoost — supervised comparison',
+    desc: 'Full results 87% · SHAP top-10 · UMAP coherence',
+    category: 'science',
+    badge: '87% BA',
+  },
+  {
+    href: '../../science/results-analysis',
+    title: 'Results Analysis',
+    desc: 'PCA/UMAP/t-SNE/XGBoost/SHAP results on the 183 descriptors',
+    category: 'science',
+  },
+  {
+    href: '../../science/pca-physical-interpretation',
+    title: 'Physical interpretation of PCA',
+    desc: 'Thermal PC1 · metallicity PC2 · eigenspectra · Gaia correlations',
+    category: 'science',
+    badge: 'ρ = +0.831',
+  },
+]} />

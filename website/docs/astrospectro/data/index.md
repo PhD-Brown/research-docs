@@ -4,13 +4,13 @@ description: Overview of all datasets used in AstroSpectro — LAMOST DR5, Gaia 
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Data & Datasets
 
 Overview of all datasets used in AstroSpectro — LAMOST DR5, Gaia DR3, and derived products.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

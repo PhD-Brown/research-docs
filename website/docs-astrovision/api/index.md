@@ -4,13 +4,13 @@ description: "AstroVision API: api reference."
 sidebar_position: 6
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # API Reference
 
 AstroVision API: api reference.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -4,13 +4,13 @@ description: "AstroVision API: crossmatcher.py."
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # crossmatcher.py
 
 AstroVision API: crossmatcher.py.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -1,0 +1,74 @@
+---
+id: index
+title: Practical Guides
+---
+
+{/* Complet for v1.0.0 release */}
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownload, faFileExport, faWandMagicSparkles, faMagic, faBrain, faChartPie } from '@fortawesome/free-solid-svg-icons'
+
+# <FontAwesomeIcon icon={faWandMagicSparkles} /> Practical Guides
+
+Welcome to the practical guides for the **AstroSpectro** project. This section walks you through each key step of the pipeline with concrete, task-oriented tutorials.
+
+The goal here is to show you **how** to complete specific actions: use a pipeline step independently, explore a function in greater depth, or adapt parameters to your needs.
+
+
+## Available Guides
+
+Each guide focuses on one part of the workflow. You do not have to follow them in order.
+
+<div className="container" style={{padding: '0'}}>
+  <div className="row">
+    <div className="col col--6 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header"><h3><FontAwesomeIcon icon={faDownload} /> Data Download</h3></div>
+        <div className="card__body"><p>Learn how to retrieve thousands of spectra from LAMOST DR5 and manage your local catalog.</p></div>
+        <div className="card__footer">
+          <a href="./user-guides/downloading-data" className="button button--primary button--block">View the Guide</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--6 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header"><h3><FontAwesomeIcon icon={faMagic} /> Spectrum Preprocessing</h3></div>
+        <div className="card__body"><p>Normalize, center, and clean spectra to make them usable by the models.</p></div>
+        <div className="card__footer">
+          <a href="./user-guides/preprocessing" className="button button--primary button--block">View the Guide</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--6 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header"><h3><FontAwesomeIcon icon={faFileExport} /> Feature Extraction</h3></div>
+        <div className="card__body"><p>Automatically detect spectral lines and transform them into numerical features.</p></div>
+        <div className="card__footer">
+          <a href="./user-guides/feature-extraction" className="button button--primary button--block">View the Guide</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--6 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header"><h3><FontAwesomeIcon icon={faBrain} /> Model Training</h3></div>
+        <div className="card__body"><p>Use the extracted features to train a supervised classifier such as Random Forest.</p></div>
+        <div className="card__footer">
+          <a href="./user-guides/model-training" className="button button--primary button--block">View the Guide</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--12 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header"><h3><FontAwesomeIcon icon={faChartPie} /> Results Visualization</h3></div>
+        <div className="card__body"><p>Interpret spectra, detected lines, and model performance intuitively.</p></div>
+        <div className="card__footer">
+          <a href="./user-guides/visualization" className="button button--primary button--block">View the Guide</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+:::info
+To understand the theory and the "why" behind each step, feel free to consult the [**Concepts & Architecture**](/docs/concepts) section.
+:::

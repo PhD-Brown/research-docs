@@ -4,72 +4,72 @@ import React from 'react';
 const CLASSES = [
   {
     letter: 'A',
-    name: 'Étoiles chaudes',
-    examples: 'Sirius, Véga, Altaïr',
+    name: 'Hot stars',
+    examples: 'Sirius, Vega, Altair',
     teff: '> 7 500 K',
     teffRange: [7500, 10000],
     color: '#93C5FD',        // pale blue-white
     bgColor: '#93C5FD',
-    performance: 'Bonne',
+    performance: 'Good',
     perfColor: '#FBBF24',
-    perfNote: 'Peu fréquentes dans l\'échantillon',
-    features: 'Raies de Balmer très fortes',
+    perfNote: 'Rare in the sample',
+    features: 'Very strong Balmer lines',
     fraction: '~2%',
   },
   {
     letter: 'F',
-    name: 'Étoiles blanches-jaunes',
+    name: 'Yellow-white stars',
     examples: 'Procyon, Canopus',
     teff: '6 000–7 500 K',
     teffRange: [6000, 7500],
     color: '#FEF9C3',
     bgColor: '#FEF3C7',
-    performance: 'Bonne',
+    performance: 'Good',
     perfColor: '#FBBF24',
-    perfNote: 'Frontière F/G délicate',
-    features: 'Balmer modérées, Ca II faible',
+    perfNote: 'Delicate F/G boundary',
+    features: 'Moderate Balmer lines, weak Ca II',
     fraction: '~8%',
   },
   {
     letter: 'G',
-    name: 'Étoiles solaires',
-    examples: 'Soleil, Tau Ceti, Alpha Cen A',
+    name: 'Solar-type stars',
+    examples: 'Sun, Tau Ceti, Alpha Cen A',
     teff: '5 200–6 000 K',
     teffRange: [5200, 6000],
     color: '#FDE68A',
     bgColor: '#FDE047',
-    performance: 'Bonne',
+    performance: 'Good',
     perfColor: '#FBBF24',
-    perfNote: 'Classe pivot — frontière F et K',
-    features: 'Ca II modérées, Balmer faibles',
+    perfNote: 'Pivot class — F and K boundary',
+    features: 'Moderate Ca II, weak Balmer lines',
     fraction: '~15%',
   },
   {
     letter: 'K',
-    name: 'Étoiles orangées',
+    name: 'Orange stars',
     examples: 'Alpha Centauri B, Arcturus',
     teff: '3 700–5 200 K',
     teffRange: [3700, 5200],
     color: '#FCA5A1',
     bgColor: '#FB923C',
-    performance: 'Très bonne',
+    performance: 'Very good',
     perfColor: '#34D399',
-    perfNote: 'Grande population — bien représentée',
-    features: 'Ca II fortes, Mg b visibles',
+    perfNote: 'Large population — well represented',
+    features: 'Strong Ca II, visible Mg b',
     fraction: '~35%',
   },
   {
     letter: 'M',
-    name: 'Étoiles rouges froides',
-    examples: 'Proxima Centauri, Bételgeuse',
+    name: 'Cool red stars',
+    examples: 'Proxima Centauri, Betelgeuse',
     teff: '< 3 700 K',
     teffRange: [2400, 3700],
     color: '#FCA5A5',
     bgColor: '#DC2626',
-    performance: 'Excellente',
+    performance: 'Excellent',
     perfColor: '#34D399',
-    perfNote: 'Bandes TiO/VO/CaH très distinctives',
-    features: 'Bandes moléculaires TiO, VO, CaH',
+    perfNote: 'Highly distinctive TiO/VO/CaH bands',
+    features: 'TiO, VO, CaH molecular bands',
     fraction: '~40%',
   },
 ];
@@ -127,7 +127,7 @@ function ClassCard({ letter, name, examples, teff, color, bgColor, performance, 
             color: perfColor,
           }}>{performance}</div>
           <div style={{ fontSize: '10px', opacity: 0.4, marginTop: '3px', color: 'var(--ifm-font-color-base)' }}>
-            {fraction} du jeu
+            {fraction} of dataset
           </div>
         </div>
       </div>
@@ -195,7 +195,7 @@ function HarvardBar() {
   return (
     <div style={{ margin: '0 0 20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
       <div style={{ fontSize: '10px', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--ifm-font-color-base)' }}>
-        Séquence de Harvard — température effective (K)
+        Harvard sequence — effective temperature (K)
       </div>
       <div style={{ display: 'flex', height: '10px', borderRadius: '5px', overflow: 'hidden' }}>
         {CLASSES.map((c) => (
@@ -242,7 +242,7 @@ export default function SpectralClasses() {
         color: 'var(--ifm-font-color-base)',
         opacity: 0.8,
       }}>
-        <strong style={{ color: '#DC2626' }}>Classe M — Excellente</strong> : les bandes moléculaires TiO, VO et CaH sont absentes dans tous les types chauds — la classe M est spectralement inconfondable. Survole les cartes pour les notes de performance.
+        <strong style={{ color: '#DC2626' }}>Class M — Excellent</strong>: TiO, VO, and CaH molecular bands are absent from all hot types — class M is spectrally unmistakable. Hover over the cards for performance notes.
       </div>
     </div>
   );

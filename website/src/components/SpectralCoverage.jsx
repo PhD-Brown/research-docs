@@ -64,8 +64,8 @@ const FAMILY_LEGEND = [
   { id: 'balmer', label: 'Balmer (H)',        color: '#60A5FA', row: 1 },
   { id: 'caii',   label: 'Ca II H&K + IR',    color: '#C084FC', row: 2 },
   { id: 'mg',     label: 'Mg b',              color: '#34D399', row: 2 },
-  { id: 'fe',     label: 'Fer & métaux',      color: '#FB923C', row: 3 },
-  { id: 'mol',    label: 'Bandes moléculaires', color: '#F87171', row: 3 },
+  { id: 'fe',     label: 'Iron & metals',      color: '#FB923C', row: 3 },
+  { id: 'mol',    label: 'Molecular bands', color: '#F87171', row: 3 },
 ];
 
 export default function SpectralCoverage() {
@@ -89,7 +89,7 @@ export default function SpectralCoverage() {
         color: 'var(--ifm-font-color-base)',
         marginBottom: '16px',
       }}>
-        Couverture spectrale LAMOST DR5 — 3 690–9 100 Å — positions des familles de raies
+        LAMOST DR5 spectral coverage — 3,690–9,100 Å — line-family positions
       </div>
 
       {/* Spectrum bar */}
@@ -132,7 +132,7 @@ export default function SpectralCoverage() {
           color: 'rgba(255,255,255,0.45)',
           whiteSpace: 'nowrap',
           fontFamily: 'monospace',
-        }}>bras bleu | bras rouge</div>
+        }}>blue arm | red arm</div>
       </div>
 
       {/* Spectral line rows */}

@@ -4,13 +4,13 @@ description: Complete API reference for all AstroSpectro modules and classes.
 sidebar_position: 8
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # API Reference
 
 Complete API reference for all AstroSpectro modules and classes.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

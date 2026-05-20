@@ -28,7 +28,7 @@ sidebar_position: 1
 
 ## Key result
 
-:::info Central scientific finding
+:::info[Central scientific finding]
 SHAP analysis reveals that **metallicity-sensitive features (Ca II H&K and Mg b)**
 play a major role alongside classical Balmer temperature indicators in the learned
 classification structure. Manuscript in preparation; target venue under consideration.

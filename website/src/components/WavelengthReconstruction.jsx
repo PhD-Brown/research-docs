@@ -8,19 +8,19 @@ const FALLBACKS = [
   {
     priority: 1,
     method: 'COEFF0 + COEFF1',
-    source: 'Header FITS',
+    source: 'FITS header',
     formula: 'λ = 10^(COEFF0 + i × COEFF1)',
     color: '#34D399',
-    status: 'Primaire — ~99 % des spectres LAMOST DR5',
+    status: 'Primary — ~99% of LAMOST DR5 spectra',
     available: true,
   },
   {
     priority: 2,
-    method: 'loglam colonne',
-    source: 'Extension données',
+    method: 'loglam column',
+    source: 'Data extension',
     formula: 'λ = 10^loglam[i]',
     color: '#F59E0B',
-    status: 'Fallback — certaines campagnes DR3/DR4',
+    status: 'Fallback — some DR3/DR4 campaigns',
     available: true,
   },
   {
@@ -29,16 +29,16 @@ const FALLBACKS = [
     source: 'CRVAL1 + CDELT1',
     formula: 'λ = CRVAL1 + i × CDELT1',
     color: '#A78BFA',
-    status: 'Fallback 2 — formats spéciaux',
+    status: 'Fallback 2 — special formats',
     available: true,
   },
   {
     priority: 4,
-    method: 'Échec de chargement',
-    source: 'Aucune grille trouvée',
-    formula: 'Spectre ignoré, log dans errors.csv',
+    method: 'Loading failure',
+    source: 'No grid found',
+    formula: 'Spectrum ignored, logged in errors.csv',
     color: '#F87171',
-    status: 'Gestion d\'erreur — très rare',
+    status: 'Error handling — very rare',
     available: false,
   },
 ];
@@ -56,8 +56,8 @@ const KEY_LINES = [
 
 // LAMOST spectral regions
 const REGIONS = [
-  { from: 3690, to: 5900, label: 'Bras bleu', color: '#38BDF8' },
-  { from: 5900, to: 9100, label: 'Bras rouge', color: '#F87171' },
+  { from: 3690, to: 5900, label: 'Blue arm', color: '#38BDF8' },
+  { from: 5900, to: 9100, label: 'Red arm', color: '#F87171' },
 ];
 
 function wlPct(lambda) {
@@ -85,7 +85,7 @@ function SpectralRuler() {
         color: 'var(--ifm-font-color-base)',
         fontFamily: 'monospace',
       }}>
-        Grille reconstruite — 3 921 canaux · 3 690–9 100 Å
+        Reconstructed grid — 3,921 channels · 3,690–9,100 Å
       </div>
 
       {/* Spectral regions */}
@@ -97,7 +97,7 @@ function SpectralRuler() {
             <div key={r.label} style={{
               flex: `0 0 ${widthPct}%`,
               background: `${r.color}30`,
-              borderRight: r.label === 'Bras bleu' ? `2px solid rgba(255,255,255,0.3)` : 'none',
+              borderRight: r.label === 'Blue arm' ? `2px solid rgba(255,255,255,0.3)` : 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -192,7 +192,7 @@ function SpectralRuler() {
         color: 'var(--ifm-font-color-base)',
         textAlign: 'right',
       }}>
-        N = {N_PIXELS.toLocaleString('fr-FR')} canaux · Δλ/pixel ≈ 1,36 Å · Survoler les raies
+        N = {N_PIXELS.toLocaleString('en-US')} channels · Δλ/pixel ≈ 1.36 Å · Hover over lines
       </div>
     </div>
   );
@@ -222,7 +222,7 @@ export default function WavelengthReconstruction() {
           opacity: 0.4,
           color: 'var(--ifm-font-color-base)',
         }}>
-          Chaîne de fallback — reconstruction robuste de la grille λ
+          Fallback chain — robust λ-grid reconstruction
         </div>
 
         {FALLBACKS.map((f, i) => {
@@ -315,34 +315,34 @@ export default function WavelengthReconstruction() {
         lineHeight: 1.7,
       }}>
         <div style={{ fontSize: '10px', opacity: 0.35, marginBottom: '8px', color: 'var(--ifm-font-color-base)' }}>
-          src/pipeline/preprocessor.py — Méthode {FALLBACKS[checkedIdx].priority} : {FALLBACKS[checkedIdx].method}
+          src/pipeline/preprocessor.py — Method {FALLBACKS[checkedIdx].priority}: {FALLBACKS[checkedIdx].method}
         </div>
         {checkedIdx === 0 && (
-          <pre style={{ margin: 0, color: '#34D399' }}>{`# Méthode primaire — COEFF0 + COEFF1 (log-linéaire)
-coeff0 = header['COEFF0']      # λ₀ du premier pixel (log10)
-coeff1 = header['COEFF1']      # pas logarithmique / pixel
-n_pix  = flux.shape[0]         # 3921 canaux
+          <pre style={{ margin: 0, color: '#34D399' }}>{`# Primary method — COEFF0 + COEFF1 (log-linear)
+coeff0 = header['COEFF0']      # λ₀ of the first pixel (log10)
+coeff1 = header['COEFF1']      # logarithmic step / pixel
+n_pix  = flux.shape[0]         # 3921 channels
 loglam  = coeff0 + np.arange(n_pix) * coeff1
-wavelength = 10 ** loglam      # → Ångströms [3690 ... 9100]`}</pre>
+wavelength = 10 ** loglam      # → Angstroms [3690 ... 9100]`}</pre>
         )}
         {checkedIdx === 1 && (
-          <pre style={{ margin: 0, color: '#F59E0B' }}>{`# Fallback — colonne loglam dans l'extension de données
-loglam     = hdul[0].data[4]   # colonne log-wavelength stockée
-wavelength = 10 ** loglam      # → Ångströms`}</pre>
+          <pre style={{ margin: 0, color: '#F59E0B' }}>{`# Fallback — loglam column in the data extension
+loglam     = hdul[0].data[4]   # stored log-wavelength column
+wavelength = 10 ** loglam      # → Angstroms`}</pre>
         )}
         {checkedIdx === 2 && (
           <pre style={{ margin: 0, color: '#A78BFA' }}>{`# Fallback 2 — WCS standard
-crval1 = header['CRVAL1']      # λ au pixel de référence
-cdelt1 = header['CDELT1']      # pas linéaire / pixel
+crval1 = header['CRVAL1']      # λ at the reference pixel
+cdelt1 = header['CDELT1']      # linear step / pixel
 crpix1 = header.get('CRPIX1', 1)
 pixel  = np.arange(n_pix) - (crpix1 - 1)
 wavelength = crval1 + pixel * cdelt1`}</pre>
         )}
         {checkedIdx === 3 && (
-          <pre style={{ margin: 0, color: '#F87171' }}>{`# Gestion d'erreur — aucun format reconnu
-logger.warning(f"Impossible de reconstruire λ pour {obsid}")
+          <pre style={{ margin: 0, color: '#F87171' }}>{`# Error handling — no recognized format
+logger.warning(f"Unable to reconstruct λ for {obsid}")
 error_log.append({'obsid': obsid, 'reason': 'no_wavelength_grid'})
-return None  # spectre ignoré du pipeline`}</pre>
+return None  # spectrum ignored by the pipeline`}</pre>
         )}
       </div>
     </div>

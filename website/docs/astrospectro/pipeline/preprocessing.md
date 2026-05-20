@@ -4,13 +4,13 @@ description: Preprocessing in the AstroSpectro pipeline.
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Preprocessing
 
 Preprocessing in the AstroSpectro pipeline.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

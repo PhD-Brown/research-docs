@@ -4,13 +4,13 @@ description: Cross-project notebook atlas.
 sidebar_position: 6
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Notebook Atlas
 
 Cross-project notebook atlas.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

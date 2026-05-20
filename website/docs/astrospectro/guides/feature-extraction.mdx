@@ -1,0 +1,68 @@
+---
+id: feature-extraction
+title: Feature extraction
+sidebar_label: Feature extraction
+---
+
+{/* Complet for v1.0.0 release */}
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWandSparkles, faSearchLocation, faMagic, faFileExport, faAtom, faRulerCombined, faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
+import Admonition from '@theme/Admonition';
+
+# <FontAwesomeIcon icon={faFileExport} /> Guide: Feature Extraction
+
+This step is the core of the **AstroSpectro** pipeline's "hybrid" approach (physics + ML). Instead of feeding the raw spectrum to a model, we extract physically relevant information that makes high classification performance possible.
+
+This process is managed by two main classes: [`PeakDetector`](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/peak_detector.py) and [`FeatureEngineer`](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/feature_engineering.py).
+
+## <FontAwesomeIcon icon={faSearchLocation} /> Step 1: Line Detection and Measurement
+
+The `PeakDetector` module identifies local minima (absorption lines) and associates them with a list of known astrophysical lines.
+
+1.  **Detection with SciPy:** The `scipy.signal.find_peaks` function is applied to the inverted flux to locate all peaks above a **prominence** threshold. This parameter, **tuned interactively** using our visualization tools, is crucial for keeping only significant lines.
+2.  **Matching with Known Lines:** The detected peaks are compared with a dictionary of target lines (`Hα`, `Hβ`, `CaII K&H`, `Mg_b`, `Na_D`). The most prominent peak within a tolerance window is associated with the line.
+3.  **Returning Properties:** The `PeakDetector` no longer returns only the position, but a dictionary containing a `(wavelength, prominence)` tuple for each detected line.
+
+```python title="PeakDetector output example"
+matched_lines = {
+    "Hα": (6564.1, 0.281),
+    "Hβ": (4861.2, 0.485),
+    "CaII K": (3927.0, 2.344),
+    "CaII H": None, # Line not detected
+    "Mg_b": (5185.6, 0.996),
+    "Na_D": (5895.1, 0.528)
+}
+```
+
+## <FontAwesomeIcon icon={faMagic} /> Step 2: Building the Feature Vector
+
+The line dictionary is then passed to FeatureEngineer, which transforms it into a rich numerical vector for the model. Our approach combines three feature families.
+
+### <FontAwesomeIcon icon={faAtom} /> 1. Physical Line Features
+
+For each detected line, we compute physical measurements that describe its shape and strength.
+
+-   **Strength (Prominence):** The depth of the line, directly provided by `PeakDetector`.
+-   **Width (FWHM):** The "Full Width at Half Maximum", computed with `specutils` on a smoothed (``Savitzky-Golay``) version of the line. It is an excellent indicator of luminosity class.
+
+### <FontAwesomeIcon icon={faRulerCombined} /> 2. Ratio Features
+
+Ratios between *features* are often more discriminating than the *features* themselves.
+
+-   **Strength Ratios:** We compute ratios between the prominences of different lines (e.g., `CaII K / Hβ`). These ratios are robust proxies for stellar temperature.
+-   **Color Index:** We compute a simple color index (ratio of blue flux to red flux) from the spectrum continuum.
+
+### <FontAwesomeIcon icon={faSatelliteDish} /> 3. Contextual Features (Metadata)
+
+Feature-importance analysis revealed that the observational context is crucial. We therefore directly include metadata from the FITS header:
+
+-   `redshift`
+-   `seeing`
+-   Signal-to-noise ratio (`snr_g`, `snr_r`, `snr_i`)
+
+<Admonition type="success" title="Result: A Rich Feature Vector">
+<p>
+In the end, each spectrum is transformed into a vector of <strong>more than 20 features</strong>, combining information about line shape, global temperature, and observation quality. This enrichment is what made it possible to increase model performance from <strong>32% to more than 80%</strong>.
+</p>
+</Admonition>

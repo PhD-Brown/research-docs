@@ -4,13 +4,13 @@ description: The design goals and architectural decisions that shape AstroSpectr
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Pipeline Philosophy
 
 The design goals and architectural decisions that shape AstroSpectro.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

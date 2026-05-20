@@ -4,13 +4,13 @@ description: "AstroVision model: dinov2 — linear probe."
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # DINOv2 — Linear Probe
 
 AstroVision model: dinov2 — linear probe.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

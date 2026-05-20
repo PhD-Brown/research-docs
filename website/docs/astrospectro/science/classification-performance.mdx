@@ -1,0 +1,183 @@
+---
+id: classification-performance
+title: XGBoost — comparison on the same 183 features
+sidebar_label: XGBoost — supervised comparison
+sidebar_position: 5
+description: "Results of the XGBoost classifier trained in spectro_only=True mode on the 183 LAMOST DR5 features. 87% balanced accuracy on 5 classes, median confidence 96.3%, geographic coherence in UMAP space."
+tags: [xgboost, classification, supervised, umap, spectro-only, lamost, accuracy]
+---
+
+import ClassifierMetrics from '@site/src/components/ClassifierMetrics';
+import SpectralClasses from '@site/src/components/SpectralClasses';
+import SHAPTop10 from '@site/src/components/SHAPTop10';
+import ProgressionPipeline from '@site/src/components/ProgressionPipeline';
+import PCAvsXGBoost from '@site/src/components/PCAvsXGBoost';
+import TrainingConfig from '@site/src/components/TrainingConfig';
+import UMAPPredictions from '@site/src/components/UMAPPredictions';
+import RelatedPages from '@site/src/components/RelatedPages';
+
+# XGBoost — comparison on the same 183 features
+
+This page documents the results of the supervised XGBoost classifier trained on the **same 183 spectroscopic features** used for PCA/UMAP/t-SNE dimensionality reduction. It establishes the link between the unsupervised approach (emergent structure in UMAP) and the supervised approach (classification with labels), demonstrating that both converge toward the same physical structure.
+
+## Key results
+
+<ClassifierMetrics />
+
+---
+
+## Context and motivation
+
+The conclusion of the PHY-3500 article (Baker, Caillat & Jean, 28 April 2026) opens with this perspective:
+
+> "An XGBoost classifier trained on the same 183 features achieves a balanced accuracy of 87% on five spectral types (A, F, G, K, M), with a median confidence of 96.3% for its predictions projected in UMAP space. The geographic coherence of XGBoost predictions in the projection confirms that the supervised classifier and unsupervised dimensionality reduction methods capture the same physical structure: projections are not only visualisation tools, but also qualitative validation spaces for supervised models."
+
+This result is central to AstroSpectro: it demonstrates that the 183 *pure* spectral features (without Gaia, without `ra`/`dec`/`redshift`) are sufficient for high-performance classification.
+
+---
+
+## Experimental configuration
+
+### `spectro_only=True` mode
+
+This result is obtained in **`spectro_only=True`** mode of `SpectralClassifier` — i.e., using *only* spectral features, without any observational metadata or Gaia features.
+
+Variables excluded compared to the full model:
+- `ra`, `dec` (angular coordinates)
+- `redshift`, `seeing` (LAMOST observation conditions)
+- `parallax`, `bp_rp`, `teff_gspphot`, `logg_gspphot` and other Gaia columns
+
+This restriction guarantees that the model learns to classify stars from their **intrinsic physics** alone — the condition required for rigorous scientific publication and for application to data without Gaia cross-match.
+
+### Training data
+
+<TrainingConfig />
+
+```python
+from src.pipeline.classifier import SpectralClassifier
+
+clf = SpectralClassifier(
+    model_type="XGBoost",
+    prediction_target="main_class",
+)
+clf.train_and_evaluate(features_df, spectro_only=True)
+```
+
+---
+
+## Classification results
+
+### Per-class performance — the Harvard sequence
+
+<SpectralClasses />
+
+### F/G confusion — the trickiest boundary
+
+The main confusion of the model concentrates at the **F-G boundary** (5,500–6,200 K). These stars share similar Balmer and Ca II line widths, and the distinction relies on fine features (continuum asymmetry, Lick Mg b indices, Hβ). This ambiguity is visible in UMAP space: erroneous F/G predictions concentrate in the transition zone between the two populations — this is not a classifier error, but a reflection of **real physical continuity** in the spectral sequence.
+
+**Figure reference:** `umap_xgboost_FG_confusion.png`
+
+---
+
+## Geographic coherence in UMAP space
+
+### Principle of supervised/unsupervised cross-validation
+
+The UMAP projection of XGBoost predictions allows **qualitative validation** of the model: if the supervised classifier has learned the same physical structure as UMAP (unsupervised), predictions should follow the geography of the projection.
+
+### Results
+
+<UMAPPredictions />
+
+This direct correspondence between the emergent structure of UMAP (without labels) and XGBoost classification (with labels) demonstrates that both approaches capture the **same underlying physical structure**: the effective temperature sequence of Harvard's MK classification.
+
+---
+
+## SHAP interpretability — which features decide?
+
+SHAP (*SHapley Additive exPlanations*) analysis on the `spectro_only=True` model reveals the actual importance of features in classifier decisions.
+
+<SHAPTop10 />
+
+---
+
+## PCA vs XGBoost — two questions, two answers
+
+These two approaches seem contradictory (PCA finds temperature, XGBoost finds Ca II/metallicity) but are in fact complementary:
+
+<PCAvsXGBoost />
+
+---
+
+## Link to the complete AstroSpectro pipeline
+
+This result is part of a coherent progression of the AstroSpectro project:
+
+<ProgressionPipeline />
+
+---
+
+## Using the model
+
+### Load and predict
+
+```python
+from src.pipeline.classifier import SpectralClassifier
+
+# Load the reference model
+clf = SpectralClassifier.load_model(
+    "data/models/spectral_classifier_xgboost_20260213T225019Z.pkl"
+)
+
+# Predict on new spectra (same feature format)
+predictions = clf.model_pipeline.predict(X_new)
+probabilities = clf.model_pipeline.predict_proba(X_new)
+```
+
+### Reference run metadata
+
+The reference run is documented in:
+```
+data/reports/20260213T225019Z/
+├── spectral_classifier_xgboost_20260213T225019Z_meta.json
+└── spectral_classifier_xgboost_20260213T225019Z.pkl
+```
+
+The meta JSON contains the final hyperparameters, the list of 59 selected features, class labels, and the training source file (`features_20251217T160120Z.csv`).
+
+---
+
+<RelatedPages pages={[
+  {
+    href: './dimensionality-reduction',
+    title: 'Dimensionality Reduction',
+    desc: 'UMAP — geographic structure used for qualitative validation',
+    category: 'science',
+  },
+  {
+    href: './features-list-183',
+    title: 'Catalogue of 183 features',
+    desc: 'SHAP top-30 feature definitions · 6 spectral families',
+    category: 'science',
+    badge: '183 features',
+  },
+  {
+    href: './dataset-dimred',
+    title: 'PHY-3500 Dataset',
+    desc: 'The same N = 43,019 dataset · quality filters · standardisation',
+    category: 'science',
+    badge: '43,019 spectra',
+  },
+  {
+    href: '../user-guides/model-training',
+    title: 'Guide — Model training',
+    desc: 'SpectralClassifier, GridSearchCV/Optuna tuning, W&B, artefacts',
+    category: 'guides',
+  },
+  {
+    href: '../api/classifier',
+    title: 'API — SpectralClassifier',
+    desc: 'Complete class reference — methods, parameters, attributes',
+    category: 'api',
+  },
+]} />

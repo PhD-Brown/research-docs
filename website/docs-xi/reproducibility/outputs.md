@@ -4,13 +4,13 @@ description: "ξ Dark Energy: outputs."
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Outputs
 
 ξ Dark Energy: outputs.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

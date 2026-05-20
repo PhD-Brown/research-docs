@@ -4,13 +4,13 @@ description: "ξ Dark Energy inference: likelihood functions."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Likelihood Functions
 
 ξ Dark Energy inference: likelihood functions.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

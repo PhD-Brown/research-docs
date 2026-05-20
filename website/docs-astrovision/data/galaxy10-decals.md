@@ -4,13 +4,13 @@ description: "AstroVision data: galaxy10 decals."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Galaxy10 DECaLS
 
 AstroVision data: galaxy10 decals.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

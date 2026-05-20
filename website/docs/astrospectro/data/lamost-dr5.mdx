@@ -1,0 +1,206 @@
+---
+id: lamost-dr5
+title: LAMOST DR5 Data
+sidebar_label: LAMOST DR5
+sidebar_position: 1
+description: "Complete presentation of LAMOST DR5 data used by AstroSpectro: telescope characteristics, FITS structure, SmartDownloader pipeline, Gaia DR3 cross-match and quality filters."
+tags: [lamost, dr5, fits, gaia, download, data]
+---
+
+import LAMOSTSpecs from '@site/src/components/LAMOSTSpecs';
+import FITSFieldsTable from '@site/src/components/FITSFieldsTable';
+import RelatedPages from '@site/src/components/RelatedPages';
+
+# The Data: LAMOST DR5
+
+The **AstroSpectro** pipeline is built on the scientific exploitation of stellar spectra from the **LAMOST Data Release 5 (DR5)**. This wide-field spectroscopic survey represents one of the richest astrophysical databases in the world: several million spectra acquired at low resolution, covering the entire sky accessible from Xinglong, China.
+
+---
+
+## Telescope and survey characteristics
+
+LAMOST (*Large Sky Area Multi-Object Fiber Spectroscopic Telescope*) is a unique instrument for its spectral multiplexing capabilities: 4,000 optical fibres can observe 4,000 objects simultaneously within a field of view of 5° diameter.
+
+<LAMOSTSpecs />
+
+---
+
+## Structure of a LAMOST FITS file
+
+Each LAMOST DR5 spectrum is distributed in **compressed FITS** format (`.fits.gz`). A file typically contains several extensions:
+
+- **Extension 0 (PRIMARY)**: Global header with observation metadata
+- **Extension 1 (FLUX)**: Spectral flux array (3,921 float32 values)
+- **Extension 2 (IVAR)**: Inverse variance (pixel-by-pixel quality)
+- **Extension 3 (AND_MASK / OR_MASK)**: Defective pixel masks
+- **Extension 4 (WAVELENGTH)**: Wavelength grid reconstructed from `COEFF0` and `COEFF1`
+
+### Key FITS header fields
+
+The following fields are automatically extracted by `spectra_manager.py` during parsing. Hover to see the role in the pipeline, filter by category.
+
+<FITSFieldsTable />
+
+### Wavelength grid reconstruction
+
+The λ grid is not stored explicitly but reconstructed from WCS coefficients:
+
+```python
+import numpy as np
+
+# Wavelength grid reconstruction (log or linear depending on instrument)
+coeff0 = header['COEFF0']   # λ₀ of the first pixel
+coeff1 = header['COEFF1']   # Δλ / pixel
+
+n_pixels = 3921
+wavelength = 10 ** (coeff0 + coeff1 * np.arange(n_pixels))  # in Ångströms
+# → [3690 Å ... 9100 Å]
+```
+
+---
+
+## Download and organisation pipeline
+
+### Local data architecture
+
+```
+data/
+├── raw/                         # Raw FITS spectra
+│   └── <planid>/                # Organised by observation plan
+│       └── spec-<obsid>.fits.gz
+├── catalog/                     # Catalogues and logs
+│   ├── master_catalog.csv       # Master catalogue after FITS parsing
+│   ├── downloaded_plans.csv     # Log of downloaded plans (avoids duplicates)
+│   └── valid_plan_urls.csv      # Valid URLs extracted from the DR5 website
+├── processed/                   # Extracted features
+│   └── features_<timestamp>.csv # Feature matrix X ∈ ℝ^(N×183) ready for ML
+└── models/                      # Saved models
+    └── spectral_classifier_xgboost_<ISO>.pkl
+```
+
+### SmartDownloader — Intelligent downloading
+
+The `dr5_downloader.py` module implements **idempotent** download logic:
+
+```python
+from src.tools.dr5_downloader import SmartDownloader
+
+downloader = SmartDownloader(
+    data_dir="data/raw/",
+    log_file="data/catalog/downloaded_plans.csv",
+    n_workers=8,          # parallel download
+)
+
+# Start download — automatically resumes where it left off
+downloader.run(urls_file="data/catalog/valid_plan_urls.csv")
+```
+
+**Smart logic:**
+1. Consults `downloaded_plans.csv` to list already-complete plans
+2. Filters already-downloaded URLs — avoids duplicates
+3. Parallel download with error handling and retry
+4. Logs each completed plan — progress is preserved between sessions
+
+**Measured throughput:** ~340,000 spectra/hour (Ryzen 9 5950X, 1 Gbps connection).
+
+### Downloaded volume
+
+| Status | Spectra | FITS files |
+|:---|:---:|:---:|
+| Downloaded | ~250,000 | ~250,000 |
+| Parsed → catalogue | ~250,000 | — |
+| After quality filtering | **43,019** | — |
+| Unprocessed available | ~139,000 | — |
+
+---
+
+## Positional cross-match with Gaia DR3
+
+Each LAMOST spectrum is matched with its counterpart in Gaia DR3 (Gaia Collaboration, Vallenari et al., 2023) by angular coordinates, via `gaia_crossmatcher.py`:
+
+```python
+from src.pipeline.gaia_crossmatcher import GaiaCrossmatcher
+
+matcher = GaiaCrossmatcher(
+    radius_arcsec=1.0,   # tolerance radius: 1 arcsecond
+    gaia_table="gaia_dr3_source.csv",
+)
+
+catalog_matched = matcher.crossmatch(lamost_catalog)
+```
+
+**Gaia DR3 parameters added:**
+
+| Parameter | Symbol | Unit | Use in AstroSpectro |
+|:---|:---:|:---:|:---|
+| Effective temperature | Teff | K | PC1 validation (ρ = +0.831) |
+| Surface gravity | log g | dex | Dwarf/giant validation |
+| Metallicity | [Fe/H] | dex | PC2 validation |
+| Photometric colour | G_BP − G_RP | mag | Teff correlation |
+| Parallax | π | mas | Distance, absolute magnitude |
+| Astrometric quality | RUWE | — | Quality filter: RUWE < 1.4 |
+
+---
+
+## Quality filters applied
+
+Two sequential filters guarantee the quality of the final dataset:
+
+| Filter | Criterion | Reason |
+|:---|:---:|:---|
+| Signal-to-noise ratio | `SNR_r > 10` | Ensures line detectability and reliability of equivalent widths |
+| Astrometric quality | `RUWE < 1.4` | Excludes unresolved binary stars and Gaia measurement artefacts |
+
+```python
+# Filters applied in data_loader.py
+mask_snr  = catalog['snr_r'] > 10
+mask_ruwe = catalog['ruwe'] < 1.4
+catalog_clean = catalog[mask_snr & mask_ruwe]
+# N: 250,000 → 43,019 spectra retained
+```
+
+---
+
+## Data access
+
+| Source | URL | Format |
+|:---|:---|:---:|
+| LAMOST DR5 spectra | http://dr5.lamost.org/ | FITS |
+| Gaia DR3 archive | https://gea.esac.esa.int/archive/ | VOTable / CSV |
+| AstroSpectro plan catalogue | `data/catalog/valid_plan_urls.csv` | CSV |
+
+---
+
+<RelatedPages pages={[
+  {
+    href: '../user-guides/downloading-data',
+    title: 'Download Guide',
+    desc: 'Complete SmartDownloader tutorial — configure, run, resume',
+    category: 'guides',
+  },
+  {
+    href: './dataset-dimred',
+    title: 'PHY-3500 Dataset',
+    desc: 'Final composition N=43,019 · quality filters · standardisation',
+    category: 'science',
+    badge: '43,019 spectra',
+  },
+  {
+    href: './features-list-183',
+    title: 'Catalogue of 183 features',
+    desc: 'Features extracted from LAMOST spectra — families, PCA loadings',
+    category: 'science',
+  },
+  {
+    href: '../concepts/project-structure',
+    title: 'Project structure',
+    desc: 'Overview of the directory tree — data/, src/, notebooks/',
+    category: 'concepts',
+  },
+  {
+    href: 'http://dr5.lamost.org/',
+    title: 'Official LAMOST DR5 site',
+    desc: 'Survey documentation · access to raw data',
+    category: 'external',
+  },
+]} />

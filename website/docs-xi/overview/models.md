@@ -4,13 +4,13 @@ description: "ξ Dark Energy: three model families."
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Three Model Families
 
 ξ Dark Energy: three model families.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

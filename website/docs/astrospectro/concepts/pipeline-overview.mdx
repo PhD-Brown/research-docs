@@ -1,0 +1,138 @@
+---
+id: pipeline-overview
+title: pipeline overview
+sidebar_label: Pipeline overview
+---
+
+{/* Complete for v1.0.0 release once graph is completed */}
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+
+# <FontAwesomeIcon icon={faProjectDiagram} /> Pipeline Overview
+
+This page presents the complete workflow of the **AstroSpectro** project, from raw data acquisition to the generation of classification results. The pipeline is designed as a sequence of modular steps.
+
+### Workflow Diagram
+
+> The diagram below illustrates the main phases of the pipeline. Each phase is implemented by one or more specific modules in the source code.
+
+
+<div style={{textAlign: 'center', backgroundColor: 'var(--ifm-background-color-secondary)', padding: '1rem', borderRadius: 'var(--ifm-card-border-radius)'}}>
+
+```mermaid
+---
+config:
+  layout: fixed
+  theme: dark
+  look: neo
+---
+flowchart TD
+ subgraph subGraph0["**Phase 1: Acquisition**"]
+        DL["**Step 1**: Download<br><i>(dr5_downloader.py)</i>"]
+        LOGS["Download log<br><i>(downloaded_plans.csv)</i>"]
+  end
+ subgraph subGraph1["**Phase 2: Batch Selection**"]
+        SEL@{ label: "**Step 2**: Batch selection<br><i>(Dataset_Builder)</i>" }
+        SELLOG["Used spectra log<br><i>(trained_spectra.csv)</i>"]
+  end
+ subgraph subGraph2["**Phase 3: Preparation**"]
+        CATALOG["**Step 3**: Catalog generation<br><i>(generate_catalog_from_fits.py)</i>"]
+        PREPROC["**Step 4**: Batch preprocessing<br><i>(Preprocessor)</i>"]
+  end
+ subgraph subGraph3["**Phase 4: Extraction & Training**"]
+        FEAT>"**Step 5**: Feature extraction<br><i>(PeakDetector &amp; FeatureEngineer)</i>"]
+        TRAIN["**Step 6**: Training &amp; Validation<br><i>(Classifier)</i>"]
+  end
+ subgraph subGraph4["**Phase 5: Finalization**"]
+        UPDLOG["**Step 7**: Log update<br><i>(DatasetBuilder)</i>"]
+        REPORTS["**Step 8**: Artifact saving<br><i>(JSON reports, PKL models)</i>"]
+  end
+    DL L_DL_LOGS_0@--> LOGS & SEL
+    SEL L_SEL_SELLOG_0@--> SELLOG & CATALOG
+    CATALOG L_CATALOG_PREPROC_0@--> PREPROC
+    FEAT L_FEAT_TRAIN_0@--> TRAIN
+    TRAIN L_TRAIN_UPDLOG_0@--> UPDLOG & REPORTS
+    UPDLOG L_UPDLOG_SELLOG_0@--> SELLOG
+    PREPROC L_PREPROC_subGraph3_0@--> subGraph3
+    DL@{ shape: db}
+    LOGS@{ shape: card}
+    SEL@{ shape: rounded}
+    SELLOG@{ shape: card}
+    CATALOG@{ shape: procs}
+    PREPROC@{ shape: h-cyl}
+    TRAIN@{ shape: internal-storage}
+    UPDLOG@{ shape: card}
+    REPORTS@{ shape: rounded}
+     DL:::actionStyle
+     DL:::Peach
+     DL:::Sky
+     LOGS:::Ash
+     SEL:::gray
+     SELLOG:::Ash
+     CATALOG:::gray
+     PREPROC:::gray
+     FEAT:::gray
+     TRAIN:::gray
+     UPDLOG:::gray
+     REPORTS:::gray
+    classDef actionStyle fill:#21262d,stroke:#3d8bff,color:#c9d1d9,rx:5,ry:5
+    classDef Peach stroke-width:1px, stroke-dasharray:none, stroke:#FBB35A, fill:#FFEFDB, color:#8F632D
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+    classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+    classDef blue fill:#A4B8C4, stroke:#506070, color:#223040
+    classDef gray fill:#6E8387, stroke:#49575a, color:#ffffff
+    click DL "https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/dr5_downloader.py"
+    click LOGS "https://github.com/PhD-Brown/AstroSpectro/blob/main/data/catalog/downloaded_plans.csv"
+    click SEL "https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/dataset_builder.py"
+    click SELLOG "https://github.com/PhD-Brown/AstroSpectro/blob/main/data/catalog/trained_spectra.csv"
+    click CATALOG "https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/generate_catalog_from_fits.py"
+    click PREPROC "https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/preprocessor.py"
+    click FEAT "https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/peak_detector.py"
+    click TRAIN "https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/classifier.py"
+    click UPDLOG "https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/dataset_builder.py"
+    click REPORTS "https://github.com/PhD-Brown/AstroSpectro/tree/main/data/models"
+    linkStyle 1 stroke:#FFFFFF,fill:none
+    L_DL_LOGS_0@{ animation: slow } 
+    L_DL_SEL_0@{ animation: slow } 
+    L_SEL_SELLOG_0@{ animation: slow } 
+    L_SEL_CATALOG_0@{ animation: slow } 
+    L_CATALOG_PREPROC_0@{ animation: slow } 
+    L_FEAT_TRAIN_0@{ animation: slow } 
+    L_TRAIN_UPDLOG_0@{ animation: slow } 
+    L_TRAIN_REPORTS_0@{ animation: slow } 
+    L_UPDLOG_SELLOG_0@{ animation: slow } 
+    L_PREPROC_subGraph3_0@{ animation: slow }
+
+```
+
+</div>
+
+### Phase Description
+
+<div className="card-demo">
+<div className="card margin-bottom--md">
+<div className="card__header"><h4>1. Acquisition (Optional)</h4></div>
+<div className="card__body">
+The starting point. The ``SmartDownloader`` retrieves raw spectra from the **LAMOST** servers and stores them locally. It logs completed observation plans in ``downloaded_plans.csv`` to avoid redundant downloads.
+</div>
+</div>
+<div className="card margin-bottom--md">
+<div className="card__header"><h4>2. Session Preparation</h4></div>
+<div className="card__body">
+At each run, the ``DatasetBuilder`` selects a new batch of "fresh" spectra by consulting the ``trained_spectra.csv`` log. Then, a **local catalog** is generated from the **FITS** headers of this batch to ensure that the analysis is based on precise and up-to-date metadata.
+</div>
+</div>
+<div className="card margin-bottom--md">
+<div className="card__header"><h4>3. Processing and Modeling</h4></div>
+<div className="card__body">
+This is the core of the analysis. The ``ProcessingPipeline`` takes the batch of spectra and its local catalog, then executes the processing chain: preprocessing, line detection, and **extraction of a rich feature vector**. This feature dataset is then passed to the ``SpectralClassifier``, which handles **hyperparameter tuning** and **training** of the best model (``RandomForest`` or ``XGBoost``).
+</div>
+</div>
+<div className="card margin-bottom--md">
+<div className="card__header"><h4>4. Finalization</h4></div>
+<div className="card__body">
+Once the model has been trained, the pipeline concludes the session: the ``DatasetBuilder`` updates the ``trained_spectra.csv`` log with the spectra that have just been used. At the same time, the session **artifacts** (the ``.pkl`` model and a detailed *JSON* report) are saved in the ``data/models/`` and ``data/reports/`` folders for perfect traceability and reproducibility.
+</div>
+</div>
+</div>

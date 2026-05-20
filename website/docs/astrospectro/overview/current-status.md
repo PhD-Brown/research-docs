@@ -4,13 +4,13 @@ description: Current version, known issues, and upcoming roadmap for AstroSpectr
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Current Status
 
 Current version, known issues, and upcoming roadmap for AstroSpectro.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

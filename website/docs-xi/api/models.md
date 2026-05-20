@@ -4,13 +4,13 @@ description: "ξ Dark Energy API: cosmological models."
 sidebar_position: 1
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Cosmological Models
 
 ξ Dark Energy API: cosmological models.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -4,13 +4,13 @@ description: "AstroVision: scientific motivation."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Scientific Motivation
 
 AstroVision: scientific motivation.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

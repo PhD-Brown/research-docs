@@ -4,13 +4,13 @@ description: "AstroVision model: dinov2 — fine-tuned."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # DINOv2 — Fine-tuned
 
 AstroVision model: dinov2 — fine-tuned.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

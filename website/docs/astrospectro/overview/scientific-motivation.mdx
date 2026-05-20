@@ -1,0 +1,90 @@
+---
+id: scientific-motivation
+title: "Methodology & Overview"
+sidebar_position: 2
+---
+
+{/* Complete for v1.0.0 release */}
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faVial } from '@fortawesome/free-solid-svg-icons'
+
+# <FontAwesomeIcon icon={faVial} /> Pipeline Methodology
+
+This page describes the scientific and technical choices underlying each stage of the **AstroSpectro** pipeline, from raw data acquisition to final model evaluation. Our approach is **iterative** and data-driven.
+
+<br/>
+
+<div className="card-demo">
+  <div className="card margin-bottom--lg">
+    <div className="card__header">
+      <span className="step-number">1</span>
+      <h4>Data Download and Management</h4>
+    </div>
+    <div className="card__body">
+      The pipeline begins with a robust and <strong>reproducible</strong> data acquisition step. The objective is to build a clean, locally tracked database.
+      <ul>
+        <li><strong>Smart Downloading:</strong> A <code>SmartDownloader</code> script retrieves FITS files in bulk, using a <strong>round-robin</strong> strategy to ensure diversity across observation plans.</li>
+        <li><strong>State Management:</strong> The system uses log files (<code>downloaded_plans.csv</code>, <code>trained_spectra.csv</code>) to track already-processed data and ensure no operation is redundant, even across multiple sessions.</li>
+        <li><strong>Local Organisation:</strong> Data is organised in a predictable folder structure (<code>data/raw/</code>, <code>data/catalog/</code>).</li>
+      </ul>
+    </div>
+  </div>
+  <div className="card margin-bottom--lg">
+    <div className="card__header">
+      <span className="step-number">2</span>
+      <h4>Preprocessing and Quality Control</h4>
+    </div>
+    <div className="card__body">
+      Raw spectra are not directly usable. A rigorous cleaning step is applied to prepare the data for analysis.
+      <ul>
+        <li><strong>Median Normalisation:</strong> The flux is normalised to make spectra comparable, using the median as a reference robust to outliers.</li>
+        <li><strong>Targeted Smoothing (Savitzky-Golay):</strong> For fine analyses (FWHM, skewness), a Savitzky-Golay filter is applied locally on line windows to reduce noise while preserving signal shape.</li>
+        <li><strong>Missing Data Handling:</strong> Features that cannot be computed (e.g., FWHM on a too-noisy spectrum) are handled via constant imputation (zero) to preserve the "non-detection" information.</li>
+      </ul>
+    </div>
+  </div>
+  <div className="card margin-bottom--lg">
+    <div className="card__header">
+      <span className="step-number">3</span>
+      <h4>Feature Extraction (Feature Engineering)</h4>
+    </div>
+    <div className="card__body">
+      This is the core of our approach. We extract physically relevant information, combining spectral measurements and contextual metadata.
+      <ul>
+        <li><strong>Key Line Identification:</strong> The pipeline identifies major astrophysical lines (Hα, Hβ, CaII K&H, Mg_b, Na_D).</li>
+        <li><strong>Physical Measurements:</strong> For each line, we measure its <strong>strength (prominence)</strong> and <strong>width (FWHM)</strong>.</li>
+        <li><strong>Contextual Features:</strong> We have demonstrated that observation metadata (<code>redshift</code>, <code>SNR</code>, <code>seeing</code>) and <strong>colour indices</strong> are extremely powerful predictors.</li>
+        <li><strong>Line Ratios:</strong> Strength ratios (e.g., <code>CaII K / Hβ</code>) are computed to provide robust temperature indicators.</li>
+      </ul>
+    </div>
+  </div>
+  <div className="card margin-bottom--lg">
+    <div className="card__header">
+      <span className="step-number">4</span>
+      <h4>Model Training and Validation</h4>
+    </div>
+    <div className="card__body">
+      With a rich feature set, we systematically train and optimise our machine learning models.
+      <ul>
+        <li><strong>Model Benchmarking:</strong> The pipeline is multi-model and allows easy comparison of <code>RandomForest</code> and <code>XGBoost</code> performance.</li>
+        <li><strong>Stratified Cross-Validation:</strong> Performance is rigorously evaluated via cross-validation (k-fold) to ensure score reliability and avoid overfitting.</li>
+        <li><strong>Hyperparameter Tuning (<code>GridSearchCV</code>):</strong> We systematically search for the best parameter configuration for each model, ensuring optimal performance.</li>
+        <li><strong>Class Imbalance Handling (<code>SMOTE</code>):</strong> The SMOTE oversampling technique is integrated to compensate for class imbalance in the dataset.</li>
+      </ul>
+    </div>
+  </div>
+  <div className="card">
+    <div className="card__header">
+      <span className="step-number">5</span>
+      <h4>Evaluation and Reporting</h4>
+    </div>
+    <div className="card__body">
+      A model is only useful if we can understand and trust its predictions.
+      <ul>
+        <li><strong>Complete Reports:</strong> JSON session reports are automatically generated, containing metrics, model parameters, and the list of files used for perfect traceability.</li>
+        <li><strong>Key Visualisations:</strong> <strong>Confusion matrices</strong> and <strong>feature importance plots</strong> are generated for each training run, enabling fine analysis of errors and model logic.</li>
+      </ul>
+    </div>
+  </div>
+</div>

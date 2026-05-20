@@ -4,33 +4,33 @@ const PIPELINE_STEPS = [
   {
     step: 1,
     name: 'SimpleImputer',
-    detail: 'Stratégie zéro',
-    note: 'Valeurs manquantes → 0 (features spectrales physiquement absentes)',
+    detail: 'Zero strategy',
+    note: 'Missing values → 0 (physically absent spectral features)',
     color: '#38BDF8',
     icon: '∅',
   },
   {
     step: 2,
     name: 'StandardScaler',
-    detail: 'z-score sur train uniquement',
-    note: 'Ajusté sur X_train exclusivement — aucune fuite vers X_test',
+    detail: 'z-score on training set only',
+    note: 'Fitted on X_train only — no leakage into X_test',
     color: '#F59E0B',
     icon: 'σ',
   },
   {
     step: 3,
     name: 'SMOTE',
-    detail: '(optionnel)',
-    note: 'Suréchantillonnage synthétique pour classes minoritaires (A, galaxies)',
+    detail: '(optional)',
+    note: 'Synthetic oversampling for minority classes (A, galaxies)',
     color: '#A78BFA',
     icon: '⊕',
     optional: true,
   },
   {
     step: 4,
-    name: 'Classificateur',
+    name: 'Classifier',
     detail: 'XGBoost / LightGBM / ...',
-    note: 'Modèle final — pipeline complet encapsulé dans imblearn.Pipeline',
+    note: 'Final model — full pipeline encapsulated in imblearn.Pipeline',
     color: '#34D399',
     icon: '▶',
   },
@@ -38,15 +38,15 @@ const PIPELINE_STEPS = [
 
 const WANDB_CATEGORIES = [
   {
-    cat: 'Performance globale',
+    cat: 'Global performance',
     color: '#34D399',
     metrics: ['accuracy', 'balanced_accuracy', 'best_roc_auc', 'best_f1_macro'],
   },
   {
-    cat: 'Par classe (×5)',
+    cat: 'Per class (×5)',
     color: '#38BDF8',
     metrics: ['precision', 'recall', 'f1_score', 'roc_auc', 'avg_precision', 'brier'],
-    note: '5 classes A/F/G/K/M → 30 métriques',
+    note: '5 classes A/F/G/K/M → 30 metrics',
   },
   {
     cat: 'Calibration',
@@ -59,9 +59,9 @@ const WANDB_CATEGORIES = [
     metrics: ['n_spectra', 'n_train', 'n_test', 'n_features_used'],
   },
   {
-    cat: 'Visuels loggés',
+    cat: 'Logged visuals',
     color: '#FB923C',
-    metrics: ['Matrice de confusion', 'Courbes ROC', 'Courbes PR', 'Importance des features'],
+    metrics: ['Confusion matrix', 'ROC curves', 'PR curves', 'Feature importance'],
   },
 ];
 
@@ -112,7 +112,7 @@ function PipelineStep({ step, name, detail, note, color, icon, optional }) {
             border: `1px solid ${color}40`,
             borderRadius: '4px',
             padding: '1px 5px',
-          }}>optionnel</div>
+          }}>optional</div>
         )}
       </div>
 
@@ -205,8 +205,8 @@ export default function TrainingPipelineFlow() {
         marginBottom: '0',
       }}>
         {[
-          { id: 'pipeline', label: 'Pipeline intégré', color: '#38BDF8' },
-          { id: 'wandb',    label: 'Suivi W&B (121 métriques)', color: '#F59E0B' },
+          { id: 'pipeline', label: 'Integrated pipeline', color: '#38BDF8' },
+          { id: 'wandb',    label: 'W&B tracking (121 metrics)', color: '#F59E0B' },
         ].map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             background: tab === t.id ? `${t.color}12` : 'transparent',
@@ -235,7 +235,7 @@ export default function TrainingPipelineFlow() {
         {tab === 'pipeline' && (
           <>
             <div style={{ fontSize: '11px', opacity: 0.4, marginBottom: '16px', color: 'var(--ifm-font-color-base)' }}>
-              imblearn.Pipeline — ajusté sur X_train uniquement · aucune fuite vers X_test · hover pour détails
+              imblearn.Pipeline — fitted on X_train only · no leakage into X_test · hover for details
             </div>
             <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               {PIPELINE_STEPS.map((s, i) => (
@@ -255,7 +255,7 @@ export default function TrainingPipelineFlow() {
               color: 'var(--ifm-font-color-base)',
               opacity: 0.8,
             }}>
-              Le pipeline chargé depuis <code>.pkl</code> inclut le scaler et l'imputer — <strong style={{ color: '#34D399' }}>aucune préparation supplémentaire</strong> des données n'est nécessaire pour prédire.
+              The pipeline loaded from <code>.pkl</code> includes the scaler and imputer — <strong style={{ color: '#34D399' }}>no additional data preparation</strong> is required for prediction.
             </div>
           </>
         )}
@@ -264,7 +264,7 @@ export default function TrainingPipelineFlow() {
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ fontSize: '11px', opacity: 0.4, color: 'var(--ifm-font-color-base)' }}>
-                Projet <code style={{ color: '#F59E0B' }}>astrospectro</code> · 85+ runs enregistrés
+                Project <code style={{ color: '#F59E0B' }}>astrospectro</code> · 85+ recorded runs
               </div>
               <div style={{
                 fontFamily: 'monospace',
@@ -272,7 +272,7 @@ export default function TrainingPipelineFlow() {
                 fontSize: '22px',
                 color: '#F59E0B',
                 lineHeight: 1,
-              }}>121 métriques<span style={{ fontSize: '12px', opacity: 0.5, fontWeight: '400' }}> / run</span></div>
+              }}>121 metrics<span style={{ fontSize: '12px', opacity: 0.5, fontWeight: '400' }}> / run</span></div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {WANDB_CATEGORIES.map((c) => <WandBCategory key={c.cat} {...c} />)}

@@ -1,0 +1,92 @@
+---
+id: project-structure
+title: Project Structure
+sidebar_label: Project Structure
+---
+
+{/* Complete for v1.0.0 release */}
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFolder, faFolderOpen, faFileCode, faBook, faDatabase, faLaptopCode, faFileAlt, faRoad, faVial, faTools } from '@fortawesome/free-solid-svg-icons'
+
+# <FontAwesomeIcon icon={faFolderOpen} /> Project Structure
+
+The **AstroSpectro** project is organized according to a modular architecture to facilitate reproducibility, scientific extension, and maintenance. Here is a description of the main directories and their role.
+
+### File tree overview
+
+<div className="container" style={{padding: '0'}}>
+<div className="row">
+
+<div className="col col--6">
+  <h4><FontAwesomeIcon icon={faFolder} /> Main Directories</h4>
+  <ul>
+    <li><code>/src</code> - Core Python pipeline (business logic).</li>
+    <li><code>/notebooks</code> - Dashboards for orchestration and analysis.</li>
+    <li><code>/data</code> - Raw data, processed data, and catalogs (ignored by Git).</li>
+    <li><code>/website</code> - Source of this documentation (Docusaurus).</li>
+    <li><code>/models</code> - Trained and saved Machine Learning models.</li>
+    <li><code>/reports</code> & <code>/logs</code> - JSON session reports and download logs.</li>
+  </ul>
+</div>
+<div className="col col--6">
+  <h4><FontAwesomeIcon icon={faFileAlt} /> Root Files</h4>
+  <ul>
+    <li><code>README.md</code> - Presentation, quick links, and getting started guide.</li>
+    <li><code>requirements.txt</code> - Python dependencies of the project.</li>
+    <li><code>ROADMAP.md</code> - Long-term vision and goals of the project.</li>
+    <li><code>.gitignore</code> - Files and folders to be ignored by Git.</li>
+  </ul>
+</div>
+</div>
+</div>
+
+## Key Folder Details
+
+<div className="container" style={{padding: '0', marginTop: '1.5rem'}}>
+<div className="row">
+<div className="col col--4 margin-bottom--lg">
+  <div className="card">
+    <div className="card__header">
+      <h4><FontAwesomeIcon icon={faFileCode} /> <code>/src</code></h4>
+    </div>
+    <div className="card__body">
+      <strong>The project engine.</strong> Contains all modular Python code. It is divided into two key subfolders:
+      <ul>
+        <li><code>pipeline/</code>: The building blocks of the scientific processing chain (preprocessing, feature extraction, classification).</li>
+        <li><code>tools/</code>: Utilities for data management and interfaces (downloader, visualizer, etc.).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div className="col col--4 margin-bottom--lg">
+  <div className="card">
+    <div className="card__header">
+      <h4><FontAwesomeIcon icon={faLaptopCode} /> <code>/notebooks</code></h4>
+    </div>
+    <div className="card__body">
+      <strong>The dashboards.</strong> Each notebook has a precise role:
+      <ul>
+        <li><code>00_master_pipeline</code>: The <strong>production</strong> interface for launching complete training cycles.</li>
+        <li><code>01_download_spectra</code>: The data <strong>management</strong> interface (download, cleanup).</li>
+        <li><code>02_tools_and_visuals</code>: The <strong>laboratory</strong> for exploration, analysis, and debugging.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div className="col col--4 margin-bottom--lg">
+  <div className="card">
+    <div className="card__header">
+      <h4><FontAwesomeIcon icon={faDatabase} /> <code>/data</code></h4>
+    </div>
+    <div className="card__body">
+      <strong>The data warehouse.</strong> Contains raw spectra, generated catalogs, extracted <em>features</em>, and trained models. This folder is intentionally ignored by Git to avoid overloading the repository.
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+:::info[Architecture Philosophy]
+The strict separation between <code>src/</code> (the "pure" and testable code) and <code>notebooks/</code> (interactive orchestration) is a fundamental design choice. It guarantees the project’s modularity, reusability, and maintainability, which is a standard practice in professional data science projects.
+:::

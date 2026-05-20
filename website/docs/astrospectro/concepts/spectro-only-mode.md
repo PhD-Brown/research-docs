@@ -28,7 +28,7 @@ When `spectro_only=False` (enriched mode), additional columns are available:
 
 ## Why this matters
 
-:::caution Physical purity
+:::caution[Physical purity]
 The removal of `ra`, `dec`, and `redshift` from the feature set **increased** balanced accuracy from 84% to 87%. These features encoded LAMOST's observational programs (which targeted certain sky regions by stellar type), providing a shortcut that bypassed physical learning.
 
 Using `spectro_only=False` for scientific conclusions about *what ML learns from spectra* would be misleading — the model could exploit positional correlations rather than spectral physics.
@@ -44,7 +44,7 @@ In `spectro_only=True` mode, the canonical feature vector has **183 dimensions**
 | match_* columns (ProcessingPipeline) | ~9 |
 | **Total** | **183** |
 
-:::note Discrepancy note
+:::note[Discrepancy note]
 Earlier model artifacts (e.g., `20260213T225019Z`) were trained with a different feature set and different mode settings. The canonical 183-feature spectro_only=True run is the reference for all scientific claims.
 :::
 

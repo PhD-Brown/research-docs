@@ -4,13 +4,13 @@ description: "ξ Dark Energy data: desi dr2 bao."
 sidebar_position: 3
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # DESI DR2 BAO
 
 ξ Dark Energy data: desi dr2 bao.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

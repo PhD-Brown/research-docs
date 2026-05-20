@@ -4,13 +4,13 @@ description: "ξ Dark Energy: quick run."
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Quick Run
 
 ξ Dark Energy: quick run.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

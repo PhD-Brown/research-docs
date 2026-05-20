@@ -4,13 +4,13 @@ description: API reference for the FeatureEngineer module.
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # FeatureEngineer API
 
 API reference for the FeatureEngineer module.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

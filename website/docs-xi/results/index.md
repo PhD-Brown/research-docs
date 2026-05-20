@@ -4,13 +4,13 @@ description: "Summary of ξ Dark Energy results from v0.1.0-exploratory."
 sidebar_position: 5
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Results
 
 Summary of ξ Dark Energy results from v0.1.0-exploratory.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

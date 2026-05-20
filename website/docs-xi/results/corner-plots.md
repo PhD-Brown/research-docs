@@ -4,13 +4,13 @@ description: Corner plot gallery for all three dark energy models.
 sidebar_position: 2
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Corner Plots
 
 Corner plot gallery for all three dark energy models.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

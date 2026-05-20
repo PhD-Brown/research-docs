@@ -4,13 +4,13 @@ description: "Experiment Tracking (W&B) in the AstroSpectro pipeline."
 sidebar_position: 7
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Experiment Tracking (W&B)
 
 Experiment Tracking (W&B) in the AstroSpectro pipeline.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

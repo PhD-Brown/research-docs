@@ -4,13 +4,13 @@ description: "AstroVision guide: run segmentation."
 sidebar_position: 4
 ---
 
+import UnderConstruction from '@site/src/components/UnderConstruction';
+
 # Run Segmentation
 
 AstroVision guide: run segmentation.
 
-:::info Under construction
-This page is actively being developed. Core content is added progressively.
-:::
+<UnderConstruction />
 
 ## What this page covers
 

@@ -1,0 +1,349 @@
+---
+id: index
+title: Dimensionality Reduction — PCA, UMAP, t-SNE
+sidebar_label: Dimensionality Reduction
+sidebar_position: 3
+description: "Complete comparison of three dimensionality reduction methods on 43,019 LAMOST DR5 stellar spectra: PCA (linear), UMAP (topological) and t-SNE (probabilistic). Hyperparameters, results, Procrustes stability and HDBSCAN clusters."
+tags: [pca, umap, tsne, hdbscan, dimensionality-reduction, stability, lamost]
+---
+
+import MethodComparison from '@site/src/components/MethodComparison';
+import ProcrustesStability from '@site/src/components/ProcrustesStability';
+import HDBSCANClusters from '@site/src/components/HDBSCANClusters';
+import HyperparamSensitivity from '@site/src/components/HyperparamSensitivity';
+import DimRedPipeline from '@site/src/components/DimRedPipeline';
+import UMAP3DViewer from '@site/src/components/UMAP3DViewer';
+import RelatedPages from '@site/src/components/RelatedPages';
+
+# Dimensionality Reduction — PCA, UMAP, t-SNE
+
+This page documents the comparison of three dimensionality reduction methods applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra. It covers the algorithmic foundations of each method, their hyperparameters, quantitative results and stability comparison across independent runs.
+
+:::info[Central question]
+To what extent are the **linear** (PCA), **topological** (UMAP) and **probabilistic** (t-SNE) approaches equivalent at capturing stellar physical information when projecting from 183 dimensions to 2? What are the numerical and physical trade-offs?
+:::
+
+---
+
+## Pipeline flow
+
+Before diving into the details of each method, here is the complete data flow through the dimensionality reduction pipeline:
+
+<DimRedPipeline />
+
+---
+
+## Comparative synthesis
+
+<MethodComparison />
+
+---
+
+## 1. PCA — Principal Component Analysis
+
+### Principle and algorithm
+
+PCA seeks the directions $\mathbf{w}_k$ that maximise projected variance. For $N = 43{,}019$ and $p = 183$, the truncated SVD is computed by the **Lanczos algorithm** (Krylov method, complexity $\mathcal{O}(Kp^2 + KNp)$). Beyond a size threshold, scikit-learn automatically activates **randomised SVD** (Halko et al., 2011), reducing complexity to $\mathcal{O}(NpK)$ with controlled error.
+
+The **Eckart-Young theorem** guarantees the optimality of the truncation: the K-component reconstruction is the best rank-K approximation of $\mathbf{X}$ in the Frobenius norm sense.
+
+### Hyperparameters used
+
+```python
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components=91, random_state=42)   # 95% variance threshold
+Z_pca = pca.fit_transform(X_scaled)           # (43019, 91)
+```
+
+The choice $K = 91$ is not arbitrary: it is the number of components needed to capture **95% of total variance** of the 183 features.
+
+### Quantitative results
+
+- **PC1**: 16.9% variance ($\lambda_1 = 30.19$), thermal axis, ρ(Teff) = **+0.831**
+- **PC2**: 12.0% variance ($\lambda_2 = 21.39$), metallicity/SNR axis
+- **Cumulative PC1+PC2**: 28.8% — two components capture only ~30% of information
+- **95% variance** requires K = **91 components**
+
+For the complete axis interpretation (loadings, Gaia correlations, eigenspectra), see [Physical interpretation of PCA](./pca-physical-interpretation).
+
+---
+
+## 2. UMAP — Uniform Manifold Approximation and Projection
+
+### Principle
+
+UMAP (McInnes, Healy & Melville, 2018) is based on the assumption that data is distributed on a low-dimensional Riemannian manifold. The algorithm builds a fuzzy representation of local topology in the original space, then optimises a low-dimensional representation that best preserves this topology.
+
+### Fuzzy graph construction
+
+For each point $\mathbf{x}_i$, let $\rho_i$ be the distance to its nearest neighbour and $\sigma_i > 0$ a smoothing parameter. The weight of connection $i \to j$ is:
+
+$$
+w_{ij} = \exp\left(-\frac{\max(0, d(\mathbf{x}_i,\mathbf{x}_j) - \rho_i)}{\sigma_i}\right)
+$$
+
+The $\rho_i$ term guarantees a unit connection to the nearest neighbour. Weights are made symmetric via the fuzzy union: $\bar{w}_{ij} = w_{ij} + w_{ji} - w_{ij} \cdot w_{ji}$.
+
+k-NN graph construction via random projection trees (RP trees, Dasgupta & Freund, 2008) runs in $\mathcal{O}(N \log N)$.
+
+### Low-dimensional optimisation
+
+Weights in 2D are modelled by a Cauchy family curve:
+
+$$
+\tilde{w}_{ij}(\mathbf{y}) = \frac{1}{1 + a\|\mathbf{y}_i - \mathbf{y}_j\|^{2b}}
+$$
+
+where $a, b$ are adjusted from `min_dist`. The cross-entropy divergence is minimised by **stochastic gradient descent (SGD) with negative sampling**.
+
+### Hyperparameters used
+
+```python
+import umap
+
+reducer = umap.UMAP(
+    n_components=2,
+    n_neighbors=15,       # local/global trade-off — optimal in [15, 50]
+    min_dist=0.1,         # cluster compactness
+    n_epochs=200,
+    metric='euclidean',
+    random_state=42,
+)
+Z_umap = reducer.fit_transform(Z_pca)   # input: 91 PCA components
+```
+
+**Computation time:** 40.1 s (Ryzen 9 5950X, 32 threads)
+
+### Hyperparameter sensitivity
+
+<HyperparamSensitivity />
+
+### Results: "continuous continent" structure
+
+UMAP produces a **"continuous continent" structure** — opposite to the t-SNE "archipelago". The Harvard sequence (M-K-G-F-A) unfolds continuously; hot stars (A-F types) form a "peninsula" in the upper-left corner of the projection.
+
+**Physical colourings of the UMAP projection:**
+- **By spectral type**: Harvard sequence visible without supervision
+- **By Teff**: continuous gradient along the main structure, ρ(UMAP ax.1, Teff) = +0.464
+- **By log g**: a band of subgiants/giants (log g ≈ 2.5–3.5) distinct from dwarfs
+- **By [Fe/H]**: readable metallicity gradient along the main structure
+- **By G_BP − G_RP**: consistent with Teff
+
+**Figure references:** `umap_classes.png`, `umap_all_classes_pair.png`, `umap_grid.png`
+
+### Interactive exploration — UMAP 3D
+
+The 3D projection reveals the stellar manifold structure with clarity impossible in 2D. The three physical colourings — spectral types, T_eff and [Fe/H] — confirm that UMAP simultaneously recovers temperature and chemical composition in its axes.
+
+<UMAP3DViewer />
+
+### Negative control
+
+UMAP applied to data with randomly permuted columns produces a compact homogeneous cloud with no discernible structure. **The observed structure is of physical origin, not an algorithmic artefact.**
+
+**Figure reference:** `umap_negative_control.png`
+
+### HDBSCAN clusters
+
+HDBSCAN (*Hierarchical Density-Based Spatial Clustering of Applications with Noise*, Campello et al., 2013) is applied in UMAP space to identify dense groups.
+
+```python
+import hdbscan
+
+clusterer = hdbscan.HDBSCAN(
+    min_cluster_size=75,
+    min_samples=20,
+)
+labels = clusterer.fit_predict(Z_umap)
+```
+
+<HDBSCANClusters />
+
+:::tip[Original astrophysical result]
+The **Harvard sequence emerges spontaneously** in UMAP and t-SNE without any supervision labels. This is a direct demonstration that the 183 features encode enough physical information for neighbourhood-preserving methods to reconstruct the known structure of MK classification.
+:::
+
+---
+
+## 3. t-SNE — t-distributed Stochastic Neighbor Embedding
+
+### Principle
+
+t-SNE (van der Maaten & Hinton, 2008) models similarities as probabilities in both spaces. In the original space, a Gaussian kernel centred on each point gives symmetric joint probabilities $p_{ij}$ computed once.
+
+### Crowding problem and Student-t distribution
+
+In high dimensions, the many neighbours at moderate distance cannot be accommodated in a 2D plane with a Gaussian distribution. The Student-t distribution with 1 degree of freedom (Cauchy) provides higher probability in 2D for large distances, solving the *crowding problem*:
+
+$$
+q_{ij} = \frac{\left(1 + \|\mathbf{y}_i - \mathbf{y}_j\|^2\right)^{-1}}{\sum_{k \neq l}\left(1 + \|\mathbf{y}_k - \mathbf{y}_l\|^2\right)^{-1}}
+$$
+
+The Kullback-Leibler objective $\text{KL}(P \| Q) = \sum_{i \neq j} p_{ij} \ln(p_{ij}/q_{ij})$ is minimised by gradient descent. The Barnes-Hut approximation (van der Maaten, 2014) reduces complexity from $\mathcal{O}(N^2)$ to $\mathcal{O}(N \log N)$.
+
+### Hyperparameters used
+
+```python
+from sklearn.manifold import TSNE
+
+tsne = TSNE(
+    n_components=2,
+    perplexity=30,          # effective number of neighbours — optimal in [15, 50]
+    init='pca',             # PCA initialisation — key for reproducibility
+    n_iter=1000,
+    random_state=42,
+)
+Z_tsne = tsne.fit_transform(Z_pca)   # input: 91 PCA components
+```
+
+**Computation time:** 80.2 s (i.e., 2× UMAP, Ryzen 9 5950X)
+
+t-SNE is **entirely non-parametric**: coordinates $\mathbf{y}_i$ do not generalise out-of-sample.
+
+### Results: "archipelago" structure
+
+t-SNE produces a markedly different geometry from UMAP. Rather than a continuous manifold, t-SNE produces an **"archipelago" of compact, well-separated masses**:
+
+- Hot stars (Teff > 7,000 K, A-F types) form a distinct cluster at the top of the projection
+- The large central mass groups K and G main-sequence stars (4,500–6,500 K)
+- Log g colouring reveals a tendency to isolate subgiants (log g ~ 3–3.5) in discrete clusters, where UMAP produces a continuous transition
+
+**Fundamental UMAP vs t-SNE difference:** UMAP better preserves continuous variations (readable Teff and [Fe/H] gradients), while t-SNE excels at sharp separation of discrete sub-populations. t-SNE compresses gradual variations in favour of local discontinuities.
+
+**Figure references:** `tsne_grid.png`, `hr_diagram_tsne_ax1.png`, `stability_tsne.png`
+
+---
+
+## 4. Stability comparison — Procrustes
+
+### Procrustes metric
+
+Two independent projections $Z_1, Z_2$ (different random seeds) are compared after optimal alignment (rotation, reflection, scaling):
+
+$$
+d_P = \min_{\Omega \in \mathcal{O}(2), c > 0} \|Z_1 - cZ_2\Omega\|_F^2
+$$
+
+$d_P = 0$ indicates projections identical up to an isometric transformation.
+
+### Results on 4 independent seeds
+
+<ProcrustesStability />
+
+### Explanation of the counter-intuitive result
+
+This result is counter-intuitive: both methods minimise a non-convex objective by stochastic gradient. The explanation lies in two factors:
+
+1. **PCA initialisation of t-SNE** (`init='pca'`): fixes an identical starting position across runs, regardless of the random seed.
+2. **KL penalty structure**: concentrates energy on immediate neighbours — makes optimisation insensitive to the seed for large structures.
+
+UMAP uses a spectral initialisation (Laplacian decomposition) whose result can vary between seeds, and its SGD with negative sampling introduces more marked stochasticity in repulsive forces.
+
+:::caution[Inter-cluster distances in UMAP]
+The increased stability of t-SNE does not mean t-SNE is "better". Distances *between* clusters in t-SNE are not interpretable — the KL objective only penalises local discrepancies. UMAP offers a better balance between local and global structure, at the cost of greater variability between runs.
+:::
+
+**Figure references:** `stability_umap.png`, `stability_tsne.png`
+
+---
+
+## 5. Evaluation metrics
+
+### Neighbourhood fidelity — Trustworthiness T(k)
+
+The Venna & Kaski (2006) statistic measures what proportion of the k nearest neighbours in the projection were effectively close in the original space:
+
+$$
+T(k) = 1 - \frac{2}{Nk(2N-3k-1)} \sum_{i=1}^{N}\sum_{j \in U_k(i)} (r(i,j) - k)
+$$
+
+where $U_k(i)$ groups the k projected neighbours that were not k-neighbours in the original space. $T(k) = 1$ is perfect fidelity.
+
+```python
+from sklearn.manifold import trustworthiness
+
+T_umap = trustworthiness(X_scaled, Z_umap, n_neighbors=15)
+T_tsne = trustworthiness(X_scaled, Z_tsne, n_neighbors=15)
+```
+
+**Figure reference:** `umap_trustworthiness.png`
+
+### Explained variance and MSE (PCA only)
+
+$$
+V(K) = \frac{\sum_{k=1}^{K}\lambda_k}{\sum_{j}\lambda_j}, \quad \text{MSE}(K) = \frac{1}{p}\left(1 - V(K)\right)
+$$
+
+| Threshold V(K) | K required | Corresponding MSE |
+|:---:|:---:|:---:|
+| 80% | 51 | 0.200 |
+| 90% | 73 | 0.100 |
+| **95%** | **91** | **0.050** |
+| 99% | 100 | 0.010 |
+| K = 2 | — | 0.696 |
+
+---
+
+## 6. Study limitations
+
+**Class imbalance.** The dataset is 99.85% dominated by stars. The 63 galaxies and QSOs are too rare to evaluate their behaviour in projections and were not included in the HDBSCAN analysis.
+
+**PCA pre-reduction.** UMAP and t-SNE operate on the 91 PCA components, not the 183 raw features. Any small-scale non-linearity already eliminated by linear truncation is permanently lost — an inherent bias in the pipeline.
+
+**No objective criterion for hyperparameters.** For UMAP and t-SNE, no theoretical criterion exists for choosing `n_neighbors` or perplexity. Sensitivity analyses show that qualitative structure is robust for $k \in [15, 50]$ and perplexity $\in [15, 50]$, but fine topology varies. PCA, in contrast, has an objective, reproducible truncation criterion (variance threshold or eigenspectrum elbow).
+
+**Intrinsic dimensionality.** The 91 components needed for 95% variance indicate that the 2D manifold hypothesis is approximate. The 2D projection is necessarily distorted; the emergence of the Harvard sequence in these two dimensions constitutes a non-trivial astrophysical result *precisely because* the compression is extreme.
+
+---
+
+## Implementation in AstroSpectro
+
+Dimensionality reduction notebooks are in `notebooks/dimred/`:
+
+| Notebook | Content |
+|:---|:---|
+| `phy3500_01_pca.ipynb` | PCA on features + raw flux, loadings, eigenspectra |
+| `phy3500_02_umap_tsne.ipynb` | UMAP, t-SNE, HDBSCAN, Procrustes stability |
+| `phy3500_03_autoencoder.ipynb` | Neural autoencoder (not presented in the report) |
+
+The logic is encapsulated in the `src/dimred/` package (v0.3.0): `pca_analyzer.py`, `embedding.py`, `hdbscan_analyzer.py`, `dimred_visualizer.py`.
+
+---
+
+<RelatedPages pages={[
+  {
+    href: './pca-physical-interpretation',
+    title: 'Physical interpretation of PCA',
+    desc: 'Explained variance, eigenspectra, Gaia DR3 correlations, HR diagram',
+    category: 'science',
+    badge: 'ρ = +0.831',
+  },
+  {
+    href: './features-list-183',
+    title: 'Catalogue of 183 features',
+    desc: 'Spectral families, PC1/PC2 loadings, UMAP contributions',
+    category: 'science',
+    badge: '183 features',
+  },
+  {
+    href: './dataset-dimred',
+    title: 'PHY-3500 Dataset',
+    desc: 'N = 43,019 dataset composition · quality filters · standardisation',
+    category: 'science',
+    badge: '43,019 spectra',
+  },
+  {
+    href: './xgboost-comparison',
+    title: 'XGBoost — supervised comparison',
+    desc: 'Consistency of supervised predictions with UMAP structure',
+    category: 'science',
+    badge: '87% BA',
+  },
+  {
+    href: '../user-guides/visualization',
+    title: 'Visualisation guide',
+    desc: 'Reproduce UMAP, t-SNE, HR figures — scripts and parameters',
+    category: 'guides',
+  },
+]} />

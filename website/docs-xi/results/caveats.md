@@ -6,7 +6,7 @@ sidebar_position: 4
 
 # Known Limitations
 
-:::caution Exploratory release
+:::caution[Exploratory release]
 All results in this project are from `v0.1.0-exploratory`.
 The following limitations have been explicitly documented before making any physical claims.
 :::
