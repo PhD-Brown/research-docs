@@ -12,7 +12,6 @@ import type {Props} from '@theme/BlogPostPage';
 import styles from './styles.module.css';
 
 function BlogPostPageContent({children}: {children: React.ReactNode}): React.JSX.Element {
-  // CORRECTION 1 : Extraction du frontMatter directement depuis useBlogPost
   const {metadata, toc, frontMatter} = useBlogPost();
   const {nextItem, prevItem, title, description, date, readingTime, tags} = metadata;
   const {
@@ -22,11 +21,11 @@ function BlogPostPageContent({children}: {children: React.ReactNode}): React.JSX
     image: coverImage,
   } = frontMatter;
 
-  // Extraction des infos de l'auteur
+
   const author = metadata.authors?.[0] || {
     name: 'Alex Baker',
-    title: 'Étudiant en physique',
-    url: 'https://github.com/PhD-Brown',
+    title: 'Student in Physics',
+    url: 'https://phd-brown.github.io/',
     imageUrl: '/research-docs/img/authors/alex.png',
   };
 
@@ -37,10 +36,11 @@ function BlogPostPageContent({children}: {children: React.ReactNode}): React.JSX
   if (primaryTag.toLowerCase().includes('astrovision')) projectColorClass = styles.accentAstroVision;
   if (primaryTag.toLowerCase().includes('xi')) projectColorClass = styles.accentXi;
 
-  const formattedDate = new Date(date).toLocaleDateString('fr-FR', {
+  const formattedDate = new Date(date).toLocaleDateString('en-CA', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   });
 
   return (
@@ -54,7 +54,7 @@ function BlogPostPageContent({children}: {children: React.ReactNode}): React.JSX
       <div className={styles.pageContainer}>
         {/* Lien de retour */}
         <Link to="/journal" className={styles.backLink}>
-          <span className={styles.arrow}>←</span> Retour au Journal
+          <span className={styles.arrow}>←</span> Back to Journal
         </Link>
 
         {/* En-tête de l'article */}
@@ -85,7 +85,9 @@ function BlogPostPageContent({children}: {children: React.ReactNode}): React.JSX
                 <span className={styles.metaDate}>{formattedDate}</span>
                 <span className={styles.metaSeparator}>•</span>
                 <span className={styles.metaReadingTime}>
-                  {readingTime ? `${Math.ceil(readingTime)} min de lecture` : 'Quelques minutes'}
+                  {readingTime
+                  ? `${Math.ceil(readingTime)} ${Math.ceil(readingTime) === 1 ? 'minute' : 'minutes'} to read`
+                  : 'A few minutes to read'}
                 </span>
               </div>
             </div>
@@ -116,7 +118,6 @@ function BlogPostPageContent({children}: {children: React.ReactNode}): React.JSX
 }
 
 export default function BlogPostPage(props: Props): React.JSX.Element {
-  // CORRECTION 2 : On extrait le contenu sous forme de composant React
   const BlogPostContent = props.content; 
   
   return (
@@ -124,7 +125,7 @@ export default function BlogPostPage(props: Props): React.JSX.Element {
       <HtmlClassNameProvider className={clsx(ThemeClassNames.wrapper.blogPages, ThemeClassNames.page.blogPostPage)}>
         <BlogPostPageMetadata />
         <BlogPostPageContent>
-          {/* Et on le rend ici au lieu du props.children ! */}
+          {/* ... */}
           <BlogPostContent /> 
         </BlogPostPageContent>
       </HtmlClassNameProvider>

@@ -16,7 +16,6 @@ const config: Config = {
   projectName: "research-docs",
 
   onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
 
   trailingSlash: false,
 
@@ -36,6 +35,9 @@ const config: Config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
   },
 
   themes: ['@docusaurus/theme-mermaid'],
@@ -57,12 +59,12 @@ const config: Config = {
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
           showLastUpdateTime: false,
-          showLastUpdateAuthor: true,
+          showLastUpdateAuthor: false,
         },
         blog: {
           path: "blog",
-          routeBasePath: "journal",
-          blogTitle: "Journal de Bord",
+          routeBasePath: "Blog",
+          blogTitle: "Alex Baker's Blog",
           blogDescription: "Research log — AstroSpectro, AstroVision, ξ Dark Energy.",
           postsPerPage: 10,
           blogSidebarTitle: "Recent entries",
@@ -186,7 +188,7 @@ const config: Config = {
             { label: "Glossary", to: "/docs/atlas/glossary" },
             { label: "Methods Index", to: "/docs/atlas/methods-index" },
             { label: "Reading Paths", to: "/docs/reading-paths" },
-            { label: "Journal", to: "/journal" },
+            { label: "Blog", to: "/journal" },
           ],
         },
         {

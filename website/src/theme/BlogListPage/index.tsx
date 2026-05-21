@@ -53,9 +53,24 @@ function pickProject(tags: string[]): string {
 
 function readingTimeLabel(value: any): string {
   if (typeof value === "number" && Number.isFinite(value)) {
-    return `${Math.max(1, Math.round(value))} min read`;
+    const minutes = Math.max(1, Math.round(value));
+    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} to read`;
   }
   return "";
+}
+
+function formatPostDate(value: any): string {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+
+  return date.toLocaleDateString("en-CA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 function extractPost(item: ItemLike, index: number): PostCardData {
@@ -82,10 +97,7 @@ function extractPost(item: ItemLike, index: number): PostCardData {
     frontMatter?.slug ??
     "#";
 
-  const date =
-    metadata?.formattedDate ??
-    metadata?.date ??
-    "";
+  const date = formatPostDate(metadata?.date ?? frontMatter?.date ?? "");
 
   const readingTime =
     readingTimeLabel(metadata?.readingTime) ||
@@ -124,17 +136,20 @@ function projectClass(project: string) {
   return styles.projectResearch;
 }
 
-export default function BlogListPage(props: any): JSX.Element {
-  const items = Array.isArray(props?.items) ? props.items : [];
-  const allPosts = useMemo(() => items.map(extractPost), [items]);
+export default function BlogListPage(props: any): React.ReactElement {
+  const items: ItemLike[] = Array.isArray(props?.items) ? props.items : [];
+  const allPosts = useMemo<PostCardData[]>(
+    () => items.map((item, index) => extractPost(item, index)),
+    [items]
+  );
 
-  const autoFeatured = useMemo(() => {
+  const autoFeatured = useMemo<PostCardData[]>(() => {
     const tagged = allPosts.filter((post) => post.featured);
     if (tagged.length >= 2) return tagged.slice(0, 2);
     return allPosts.slice(0, 2);
   }, [allPosts]);
 
-  const filterValues = useMemo(() => {
+  const filterValues = useMemo<string[]>(() => {
     const dynamic = unique(
       allPosts.flatMap((post) => post.tags).filter((tag) =>
         ["Documentation", "Methods", "Results", "Infrastructure", "Milestone"].includes(tag)
@@ -151,7 +166,7 @@ export default function BlogListPage(props: any): JSX.Element {
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All posts");
 
-  const filteredPosts = useMemo(() => {
+  const filteredPosts = useMemo<PostCardData[]>(() => {
     return allPosts.filter((post) => {
       const haystack = `${post.title} ${post.description} ${post.tags.join(" ")} ${post.project}`.toLowerCase();
       const queryMatch = haystack.includes(query.toLowerCase());
