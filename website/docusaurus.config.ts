@@ -147,12 +147,12 @@ const config: Config = {
         // ── Other ─────────────────────────────────────────────────────────
         {
           to: "/journal",
-          label: "Journal",
+          label: "Blog",
           position: "left",
         },
         {
           to: "/docs",
-          label: "Docs home",
+          label: "Home",
           position: "left",
         },
         // ── Right ─────────────────────────────────────────────────────────

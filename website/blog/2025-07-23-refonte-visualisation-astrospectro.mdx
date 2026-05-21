@@ -1,86 +1,86 @@
 ---
-title: "Refactorisation des notebooks"
-description: "Vers une Suite Scientifique Modulaire pour AstroSpectro : clarté, réutilisabilité et explorabilité."
+title: "Notebook Refactoring"
+description: "Toward a Modular Scientific Suite for AstroSpectro: clarity, reusability, and explorability."
 slug: refonte-visualisation-astrospectro
 authors:
   - name: Alex Baker
-    title: Étudiant au baccalauréat en physique · AstroSpectro
+    title: Undergraduate physics student · AstroSpectro
     url: https://github.com/PhD-Brown
-tags: [AstroSpectro, refactoring, visualisation, architecture]
+tags: [AstroSpectro, refactoring, visualization, architecture]
 image: /research-docs/img/blog/astrospectro-visualisation.png
 date: 2025-07-23
 hide_table_of_contents: true
 ---
 
-Depuis le début du projet **AstroSpectro**, le notebook `[02_tools_and_visuals.ipynb](https://github.com/PhD-Brown/AstroSpectro/blob/main/notebooks/02_tools_and_visuals.ipynb)` servait de bloc-notes exploratoire. On y testait des visualisations de spectres, des détections de raies, des diagnostics. Mais avec l’accumulation des outils, le code devenait monolithique et difficile à maintenir.
+Since the beginning of the **AstroSpectro** project, the notebook `[02_tools_and_visuals.ipynb](https://github.com/PhD-Brown/AstroSpectro/blob/main/notebooks/02_tools_and_visuals.ipynb)` served as an exploratory notebook. It was where I tested spectrum visualizations, line detections, and diagnostics. But as the tools accumulated, the code became monolithic and difficult to maintain.
 
 {/* truncate */}
 
-## Objectifs du refactoring
+## Refactoring Goals
 
-J’ai entrepris une refonte complète avec trois objectifs en tête :
-- **Clarté** : chaque outil doit être lisible, autonome, bien nommé
-- **Réutilisabilité** : les fonctions doivent être modulaires et utilisables ailleurs
-- **Explorabilité** : l’interactivité doit rendre l’exploration plus intuitive et scientifique
+I undertook a complete refactor with three objectives in mind:
+- **Clarity**: each tool must be readable, self-contained, and clearly named
+- **Reusability**: functions must be modular and usable elsewhere
+- **Explorability**: interactivity must make exploration more intuitive and scientific
 
-## Architecture finale
+## Final Architecture
 
-Toute la logique est maintenant dans `src/tools/[visualizer.py](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/visualizer.py)`, sous forme d’une classe :
+All the logic now lives in `src/tools/[visualizer.py](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/visualizer.py)`, in the form of a class:
 
 ```python
 visualizer = AstroVisualizer(paths)
 ```
 
-Chaque outil interactif (explorateur de headers, spectre augmenté, tuning des pics, carte du ciel, inspecteur de modèles) devient un simple appel :
+Each interactive tool (header explorer, augmented spectrum, peak tuning, sky map, model inspector) becomes a simple call:
 
 ```python
 visualizer.interactive_spectrum_analyzer()
 visualizer.plot_sky_coverage()
 ```
 
-## Nouveaux outils intégrés
+## New Integrated Tools
 
-- Explorateur de Header FITS dynamique
-- Analyseur de Spectre Augmenté (flux + raies + SNR + sliders)
-- Tuning interactif des paramètres de détection (`prominence`, `fenêtre`)
-- Analyse des zéros dans les features extraites
-- Carte de couverture céleste (projection Mollweide)
-- Inspecteur de modèles `.pkl` : hyperparamètres + importance des features
+- Dynamic FITS Header Explorer
+- Augmented Spectrum Analyzer (flux + lines + SNR + sliders)
+- Interactive tuning of detection parameters (`prominence`, `window`)
+- Analysis of zeros in the extracted features
+- Sky coverage map (Mollweide projection)
+- `.pkl` model inspector: hyperparameters + feature importance
 
-## Avant / Après
+## Before / After
 
-**Par exemple le code pour l'affichage des features nul**
+**For example, the code for displaying null features**
 
-**Avant** :
-- 500 lignes de notebook exploratoire (exmple de la cellule d'exploration des features nul ci dessous)
-- Code spaghetti difficile à relire
+**Before**:
+- 500 lines of exploratory notebook (example of the null-feature exploration cell below)
+- Spaghetti code that was difficult to reread
 
 ![image info](/img/avant.png)
 
-**Après** :
-- Un notebook tableau de bord 
-- Chaque outil dans sa cellule, un appel par outil
-- Une classe modulaire importable ailleurs
+**After**:
+- A dashboard notebook 
+- Each tool in its own cell, one call per tool
+- A modular class importable elsewhere
 
 ![image info](/img/apres.png)
 
 
-## Impact sur le projet
+## Impact on the Project
 
-Cette refonte me permet de :
-- Gagner du temps pour itérer sur les features et les modèles
-- Travailler comme dans un vrai labo
-- Préparer l’extension du pipeline à des spectres cubes (SITELLE, etc.)
+This refactor allows me to:
+- Save time when iterating on features and models
+- Work more like in a real lab
+- Prepare the pipeline extension toward spectral cubes (SITELLE, etc.)
 
-> Et surtout… continuer à m’amuser. J’ai déjà passé plus de **200h** sur AstroSpectro cet été — et je ne vois toujours pas le temps passer !
+> And above all… keep having fun. I have already spent more than **200h** on AstroSpectro this summer — and I still do not feel the time passing!
 
-## Prochaine étape
+## Next Step
 
-- Ajouter des comparateurs de spectres
-- Exporter les analyses (PNG + PDF)
-- Générer automatiquement un mini rapport exploratoire
-- Tout ce qui se trouve dans la [Roadmap](https://phd-brown.github.io/AstroSpectro/docs/community/roadmap)
+- Add spectrum comparators
+- Export analyses (PNG + PDF)
+- Automatically generate a mini exploratory report
+- Everything listed in the [Roadmap](https://phd-brown.github.io/AstroSpectro/docs/community/roadmap)
 
-> *"Je réalise aujourd’hui à quel point explorer devient plaisant quand le code disparaît derrière l’outil."*
+> *"Today I realize how enjoyable exploration becomes when the code disappears behind the tool."*
 
-Merci à ceux qui suivent l’aventure AstroSpectro 🚀
+Thanks to everyone following the AstroSpectro adventure 🚀

@@ -1,10 +1,10 @@
 ---
-title: "Anatomie d'une Amélioration"
-description: "Comment une meilleure extraction de features a permis d'augmenter la performance du modèle de 32% à 56%."
+title: "Anatomy of an Improvement"
+description: "How better feature extraction increased model performance from 32% to 56%."
 slug: 2025-07-24-anatomie-pipeline-dia-astrophysique
 authors:
   - name: Alex Baker
-    title: Étudiant au baccalauréat en physique · AstroSpectro
+    title: Undergraduate physics student · AstroSpectro
     url: https://github.com/PhD-Brown
 tags: [AstroSpectro, results, machine-learning, feature-engineering, optimization]
 image: /research-docs/img/blog/astrospectro-anatomie.png
@@ -12,27 +12,27 @@ date: 2025-07-24
 hide_table_of_contents: true
 ---
 
-J'ai construit un pipeline qui modélise la classification spectrale en se basant sur les principes de la physique stellaire. Le modèle a appris de manière autonome que les ratios de force des raies du Calcium et de l'Hydrogène sont les meilleurs indicateurs de température, ce qui valide notre approche de feature engineering et nous a permis d'atteindre une précision de 56%.
+I built a pipeline that models spectral classification based on the principles of stellar physics. The model autonomously learned that Calcium and Hydrogen line-strength ratios are the best temperature indicators, validating our feature engineering approach and allowing us to reach 56% accuracy.
 
 {/* truncate */}
 
-Aujourd'hui, après plusieurs itérations de débogage, d'analyse et d'optimisation, nous avons franchi une étape significative, faisant passer la précision du modèle de 32% à un très respectable **56%**. Voici le récit de cette progression.
+Today, after several iterations of debugging, analysis, and optimization, we reached a significant milestone, increasing the model accuracy from 32% to a very respectable **56%**. Here is the story of that progression.
 
-### Itération 1 : De la Présence à la Force des Raies
+### Iteration 1: From Line Presence to Line Strength
 
-La première amélioration consistait à passer d'une feature binaire (la raie est-elle présente ?) à une mesure continue : la **force de la raie**, approximée par la "prominence" du pic d'absorption. Ce changement a eu un impact immédiat, faisant grimper notre précision globale de 32% à **40%**. Cette étape a validé que la quantité d'information physique contenue dans la force d'une raie était bien plus riche que sa simple présence.
+The first improvement consisted in moving from a binary feature (is the line present?) to a continuous measurement: the **line strength**, approximated by the "prominence" of the absorption peak. This change had an immediate impact, raising our overall accuracy from 32% to **40%**. This step confirmed that the amount of physical information contained in the strength of a line is much richer than its mere presence.
 
 <details>
-  <summary>Voir les résultats en détail</summary>
+  <summary>View detailed results</summary>
   ```
-Suppression des classes trop rares : ['C']
+Removal of overly rare classes: ['C']
 
-Features utilisées pour l'entraînement : ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH']
-Nombre d'échantillons : 4999, Nombre de features : 4
-  > Entraînement du modèle sur 3749 échantillons...
-  > Modèle entraîné.
+Features used for training: ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH']
+Number of samples: 4999, Number of features: 4
+  > Training the model on 3749 samples...
+  > Model trained.
 
---- Rapport d'Évaluation ---
+--- Evaluation Report ---
               precision    recall  f1-score   support
 
            A       0.58      0.64      0.61        73
@@ -56,30 +56,30 @@ weighted avg     0.40      0.40      0.40      1250
 
 </details>
 
-### Itération 2 : La Puissance des Ratios Spectraux
+### Iteration 2: The Power of Spectral Ratios
 
-Avec une nouvelle baseline solide, nous avons introduit des features encore plus sophistiqués : les **ratios de force entre différentes raies**. En astrophysique, ces ratios sont des indicateurs de température extrêmement puissants.
+With a solid new baseline, we introduced even more sophisticated features: **strength ratios between different lines**. In astrophysics, these ratios are extremely powerful temperature indicators.
 
 *   `feature_ratio_CaK_Hbeta = CaII K / Hβ`
 *   `feature_ratio_Halpha_Hbeta = Hα / Hβ`
 
-L'ajout de ces deux seuls ratios a de nouveau propulsé notre modèle, atteignant une précision de **50%**. La matrice de confusion montrait une nette amélioration, mais une analyse de la qualité des features a révélé une faiblesse critique : la raie Hα était absente dans plus de 50% des spectres, rendant les ratios peu fiables.
+Adding just these two ratios once again pushed the model forward, reaching **50%** accuracy. The confusion matrix showed a clear improvement, but a feature-quality analysis revealed a critical weakness: the Hα line was missing in more than 50% of the spectra, making the ratios unreliable.
 
 <details>
-  <summary>Voir les résultats en détail</summary>
+  <summary>View detailed results</summary>
   ```
---- Chargement du dataset : features_20250723T225208Z.csv ---
-  > 250 lignes avec des labels invalides ou nuls supprimées.
-  > Suppression des classes trop rares : ['W', 'C', 'D', 'B', 's']
+--- Loading dataset: features_20250723T225208Z.csv ---
+  > 250 rows with invalid or null labels removed.
+  > Removal of overly rare classes: ['W', 'C', 'D', 'B', 's']
 
-Features utilisées : ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH', 'feature_ratio_CaK_Hbeta', 'feature_ratio_Halpha_Hbeta']
-Nombre d'échantillons final : 2740, Nombre de features : 6
+Features used: ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH', 'feature_ratio_CaK_Hbeta', 'feature_ratio_Halpha_Hbeta']
+Final number of samples: 2740, Number of features: 6
 
---- ÉTAPE 5: Entraînement et Évaluation du modèle ---
-  > Entraînement du modèle sur 2055 échantillons...
-  > Modèle entraîné.
+--- STEP 5: Model Training and Evaluation ---
+  > Training the model on 2055 samples...
+  > Model trained.
 
---- Rapport d'Évaluation ---
+--- Evaluation Report ---
               precision    recall  f1-score   support
 
            A       0.70      0.51      0.59        41
@@ -100,40 +100,40 @@ weighted avg     0.49      0.50      0.49       685
 
 </details>
 
-### Itération Finale : Le Tuning par la Visualisation
+### Final Iteration: Tuning Through Visualization
 
-C'est à ce stade que nos outils de visualisation sont devenus cruciaux. L'analyse a montré que notre paramètre de détection de pics (`prominence`) était trop strict et ignorait de nombreuses raies réelles mais moins profondes.
+At this stage, our visualization tools became crucial. The analysis showed that our peak-detection parameter (`prominence`) was too strict and ignored many real but shallower lines.
 
-Grâce à notre **analyseur de spectre interactif**, nous avons pu "tuner" ce paramètre en temps réel. Une valeur optimisée de `prominence=0.23` a été identifiée, permettant de récupérer un grand nombre de raies auparavant ignorées.
+Thanks to our **interactive spectrum analyzer**, we were able to tune this parameter in real time. An optimized value of `prominence=0.23` was identified, allowing us to recover a large number of lines that had previously been ignored.
 
 ![image info](/img/raie_01.png)
 ![image info](/img/raie_02.png)
 
-### Le Résultat Final : Une Précision de 56%
+### The Final Result: 56% Accuracy
 
-Après avoir relancé le pipeline complet avec ce paramètre optimisé sur un nouveau lot de **2607 spectres**, les résultats ont dépassé nos attentes :
+After rerunning the full pipeline with this optimized parameter on a new batch of **2607 spectra**, the results exceeded our expectations:
 
-*   **Précision Globale : 56%**
-*   **Qualité des Features :** Le problème des valeurs manquantes a été quasiment éliminé, avec toutes les features de base présentes dans plus de **95%** des cas.
-*   **Pertinence des Features :** L'importance des features est maintenant bien mieux équilibrée. `feature_Hβ` et le `ratio_CaK_Hbeta` s'imposent comme les indicateurs les plus puissants, mais toutes les features contribuent désormais de manière significative.
+*   **Overall Accuracy: 56%**
+*   **Feature Quality:** The missing-value problem was almost eliminated, with all base features present in more than **95%** of cases.
+*   **Feature Relevance:** Feature importance is now much better balanced. `feature_Hβ` and the `ratio_CaK_Hbeta` stand out as the most powerful indicators, but all features now contribute meaningfully.
 
-La matrice de confusion finale montre une diagonale bien plus nette, signe d'un modèle plus confiant et plus précis, avec des scores F1 supérieurs à 0.54 pour toutes les classes principales.
+The final confusion matrix shows a much clearer diagonal, a sign of a more confident and more accurate model, with F1 scores above 0.54 for all main classes.
 
 <details>
-  <summary>Voir les résultats en détail</summary>
+  <summary>View detailed results</summary>
   ```
---- Chargement du dataset : features_20250724T012617Z.csv ---
-  > 383 lignes avec des labels invalides ou nuls supprimées.
-  > Suppression des classes trop rares : ['s', 'B', 'D', 'C']
+--- Loading dataset: features_20250724T012617Z.csv ---
+  > 383 rows with invalid or null labels removed.
+  > Removal of overly rare classes: ['s', 'B', 'D', 'C']
 
-Features utilisées : ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH', 'feature_ratio_CaK_Hbeta', 'feature_ratio_Halpha_Hbeta']
-Nombre d'échantillons final : 2607, Nombre de features : 6
+Features used: ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH', 'feature_ratio_CaK_Hbeta', 'feature_ratio_Halpha_Hbeta']
+Final number of samples: 2607, Number of features: 6
 
---- ÉTAPE 5: Entraînement et Évaluation du modèle ---
-  > Entraînement du modèle sur 1955 échantillons...
-  > Modèle entraîné.
+--- STEP 5: Model Training and Evaluation ---
+  > Training the model on 1955 samples...
+  > Model trained.
 
---- Rapport d'Évaluation ---
+--- Evaluation Report ---
               precision    recall  f1-score   support
 
            A       0.54      0.54      0.54        41
@@ -155,14 +155,14 @@ weighted avg     0.55      0.56      0.56       652
 
 </details>
 
-### Conclusion et Prochaines Aventures
+### Conclusion and Next Adventures
 
-Ce sprint de recherche a été une démonstration éclatante de la puissance de la méthode itérative en science des données. En partant d'un modèle simple, et en l'améliorant étape par étape en se basant sur l'analyse des résultats, nous avons **amélioré notre baseline de 24 points de pourcentage**.
+This research sprint was a striking demonstration of the power of the iterative method in data science. Starting from a simple model, and improving it step by step based on result analysis, we **improved our baseline by 24 percentage points**.
 
-Le projet AstroSpectro dispose maintenant d'un pipeline de production robuste et d'une suite d'outils d'analyse performants. Les prochaines pistes d'exploration sont déjà sur la table :
+The AstroSpectro project now has a robust production pipeline and a suite of powerful analysis tools. The next exploration paths are already on the table:
 
-*   **Enrichir les features** pour mieux classifier les étoiles froides (type M) en ajoutant des bandes moléculaires.
-*   **Expérimenter avec des modèles plus puissants** comme XGBoost ou des réseaux de neurones.
-*   **Passer au Deep Learning** en utilisant le spectre entier comme entrée d'un réseau de neurones convolutifs (CNN).
+*   **Enrich the features** to better classify cool stars (type M) by adding molecular bands.
+*   **Experiment with more powerful models** such as XGBoost or neural networks.
+*   **Move toward Deep Learning** by using the full spectrum as input to a convolutional neural network (CNN).
 
-Le laboratoire est construit. Les outils sont affûtés. L'aventure continue ! 🚀
+The laboratory is built. The tools are sharpened. The adventure continues! 🚀

@@ -1,10 +1,10 @@
 ---
-title: "Premier Modèle : Leçons d'une Baseline à 32%"
-description: "Secrets d'une matrice de confusion et enjeux des features manquantes lors du premier entraînement."
+title: "First Model: Lessons from a 32% Baseline"
+description: "Secrets from a confusion matrix and the challenges of missing features during the first training run."
 slug: 2025-07-22-premier-modele-baseline-32
 authors:
   - name: Alex Baker
-    title: Étudiant au baccalauréat en physique · AstroSpectro
+    title: Undergraduate physics student · AstroSpectro
     url: https://github.com/PhD-Brown
 tags: [AstroSpectro, machine-learning, baseline, feature-engineering]
 image: /research-docs/img/blog/astrospectro-baseline.png
@@ -12,31 +12,31 @@ date: 2025-07-22
 hide_table_of_contents: true
 ---
 
-Aujourd'hui marque une étape cruciale pour le projet AstroSpectro : le premier entraînement de bout en bout de notre modèle de classification de types stellaires. Après avoir mis en place un pipeline robuste d'acquisition et de traitement pour **5000 spectres** du relevé LAMOST DR5, il était temps de voir ce que notre première approche pouvait accomplir.
+Today marks a crucial milestone for the AstroSpectro project: the first end-to-end training run of our stellar type classification model. After setting up a robust acquisition and processing pipeline for **5000 spectra** from the LAMOST DR5 survey, it was time to see what our first approach could achieve.
 
 {/* truncate */}
 
-### La Première Itération : Un Modèle Simple mais Honnête
+### The First Iteration: A Simple but Honest Model
 
-Pour établir une **baseline**, l'objectif était de construire le modèle le plus simple possible afin de valider l'intégrité de la chaîne de traitement. La stratégie était la suivante :
+To establish a **baseline**, the goal was to build the simplest possible model in order to validate the integrity of the processing chain. The strategy was as follows:
 
-*   **[Modèle](https://phd-brown.github.io/AstroSpectro/docs/user-guides/model-training) :** Un `RandomForestClassifier`, un algorithme robuste et bien compris.
-*   **[Features](https://phd-brown.github.io/AstroSpectro/docs/user-guides/feature-extraction) :** Uniquement quatre caractéristiques, basées sur la **position** des raies d'absorption les plus connues ``Hα, Hβ, CaII H & K``. Le but était de vérifier si cette information minimale contenait déjà un signal prédictif.
+*   **[Model](https://phd-brown.github.io/AstroSpectro/docs/user-guides/model-training) :** A `RandomForestClassifier`, a robust and well-understood algorithm.
+*   **[Features](https://phd-brown.github.io/AstroSpectro/docs/user-guides/feature-extraction) :** Only four characteristics, based on the **position** of the best-known absorption lines ``Hα, Hβ, CaII H & K``. The goal was to verify whether this minimal information already contained a predictive signal.
 
-### Le Résultat : Une Précision de 32%
+### The Result: 32% Accuracy
 
-Après entraînement et évaluation sur un jeu de test de 1250 spectres, le modèle a atteint une précision globale de **32%**.
+After training and evaluation on a test set of 1250 spectra, the model reached an overall accuracy of **32%**.
 
-Ce score, bien qu'il semble modeste, est un point de départ extrêmement prometteur. Dans un problème de classification avec autant de classes ``A, B, C, F, G, K, M, N, s``, une prédiction aléatoire n'obtiendrait qu'environ 9% de bonnes réponses. Notre score de 32% est donc **plus de trois fois supérieur au hasard**, ce qui prouve que notre pipeline fonctionne et que les features, même simples, contiennent un signal exploitable.
+Although this score may seem modest, it is an extremely promising starting point. In a classification problem with so many classes ``A, B, C, F, G, K, M, N, s``, random prediction would only achieve about 9% correct answers. Our 32% score is therefore **more than three times better than chance**, which proves that our pipeline works and that the features, even simple ones, contain an exploitable signal.
 
 <details>
-  <summary>Voir les résultats en détail</summary>
+  <summary>View the results in detail</summary>
   ```
-  Features utilisées pour l'entraînement : ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH']
-  Nombre d'échantillons : 5000, Nombre de features : 4
-  Entraînement du modèle sur 3750 échantillons...
-  
---- Rapport d'Évaluation ---
+  Features used for training: ['feature_Hα', 'feature_Hβ', 'feature_CaIIK', 'feature_CaIIH']
+  Number of samples: 5000, Number of features: 4
+  Training the model on 3750 samples...
+
+--- Evaluation Report ---
 
               precision    recall  f1-score   support
 
@@ -59,35 +59,35 @@ weighted avg     0.39      0.32      0.33      1250
   ```
 </details>
 
-> Mais le plus intéressant n'est pas le score lui-même, mais ce que les **erreurs** du modèle nous apprennent.
+> But the most interesting part is not the score itself, but what the model's **errors** teach us.
 
-### L'Analyse : La Matrice de Confusion Parle
+### The Analysis: The Confusion Matrix Speaks
 
-La matrice de confusion est une véritable carte de la "pensée" de notre modèle. Deux observations sautent aux yeux :
+The confusion matrix is a true map of our model's "thinking". Two observations stand out immediately:
 
 ![image info](/img/matrice_01.png)
 
-1.  **Le Déséquilibre des Données :** Le modèle est incapable de classer les étoiles de type ``B, C, D ou s``, car il n'en a vu qu'un seul exemple dans le jeu de test. C'est une leçon classique en IA : un modèle ne peut pas apprendre ce qu'il ne voit pas.
-2.  **La "Confusion Physique" :** Là où le modèle se trompe, il le fait de manière **logique**. Par exemple, il confond massivement les étoiles de type ``G`` avec les types ``F`` et ``K``. C'est normal : ces types sont adjacents dans la séquence spectrale et se ressemblent beaucoup. Le modèle a donc bien appris la "géographie" stellaire, mais il peine à tracer les frontières précises.
+1.  **Data Imbalance:** The model is unable to classify stars of type ``B, C, D or s``, because it saw only a single example of each in the test set. This is a classic lesson in AI: a model cannot learn what it does not see.
+2.  **"Physical Confusion":** Where the model makes mistakes, it does so in a **logical** way. For example, it massively confuses ``G``-type stars with ``F`` and ``K`` types. This is normal: these types are adjacent in the spectral sequence and look very similar. The model has therefore learned the stellar "geography" well, but struggles to draw precise boundaries.
 
-### La Cause Racine : Le Problème des Features Manquantes
+### The Root Cause: The Missing Features Problem
 
-L'analyse de nos features extraites a révélé le cœur du problème. Un graphique montrant le pourcentage de valeurs nulles pour chaque feature est sans appel :
+Analysis of our extracted features revealed the heart of the problem. A graph showing the percentage of null values for each feature is quite clear:
 
 ![image info](/img/missing_features_01.png)
 
-Ce graphique, qui analyse **l'intégralité de notre dataset de 5000 spectres**, montre une réalité surprenante : la feature basée sur la raie **Hα est absente dans plus de 80% des cas**. Les raies Hβ et CaII H/K sont, quant à elles, détectées plus fréquemment mais restent manquantes dans une part non négligeable des observations.
+This graph, which analyzes **our entire dataset of 5000 spectra**, reveals a surprising reality: the feature based on the **Hα line is absent in more than 80% of cases**. The Hβ and CaII H/K lines are detected more frequently, but they still remain missing in a non-negligible fraction of the observations.
 
-Le modèle a donc dû prendre ses décisions en se basant sur une information très lacunaire. Le fait d'atteindre 32% dans ces conditions est la preuve que les raies du calcium et ``Hβ`` sont des indicateurs puissants, mais que le modèle est fortement handicapé par la difficulté à extraire un signal clair pour ``Hα`` avec les paramètres actuels.
+The model therefore had to make its decisions based on very incomplete information. Reaching 32% under these conditions proves that the calcium lines and ``Hβ`` are powerful indicators, but also that the model is strongly limited by the difficulty of extracting a clear ``Hα`` signal with the current parameters.
 
-### Les Prochaines Étapes : La Chasse aux Vraies Features est Ouverte !
+### Next Steps: The Hunt for Real Features Is On!
 
-Ce premier résultat n'est pas une fin, mais un point de départ documenté. La [feuille de route](https://phd-brown.github.io/AstroSpectro/docs/community/roadmap) pour la prochaine itération est claire : nous devons fournir des "ingrédients" de meilleure qualité à notre modèle.
+This first result is not an endpoint, but a documented starting point. The [roadmap](https://phd-brown.github.io/AstroSpectro/docs/community/roadmap) for the next iteration is clear: we need to provide our model with better-quality "ingredients".
 
-1.  **Mesurer la Force, pas la Présence :** La prochaine version du pipeline ne se contentera plus de savoir si une raie est là, mais mesurera sa **profondeur** (via la `prominence` des pics). C'est une information physique beaucoup plus riche.
-2.  **Créer des Features de Ratio :** Nous allons calculer les ratios entre les profondeurs de différentes raies. Ces ratios sont des indicateurs de température bien connus en astrophysique et devraient aider le modèle à mieux distinguer les classes adjacentes (comme ``F, G et K``).
-3.  **Nettoyer le Dataset :** Pour la prochaine évaluation, nous nous concentrerons sur les classes pour lesquelles nous avons un nombre suffisant d'exemples ``A, F, G, K, M`` afin d'obtenir des métriques de performance plus fiables et interprétables.
+1.  **Measure Strength, Not Presence:** The next version of the pipeline will no longer only determine whether a line is present, but will measure its **depth** (through peak `prominence`). This is much richer physical information.
+2.  **Create Ratio Features:** We will compute ratios between the depths of different lines. These ratios are well-known temperature indicators in astrophysics and should help the model better distinguish adjacent classes (such as ``F, G and K``).
+3.  **Clean the Dataset:** For the next evaluation, we will focus on the classes for which we have a sufficient number of examples ``A, F, G, K, M`` in order to obtain more reliable and interpretable performance metrics.
 
-> Cette baseline de 32% est la fondation sur laquelle nous allons construire. Chaque amélioration future pourra être mesurée par rapport à ce point de départ, démontrant l'impact direct de notre travail de feature engineering.
+> This 32% baseline is the foundation on which we will build. Every future improvement can be measured against this starting point, demonstrating the direct impact of our feature engineering work.
 
-Restez à l'écoute !
+Stay tuned!
