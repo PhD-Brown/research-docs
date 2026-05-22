@@ -1,0 +1,115 @@
+---
+title: Scientific Claims Register
+description: Centralized registry of all major scientific claims across AstroSpectro, AstroVision, and ξ Dark Energy — with evidence level, figures, and known limitations.
+---
+
+# ⚖️ Scientific Claims Register
+
+This page centralizes every major scientific claim made across the three research projects. Each claim is assigned an **evidence level**, linked to its primary figure and documentation page, and annotated with known limitations or caveats.
+
+:::info Purpose
+This register exists to prevent overstating results — in conversations, in documentation, and especially in any future manuscript submissions. If a claim is not listed here with a supporting figure and run ID, it should not be stated as a finding.
+:::
+
+---
+
+## Evidence levels
+
+| Level | Meaning |
+|---|---|
+| ✅ **Solid** | Reproduced across multiple runs, consistent with physical expectations, no known confounders |
+| 🟡 **Suggestive** | Present in primary results but not yet replicated across independent datasets or model families |
+| 🔶 **Preliminary** | Single run or dataset, treated as hypothesis-generating, not conclusive |
+| ⚠️ **Caveat** | Result is real but requires explicit qualification before public communication |
+
+---
+
+## 🌟 AstroSpectro
+
+### Classification performance
+
+| Claim | Evidence | Run ID | Figure | Page |
+|---|---|---|---|---|
+| Balanced accuracy of **89.2%** on 5-class AFGKM classification (N=60,947 test) | ✅ Solid | `20260522T161236Z` | `confusion_matrix_xgboost_20260522T161236Z.png` | [Classification Performance](../astrospectro/science/classification-performance) |
+| ROC-AUC macro = **0.986** across all 5 classes | ✅ Solid | `20260522T161236Z` | `roc_xgboost_20260522T161236Z.png` | [Classification Performance](../astrospectro/science/classification-performance) |
+| Class M achieves highest F1 (0.946); class F is the weakest (0.822) | ✅ Solid | `20260522T161236Z` | `confusion_matrix_xgboost_20260522T161236Z.png` | [F/G Confusion](../astrospectro/science/fg-confusion) |
+| F↔G confusion is the dominant off-diagonal confusion (F→G: 12%, G→F: 10%) | ✅ Solid | `20260522T161236Z` | `confusion_matrix_xgboost_20260522T161236Z.png` | [F/G Confusion](../astrospectro/science/fg-confusion) |
+
+### SHAP interpretability
+
+| Claim | Evidence | Run ID | Figure | Page |
+|---|---|---|---|---|
+| **Mg b equivalent width** is the top-ranked feature globally (mean SHAP = 0.42) | 🟡 Suggestive | `20260522T161236Z` | `FIGURE_2_shap_composite.png` | [SHAP Interpretability](../astrospectro/science/shap-interpretability) |
+| **96.8%** of total SHAP feature importance comes from physically interpretable spectroscopic features | ✅ Solid | `20260522T161236Z` | `physical_vs_observational.png` | [SHAP Interpretability](../astrospectro/science/shap-interpretability) |
+| Metallicity-sensitive features (Mg b, Ca II K, CaH2) dominate over Balmer temperature indicators globally | 🟡 Suggestive | `20260522T161236Z` | `global_importance.png`, `FIGURE_2_shap_composite.png` | [SHAP Interpretability](../astrospectro/science/shap-interpretability) |
+| Class A is primarily distinguished by Ca II K eq_width (mean SHAP = 1.364) and G4300 index (0.773) | 🟡 Suggestive | `20260522T161236Z` | `class_specific_importance.png`, `beeswarm_per_class.png` | [SHAP Interpretability](../astrospectro/science/shap-interpretability) |
+| Class M is primarily distinguished by index_CaH2 (mean SHAP = 1.589) and slope_deep_red (0.666) | 🟡 Suggestive | `20260522T161236Z` | `class_specific_importance.png` | [SHAP Interpretability](../astrospectro/science/shap-interpretability) |
+| Mg b × CaH2 SHAP interaction (0.039) is the strongest pairwise interaction in top-10 features | 🔶 Preliminary | `20260522T161236Z` | `feature_interactions.png` | [SHAP Interpretability](../astrospectro/science/shap-interpretability) |
+
+### Caveats & limitations
+
+| Claim | Evidence | Note |
+|---|---|---|
+| SHAP metallicity dominance has not been replicated on an independent survey (e.g. APOGEE, Galah) | ⚠️ Caveat | Future work; stated explicitly in SHAP page and limitations |
+| 3.2% of SHAP importance comes from Gaia photometric features (M_BP, M_G, M_RP, ag_gspphot) — the model is not purely spectroscopic | ⚠️ Caveat | Requires explicit statement in `spectro-only-mode.mdx` before RNAAS submission |
+| F↔G confusion is partially irreducible due to spectral sequence overlap near 6000 K | ✅ Solid | Physical, not a model failure |
+| Dataset covers LAMOST DR5 only — results may differ on higher-resolution spectra (APOGEE R~22,500 vs LAMOST R~1800) | ⚠️ Caveat | Scope limitation |
+
+---
+
+## 🔭 AstroVision
+
+### Classification performance
+
+| Claim | Evidence | Figure | Page |
+|---|---|---|---|
+| Late-fusion multimodal model achieves **86.3% balanced accuracy** on Galaxy10 DECaLS | ✅ Solid | `results_final_comparison.png` | [Benchmarking](../astrovision/results/benchmarking) |
+| DINOv2 late-fusion outperforms DINOv2 fine-tuning alone on balanced accuracy | ✅ Solid | `results_final_comparison.png` | [Benchmarking](../astrovision/results/benchmarking) |
+| Disturbed class recall is capped at ~0.53 — a physically irreducible ceiling due to intra-class morphological heterogeneity | ✅ Solid | `results_metrics_by_class.png` | [Limitations](../astrovision/results/limitations) |
+
+### Calibration & uncertainty
+
+| Claim | Evidence | Figure | Page |
+|---|---|---|---|
+| Fusion model is natively well-calibrated (ECE = 0.049) | ✅ Solid | — | [Uncertainty](../astrovision/results/uncertainty) |
+| Temperature Scaling **degrades** rather than improves calibration for the fusion model | ✅ Solid | — | [Uncertainty](../astrovision/results/uncertainty) |
+| Conformal Prediction achieves 90% coverage with 91% singleton rate | ✅ Solid | — | [Uncertainty](../astrovision/results/uncertainty) |
+
+### Physical interpretation
+
+| Claim | Evidence | Figure | Page |
+|---|---|---|---|
+| DINOv2 features encode galaxy colour information (R²=0.536 with SDSS photometry) | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](../astrovision/results/physical-interpretation) |
+| Morphometric features (CAS, Gini, M20) contribute more than SDSS photometry to fusion model because DINOv2 already encodes colour | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](../astrovision/results/physical-interpretation) |
+
+---
+
+## ξ Dark Energy
+
+### MCMC results
+
+| Claim | Evidence | Figure | Page |
+|---|---|---|---|
+| Ξosc model shows a **marginal preference** (~2.26σ) for non-zero oscillation amplitude ε | 🔶 Preliminary | Corner plots | [Known Limitations](../xi-dark-energy/results/caveats) |
+| ΛCDM and CPL posteriors are consistent with published Planck + DESI constraints | 🟡 Suggestive | Corner plots | [Parameter Constraints](../xi-dark-energy/results/parameter-constraints) |
+
+### Caveats (v0.1.0-exploratory)
+
+| Claim | Evidence | Note |
+|---|---|---|
+| The 2.26σ preference for ε > 0 is **fragile** — the boundary prior ε ∈ [0, 0.3] artificially inflates significance | ⚠️ Caveat | Fixed in v0.2 (symmetric prior) |
+| Fixed r_d = 147.09 Mpc imports an implicit CMB constraint — results are not purely data-driven | ⚠️ Caveat | Fixed in v0.2 (free r_d) |
+| Self-consistency bias in t(z) mapping affects the distance calculation | ⚠️ Caveat | Fixed in v0.2 |
+| This project is explicitly exploratory — **no claim of new physics** is made | ✅ Solid | Core design principle of the project |
+
+---
+
+## How to update this register
+
+When a new result is produced:
+1. Add a row to the appropriate section above
+2. Assign an evidence level honestly
+3. Link the figure filename and the documentation page
+4. Add any associated caveat immediately
+
+This register is the **single source of truth** for what is claimed publicly. It takes precedence over any other documentation page in case of conflict.

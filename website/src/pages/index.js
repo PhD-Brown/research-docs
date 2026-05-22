@@ -63,8 +63,8 @@ const PROJECTS = [
     accent:  '#4B9FE1',
     tag:     'Stellar Spectroscopy · ML',
     blurb:   'Interpretable machine-learning pipeline for stellar spectral classification using LAMOST DR5 × Gaia DR3.',
-    stats:   [['43,019', 'spectra'], ['183', 'physical features'], ['?? %', 'balanced accuracy']],
-    finding: 'Ca II H&K > Balmer (SHAP)',
+    stats:   [['350k', 'spectra'], ['99', 'selected features'], ['89.2 %', 'balanced accuracy']],
+    finding: 'Mg b & Ca II K > Balmer (SHAP)',
     href:    '/research-docs/docs/astrospectro/overview',
   },
   {
@@ -73,7 +73,7 @@ const PROJECTS = [
     accent:  '#A78BFA',
     tag:     'Galaxy Morphology · Deep Learning',
     blurb:   'Late-fusion multimodal classifier combining DINOv2 visual features, morphometrics, and SDSS photometry.',
-    stats:   [['17,736', 'galaxy images'], ['10', 'morphology classes'], ['?? %', 'balanced accuracy']],
+    stats:   [['17,736', 'galaxy images'], ['10', 'morphology classes'], ['86.3 %', 'balanced accuracy']],
     finding: 'DINOv2 encodes colour R²=0.536',
     href:    '/research-docs/astrovision/overview',
   },
@@ -90,10 +90,10 @@ const PROJECTS = [
 ];
 
 const STATS = [
-  { n: '43k+',  label: 'spectra\nprocessed' },
-  { n: '183',   label: 'physical\nfeatures' },
-  { n: '?? %',  label: 'AstroSpectro\nbalanced acc.' },
-  { n: '?? %',  label: 'AstroVision\nbalanced acc.' },
+  { n: '350k+',  label: 'spectra\nprocessed' },
+  { n: '99',     label: 'selected\nfeatures' },
+  { n: '89.2 %', label: 'AstroSpectro\nbalanced acc.' },
+  { n: '86.3 %', label: 'AstroVision\nbalanced acc.' },
 ];
 
 const PATHS = [
@@ -204,13 +204,13 @@ export default function Home() {
       <section className={styles.spotlight}>
         <div className={styles.container}>
           <div className={styles.spotlightInner}>
-            <p className={styles.spotlightTag}>⭐ Key Scientific Finding · AstroSpectro · SHAP Interpretability</p>
+            <p className={styles.spotlightTag}>⭐ Key Scientific Finding · AstroSpectro · SHAP Interpretability · v6 · 350k spectra</p>
             <blockquote className={styles.spotlightQuote}>
-              "Current SHAP results suggest that metallicity-sensitive features
-              (Ca&nbsp;II&nbsp;H&K and Mg&nbsp;b) play a major role alongside classical
-              Balmer temperature indicators in the learned classification structure —
-              a physically meaningful result that constrains what modern machine-learning
-              models learn from stellar spectra."
+              "SHAP analysis of the XGBoost classifier (350k spectra, ROC-AUC&nbsp;0.986)
+              reveals that Mg&nbsp;b equivalent width ranks first globally, Ca&nbsp;II&nbsp;K
+              fourth — metallicity-sensitive features dominate over classical Balmer temperature
+              indicators in the learned classification structure. 96.8&nbsp;% of feature
+              importance derives from physically interpretable spectroscopic descriptors."
             </blockquote>
             <Link
               to="/research-docs/docs/astrospectro/science/shap-interpretability"

@@ -1,0 +1,155 @@
+---
+title: Roadmap
+description: "Development and manuscript roadmap for AstroVision."
+---
+
+# Roadmap
+
+This page tracks the next scientific, technical, and editorial milestones for AstroVision. The purpose is not to list every small task, but to make the direction of the project clear to readers, supervisors, collaborators, and future reviewers.
+
+:::info[Current phase]
+AstroVision is in a consolidation phase: the main architecture exists, the strongest result is the late-fusion multimodal model, and the next step is to strengthen reproducibility, uncertainty analysis, and manuscript readiness.
+:::
+
+---
+
+## Roadmap overview
+
+| Phase | Focus | Status |
+|---|---|---|
+| v0.1 | Baseline CNN, initial dataset preparation, first morphology classification experiments | Complete |
+| v0.2 | EfficientNet and DINOv2 comparison, stronger benchmark structure | Complete / polishing |
+| v0.3 | Late-fusion multimodal model and physical metadata integration | Active |
+| v0.4 | Uncertainty, calibration, Grad-CAM, and morphometry consolidation | Active |
+| v0.5 | Manuscript-ready figures, claims register, and reproducibility audit | Planned |
+| v1.0 | Public research release with stable documentation and citation metadata | Planned |
+
+---
+
+## Scientific priorities
+
+### 1. Consolidate the late-fusion result
+
+The current headline result is the late-fusion multimodal model, reported at approximately **86.3% balanced accuracy**. This should remain the central result, but it needs to be documented with full context.
+
+Required next steps:
+
+- [ ] Verify final train/validation/test split.
+- [ ] Export final confusion matrix.
+- [ ] Export per-class precision, recall, and F1.
+- [ ] Document whether metadata improves specific classes more than others.
+- [ ] Add a clean ablation table: image-only, metadata-only, late fusion.
+- [ ] Add the final claim to the Scientific Claims Register.
+
+### 2. Make calibration findings explicit
+
+The uncertainty page should not only report successful techniques. It should also preserve the finding that Temperature Scaling did not improve the late-fusion model in the current run.
+
+Required next steps:
+
+- [ ] Add reliability diagram.
+- [ ] Add ECE table before/after calibration.
+- [ ] Explain why Temperature Scaling may fail for this setting.
+- [ ] Compare MC Dropout uncertainty against correctness.
+- [ ] Connect conformal prediction to scientifically cautious classification.
+
+### 3. Strengthen the physical interpretation
+
+AstroVision should avoid becoming a pure computer-vision benchmark. The strongest version of the project explains what the model appears to learn about galaxy structure.
+
+Required next steps:
+
+- [ ] Link Grad-CAM examples to physical regions of galaxies.
+- [ ] Compare morphology classes using morphometry descriptors.
+- [ ] Add representative success and failure cases.
+- [ ] Identify which classes are physically ambiguous rather than merely computationally hard.
+- [ ] Clarify why disturbed galaxies remain difficult.
+
+---
+
+## Technical priorities
+
+| Priority | Task | Target page |
+|---|---|---|
+| P1 | Add full evaluation protocol | [Evaluation Protocol](../results/evaluation-protocol) |
+| P1 | Complete benchmarking table | [Benchmarking](../results/benchmarking) |
+| P1 | Finalize late-fusion architecture description | [Late-Fusion](../models/late-fusion) |
+| P1 | Document disturbed-class limitation | [Limitations](../results/limitations) |
+| P2 | Add segmentation quality examples | [Segmentation](../models/segmentation) |
+| P2 | Add morphometry feature definitions | [Morphometry](../models/morphometry) |
+| P2 | Add API usage examples | [API Reference](../api/) |
+| P3 | Add automated report generation | Guides / API |
+
+---
+
+## Manuscript preparation
+
+AstroVision is a natural candidate for a compact methods-and-results manuscript if the following pieces are completed.
+
+### Minimum manuscript-ready package
+
+- [ ] Abstract-level project framing.
+- [ ] Dataset and preprocessing section.
+- [ ] Model architecture figure.
+- [ ] Benchmark table.
+- [ ] Confusion matrix.
+- [ ] Calibration / uncertainty figure.
+- [ ] Grad-CAM composite figure.
+- [ ] Morphometry / physical interpretation figure.
+- [ ] Limitations section.
+- [ ] Reproducibility statement.
+- [ ] Citation / release metadata.
+
+### Suggested manuscript narrative
+
+1. Galaxy morphology classification is visually rich but physically ambiguous.
+2. Image-only deep learning provides strong baselines.
+3. Foundation vision features help, but do not automatically solve all class ambiguities.
+4. Late-fusion improves the scientific framing by combining visual representation with physically interpretable descriptors.
+5. Uncertainty and conformal prediction are necessary because morphology labels can be ambiguous.
+6. Failure cases, especially disturbed galaxies, are scientifically informative rather than merely technical errors.
+
+---
+
+## Documentation milestones
+
+| Page | Status goal |
+|---|---|
+| Overview | Replace scaffold bullets with a narrative project introduction |
+| Key Results | Add final metric cards and caveat box |
+| Evaluation Protocol | Complete and keep stable |
+| Benchmarking | Add final comparison table |
+| Uncertainty | Highlight calibration outcome |
+| Grad-CAM | Add figure gallery and interpretation rules |
+| Physical Interpretation | Connect predictions to galaxy structure |
+| Limitations | Expand disturbed-galaxy analysis |
+| Citing | Update once DOI / release exists |
+
+---
+
+## Release checklist
+
+Before tagging a public release:
+
+- [ ] Every sidebar page builds without broken links.
+- [ ] Every major claim has a source figure or table.
+- [ ] Every result page states the dataset/split/model version.
+- [ ] The late-fusion result is framed with caveats.
+- [ ] The disturbed-class limitation is clearly visible.
+- [ ] The citation page includes release metadata.
+- [ ] The documentation landing page links to AstroVision key results.
+- [ ] The repository has a reproducible environment file.
+- [ ] The final figures have consistent style and captions.
+
+---
+
+## Related pages
+
+| Page | Role |
+|---|---|
+| [Key Results](../overview/key-results) | Current scientific summary |
+| [Late-Fusion Multimodal](../models/late-fusion) | Main architecture |
+| [Evaluation Protocol](../results/evaluation-protocol) | Stable evaluation rules |
+| [Uncertainty](../results/uncertainty) | Calibration and confidence |
+| [Limitations](../results/limitations) | Failure modes and caveats |
+| [Citing](./citing) | Citation metadata |

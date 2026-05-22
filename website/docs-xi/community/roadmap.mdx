@@ -1,0 +1,120 @@
+---
+title: Roadmap
+description: "Roadmap for the ξ Dark Energy exploratory cosmology project."
+---
+
+# Roadmap
+
+This page tracks the next methodological and documentation milestones for the ξ Dark Energy project.
+
+:::info[Why this page is included]
+The sidebar references a Community Roadmap page. Including this file prevents a missing-doc route and gives readers a clear path from the v0.1 limitations toward the planned v0.2 robustness work.
+:::
+
+---
+
+## Current status
+
+The current version should be treated as an exploratory v0.1 analysis. It is useful as a reproducible cosmology pipeline and a portfolio-level demonstration of MCMC inference, but it should not be presented as a confirmed cosmological result.
+
+| Area | Status |
+|---|---|
+| Pantheon+SH0ES likelihood | Implemented |
+| DESI DR2 BAO likelihood | Implemented |
+| ΛCDM baseline | Implemented |
+| CPL comparison | Implemented |
+| ξ oscillatory model | Exploratory |
+| MCMC diagnostics | Implemented, but convergence needs careful reporting |
+| Prior sensitivity | Planned |
+| Public release polish | Planned |
+
+---
+
+## v0.2 priorities
+
+### 1. Prior sensitivity
+
+- [ ] Verify all prior bounds directly from the sampler configuration.
+- [ ] Add a symmetric prior test for `epsilon`.
+- [ ] Compare linear-period and log-period prior choices.
+- [ ] Report whether posterior mass is boundary-limited.
+- [ ] Update the [Prior Specification](../inference/priors) page after final verification.
+
+### 2. Time variable and oscillation definition
+
+- [ ] Audit the definition of the time variable used in the ξ term.
+- [ ] Verify whether the implementation uses lookback time, cosmic time, scale factor, or redshift.
+- [ ] Confirm that the oscillation period `T` is interpreted consistently.
+- [ ] Add a diagram or equation block to the model-definition page.
+
+### 3. Convergence and robustness
+
+- [ ] Run longer chains if autocorrelation times remain large.
+- [ ] Report acceptance fraction.
+- [ ] Report integrated autocorrelation time.
+- [ ] Show trace plots for all parameters.
+- [ ] Verify that the posterior is stable across walker initialization.
+- [ ] Compare medians across independent chains.
+
+### 4. Model comparison caution
+
+- [ ] Clarify what AIC/BIC can and cannot say.
+- [ ] Avoid interpreting small score differences as decisive evidence.
+- [ ] Add posterior predictive plots for all models.
+- [ ] Compare residuals against redshift.
+
+---
+
+## Documentation priorities
+
+| Priority | Page | Task |
+|---|---|---|
+| P1 | [Known Limitations](../results/caveats) | Make v0.1 caveats impossible to miss |
+| P1 | [Prior Specification](../inference/priors) | Replace placeholder bounds with exact values |
+| P1 | [Convergence](../inference/convergence) | Add final trace/autocorrelation diagnostics |
+| P1 | [Parameter Constraints](../results/parameter-constraints) | Add final table with caveat language |
+| P2 | [Model Comparison](../inference/model-comparison) | Add AIC/BIC interpretation guardrails |
+| P2 | [Outputs](../reproducibility/outputs) | Document generated files and figures |
+| P3 | [Citing](./citing) | Add DOI / release metadata |
+
+---
+
+## Release readiness checklist
+
+Before tagging a stable public release:
+
+- [ ] All model equations are documented.
+- [ ] All priors are documented with exact bounds.
+- [ ] All likelihood terms are documented.
+- [ ] Data versions are explicitly stated.
+- [ ] MCMC configuration is reproducible.
+- [ ] Convergence diagnostics are published.
+- [ ] Known limitations are linked from every result page.
+- [ ] Posterior samples are archived or reproducible.
+- [ ] Claims are added to the Scientific Claims Register.
+- [ ] Citation metadata is updated.
+
+---
+
+## Recommended framing
+
+The best framing for this project is:
+
+```md
+A reproducible exploratory cosmology pipeline testing whether an oscillatory phenomenological extension can be constrained with current SN Ia and BAO data, with explicit emphasis on priors, convergence, and model-comparison caveats.
+```
+
+This framing is strong because it is ambitious, honest, and methodologically mature.
+
+---
+
+## Related pages
+
+| Page | Role |
+|---|---|
+| [Models](../overview/models) | Defines ΛCDM, CPL, and ξ |
+| [Likelihood](../inference/likelihood) | Data likelihood |
+| [Prior Specification](../inference/priors) | Prior contract |
+| [Convergence](../inference/convergence) | MCMC diagnostics |
+| [Known Limitations](../results/caveats) | v0.1 caveats |
+| [Citing](./citing) | Citation and release metadata |

@@ -1,0 +1,170 @@
+---
+title: Model Card — XGBoost Spectral Classifier
+description: Standardized model card for the AstroSpectro XGBoost stellar classification model (run v6, 350k spectra).
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 🃏 Model Card — XGBoost Spectral Classifier
+
+:::info Run context
+**Experiment:** `ST_350k_xgb_AFGKM_v6` · **Saved:** `20260522T161236Z` · **Mode:** `spectro_only` + isotonic calibration
+:::
+
+This model card follows the format introduced by [Mitchell et al. (2019)](https://arxiv.org/abs/1810.03993). It documents the AstroSpectro XGBoost classifier for transparency, reproducibility, and to prevent misuse or overstatement of results.
+
+---
+
+## Model overview
+
+| Property | Value |
+|---|---|
+| **Model type** | XGBoost (`XGBClassifier`) wrapped in `CalibratedClassifierCV` (isotonic) |
+| **Task** | 5-class stellar spectral classification: A / F / G / K / M |
+| **Input** | 99 selected spectroscopic + Gaia features (from 207 candidates) |
+| **Output** | Calibrated class probabilities + predicted class label |
+| **Training set** | 229,274 spectra |
+| **Test set** | 60,947 spectra |
+| **Total spectra processed** | 349,998 (LAMOST DR5 × Gaia DR3) |
+| **Python / XGBoost** | 3.11.9 / 3.1.1 |
+| **Run hash (MD5)** | `e752bb7ce5494364364f77a4200aa480` |
+
+---
+
+## Hyperparameters
+
+| Parameter | Value |
+|---|---|
+| `n_estimators` | 600 |
+| `max_depth` | 6 |
+| `learning_rate` | 0.1 |
+| `colsample_bytree` | 0.8 |
+| `subsample` | 0.8 |
+| `objective` | `multi:softprob` |
+| `eval_metric` | `mlogloss` |
+| `tree_method` | `hist` |
+| `random_state` | 42 |
+| Calibration | Isotonic regression (`CalibratedClassifierCV`) |
+| Feature selection | Variance + correlation filtering; 207 → 99 features |
+
+---
+
+## Performance metrics
+
+### Global
+
+| Metric | Value |
+|---|---|
+| **Balanced accuracy** | **89.19%** |
+| Accuracy | 87.44% |
+| F1-macro | 88.30% |
+| ROC-AUC macro | **0.9857** |
+| ROC-AUC micro | 0.9876 |
+
+### Per class
+
+| Class | Precision | Recall | F1 | AP | ROC-AUC | Brier |
+|---|---|---|---|---|---|---|
+| **A** | 0.854 | **0.935** | 0.893 | 0.970 | **0.997** | 0.010 |
+| **F** | 0.810 | 0.835 | 0.822 | 0.919 | 0.974 | 0.052 |
+| **G** | **0.885** | 0.839 | 0.861 | 0.948 | 0.971 | 0.067 |
+| **K** | 0.879 | 0.907 | 0.893 | 0.965 | 0.989 | 0.034 |
+| **M** | **0.948** | **0.944** | **0.946** | **0.988** | **0.997** | **0.012** |
+
+:::note
+F and G are the hardest classes — their spectral sequences overlap near the solar temperature (5500–6200 K), making the F↔G boundary physically ambiguous. This is not a model failure; see [F/G Confusion Analysis](./fg-confusion).
+:::
+
+### Confusion matrix (normalized, test set)
+
+|  | Pred A | Pred F | Pred G | Pred K | Pred M |
+|---|---|---|---|---|---|
+| **True A** | **0.93** | 0.06 | 0.00 | 0.00 | 0.00 |
+| **True F** | 0.04 | **0.84** | 0.12 | 0.00 | 0.00 |
+| **True G** | 0.00 | 0.10 | **0.84** | 0.06 | 0.00 |
+| **True K** | 0.00 | 0.00 | 0.06 | **0.91** | 0.03 |
+| **True M** | 0.00 | 0.01 | 0.01 | 0.04 | **0.94** |
+
+---
+
+## Features
+
+| Property | Value |
+|---|---|
+| Candidate features engineered | 207 |
+| Features selected (after filtering) | 99 |
+| Primary family | Spectroscopic line descriptors |
+| Gaia / photometric features included | Yes — M_BP, M_G, M_RP, ag_gspphot, bp-g, g-rp (≈ 3.2% of SHAP importance) |
+| Purely spectroscopic contribution (SHAP) | 96.8% |
+| Top global feature | `feature_Mg_b_eq_width` (mean |SHAP| = 0.42) |
+
+:::warning spectro_only clarification
+Despite the flag `spectro_only=True` in this run, **6 Gaia photometric/astrometric features** were retained in the selected feature set. These account for 3.2% of total SHAP importance. The model is **predominantly** spectroscopic but not purely so. This distinction must be stated explicitly in any manuscript. See [spectro_only=True Mode](../concepts/spectro-only-mode) for the definition and [Data Leakage Audit](../concepts/data-leakage-audit) for the full feature audit.
+:::
+
+---
+
+## Intended use
+
+**Intended users:** Researchers in stellar astrophysics, ML-for-astronomy practitioners, reviewers of the AstroSpectro manuscript.
+
+**Intended use cases:**
+- Automated classification of LAMOST DR5 stellar spectra into MK spectral types (A/F/G/K/M)
+- Benchmarking interpretable ML methods on spectroscopic data
+- SHAP-based analysis of which physical features drive spectral class separation
+
+**Out-of-scope use cases:**
+- Classification of non-LAMOST spectra without retraining (resolution mismatch: LAMOST R~1800)
+- Subtype classification (e.g., G2V vs G8V) — the model predicts main class only
+- Production astronomical catalog generation without manual validation of edge cases
+
+---
+
+## Training data
+
+- **Source:** LAMOST DR5 (Low-Resolution Spectroscopic Survey)
+- **Cross-match:** Gaia DR3 (CDS XMatch, radius 1.5 arcsec)
+- **Classes retained:** A, F, G, K, M (excluded: B, C, D, S, W, s — 1,668 rows removed)
+- **Class distribution (test set):** A=3,738 · F=12,803 · G=21,902 · K=13,642 · M=8,862
+- **Train/test split:** 80/20 stratified
+
+:::caution Class imbalance
+The dataset is imbalanced (G class dominates at ~36%). The model uses balanced accuracy as the primary metric. Class-weighted evaluation is applied throughout.
+:::
+
+---
+
+## Evaluation data
+
+The test set is held out from all training, calibration, and feature selection steps. A strict 80/20 stratified split is applied once at the start of each experiment. No data leakage was detected in the feature audit (see [Data Leakage Audit](../concepts/data-leakage-audit)).
+
+---
+
+## Known limitations
+
+1. **Survey-specific features:** The model was trained on LAMOST R~1800 spectra. Transfer to higher-resolution surveys (APOGEE, GALAH) requires retraining.
+2. **No subtype resolution:** The model classifies into 5 main MK types only.
+3. **SHAP replication:** The Mg b dominance finding has not been replicated on an independent dataset.
+4. **Gaia dependency:** 6 Gaia features are used — this requires a Gaia cross-match for any new spectra.
+5. **Rare classes excluded:** B, C (carbon), D (white dwarf), S, W (Wolf-Rayet) stars are not classified.
+
+---
+
+## Ethical considerations
+
+This is a research model for astronomical spectral classification. No sensitive personal data is involved. The LAMOST and Gaia datasets are publicly available under standard astronomy data policies. The model card is provided to prevent misrepresentation of classification performance in downstream communications.
+
+---
+
+## Citation
+
+```bibtex
+@misc{baker2026astrospectro,
+  author    = {Baker, Alexandre},
+  title     = {{AstroSpectro}: Interpretable ML for Stellar Spectral Classification},
+  year      = {2026},
+  note      = {Manuscript in preparation, targeting RNAAS / A\&A},
+  url       = {https://phd-brown.github.io/research-docs/docs/astrospectro}
+}
+```

@@ -1,0 +1,457 @@
+.pageIntro {
+  margin-bottom: 1rem;
+}
+
+.pageKicker {
+  margin: 0 0 0.28rem;
+  color: rgba(143, 186, 255, 0.82);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: clamp(2rem, 3.5vw, 2.85rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.pageLead {
+  margin: 0.75rem 0 0;
+  max-width: 58ch;
+  color: rgba(226, 234, 255, 0.74);
+  line-height: 1.72;
+  font-size: 0.98rem;
+}
+
+.heroSection {
+  margin: 0.35rem 0 2.8rem;
+}
+
+.heroGrid {
+  display: grid;
+  gap: 1.15rem;
+  padding: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 1.3rem;
+  background:
+    radial-gradient(circle at top left, rgba(75, 159, 225, 0.14), transparent 26%),
+    radial-gradient(circle at top right, rgba(123, 97, 255, 0.11), transparent 22%),
+    linear-gradient(180deg, rgba(10, 15, 28, 0.95), rgba(8, 12, 22, 0.98));
+  overflow: hidden;
+}
+
+@media (min-width: 996px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.96fr);
+    align-items: stretch;
+  }
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.heroEyebrow,
+.sectionEyebrow {
+  margin: 0 0 0.68rem;
+  color: #8fbaff;
+  text-transform: uppercase;
+  letter-spacing: 0.17em;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  max-width: 10.5ch;
+}
+
+.heroLead {
+  margin: 0.9rem 0 0;
+  max-width: 56ch;
+  color: rgba(226, 234, 255, 0.8);
+  font-size: 0.98rem;
+  line-height: 1.72;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.72rem;
+  margin-top: 1.15rem;
+}
+
+.heroButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none !important;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.heroButton:hover {
+  transform: translateY(-1px);
+}
+
+.heroButtonPrimary {
+  background: linear-gradient(180deg, rgba(86, 152, 255, 0.9), rgba(63, 119, 218, 0.95));
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.heroButtonSecondary {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ifm-font-color-base) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.heroPanel {
+  position: relative;
+  border-radius: 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.03), transparent 20%),
+    linear-gradient(180deg, rgba(5, 9, 19, 0.82), rgba(5, 9, 19, 0.92));
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.heroPanelContent {
+  position: relative;
+  z-index: 2;
+  padding: 1rem 1rem 1.05rem;
+}
+
+.heroPanelLabel {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(229, 236, 255, 0.88);
+  font-size: 0.77rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.miniProgramStack {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.miniProgramCard {
+  padding: 0.75rem 0.8rem;
+  border-radius: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.miniProgramCard strong {
+  display: block;
+  margin-bottom: 0.18rem;
+  font-size: 0.92rem;
+}
+
+.miniProgramCard span {
+  display: block;
+  color: rgba(223, 232, 255, 0.74);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.miniProgramAstrospectro {
+  box-shadow: inset 3px 0 0 rgba(75, 159, 225, 0.85);
+}
+
+.miniProgramAstrovision {
+  box-shadow: inset 3px 0 0 rgba(123, 97, 255, 0.85);
+}
+
+.miniProgramXi {
+  box-shadow: inset 3px 0 0 rgba(255, 107, 53, 0.85);
+}
+
+.section {
+  margin: 0 0 2.6rem;
+}
+
+.lastSection {
+  margin-bottom: 0.65rem;
+}
+
+.sectionHead {
+  display: grid;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 996px) {
+  .sectionHead {
+    grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.75fr);
+    align-items: end;
+  }
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: clamp(1.52rem, 2.45vw, 2.2rem);
+  letter-spacing: -0.03em;
+}
+
+.sectionNote {
+  margin: 0;
+  max-width: 32ch;
+  color: rgba(215, 224, 249, 0.58);
+  line-height: 1.68;
+  font-size: 0.95rem;
+}
+
+.projectGrid,
+.layerGrid,
+.readingGrid,
+.highlightGrid,
+.browseGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 996px) {
+  .projectGrid,
+  .highlightGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .layerGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .readingGrid,
+  .browseGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1500px) {
+  .projectGrid,
+  .highlightGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.projectCard,
+.layerCard,
+.readingCard,
+.highlightCard,
+.browseCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.12rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(14, 18, 32, 0.95), rgba(9, 12, 24, 0.98));
+}
+
+.projectCard,
+.layerCard,
+.readingCard,
+.highlightCard {
+  display: flex;
+  min-height: 100%;
+}
+
+.projectCardInner,
+.layerCard,
+.readingCard,
+.highlightCard,
+.browseCard {
+  padding: 1.05rem 1.05rem 1.1rem;
+}
+
+.projectCardInner,
+.layerCard,
+.readingCard,
+.highlightCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.projectGlow {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.projectCardAstrospectro .projectGlow {
+  background: radial-gradient(circle at top right, rgba(75, 159, 225, 0.75), transparent 38%);
+}
+
+.projectCardAstrovision .projectGlow {
+  background: radial-gradient(circle at top right, rgba(123, 97, 255, 0.72), transparent 38%);
+}
+
+.projectCardXi .projectGlow {
+  background: radial-gradient(circle at top right, rgba(255, 107, 53, 0.72), transparent 38%);
+}
+
+.projectTop {
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+
+.projectEyebrow {
+  display: block;
+  color: rgba(221, 229, 255, 0.72);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.5;
+  min-height: 2.95rem;
+}
+
+.projectStatus {
+  display: inline-flex;
+  margin-top: 0.32rem;
+  padding: 0.24rem 0.52rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.72rem;
+  color: rgba(231, 237, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.projectTitle,
+.layerTitle,
+.readingTitle,
+.highlightTitle,
+.browseTitle {
+  margin: 0.82rem 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.projectTitle {
+  font-size: 1.42rem;
+}
+
+.projectDescription,
+.layerDescription,
+.readingDescription,
+.highlightDescription,
+.browseDescription {
+  margin: 0;
+  color: rgba(224, 232, 255, 0.77);
+  line-height: 1.7;
+}
+
+.projectList {
+  margin: 0.95rem 0 0;
+  padding-left: 1rem;
+  color: rgba(228, 235, 255, 0.84);
+  line-height: 1.68;
+}
+
+.projectActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.primaryInlineLink,
+.secondaryInlineLink,
+.layerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+.primaryInlineLink {
+  color: #89bcff !important;
+}
+
+.secondaryInlineLink,
+.layerLink {
+  color: rgba(228, 235, 255, 0.78) !important;
+}
+
+.layerBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 800;
+  margin-bottom: 0.68rem;
+}
+
+.layerLabel {
+  margin: 0 0 0.45rem;
+  color: rgba(155, 191, 255, 0.94);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.highlightAstrospectro {
+  box-shadow: inset 0 1px 0 rgba(75, 159, 225, 0.23);
+}
+
+.highlightAstrovision {
+  box-shadow: inset 0 1px 0 rgba(123, 97, 255, 0.23);
+}
+
+.highlightXi {
+  box-shadow: inset 0 1px 0 rgba(255, 107, 53, 0.23);
+}
+
+.highlightKicker {
+  color: rgba(214, 224, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.browseCard {
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: transform 140ms ease, border-color 140ms ease;
+}
+
+.browseCard:hover,
+.projectCard:hover,
+.layerCard:hover,
+.readingCard:hover,
+.highlightCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global(.theme-doc-markdown) .heroSection :global(h2),
+:global(.theme-doc-markdown) .section :global(h2) {
+  border-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}

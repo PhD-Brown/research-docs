@@ -1,0 +1,224 @@
+---
+title: Evaluation Protocol
+description: "Evaluation protocol for AstroVision classification, uncertainty, calibration, and interpretability results."
+---
+
+# 📐 Evaluation Protocol
+
+This page defines how AstroVision results should be evaluated, compared, and reported. Its role is to make the project reproducible and to prevent inconsistent comparisons between baseline CNNs, EfficientNet, DINOv2, and the late-fusion multimodal model.
+
+:::info Scope
+The protocol applies to all reported AstroVision classification results, including the current late-fusion benchmark, uncertainty analysis, Grad-CAM interpretation, segmentation-assisted morphometry, and future ablation studies.
+:::
+
+---
+
+## Why this page exists
+
+AstroVision combines image-based galaxy morphology classification with physically motivated metadata and interpretability tools. Because the project compares several model families, the evaluation protocol must answer four questions explicitly:
+
+1. **What data split was used?**
+2. **Which metric is primary?**
+3. **How are uncertainty and calibration evaluated?**
+4. **Which figures are considered publication-level evidence?**
+
+Without this page, a reader can see the final score, but cannot easily know whether the score is directly comparable across experiments.
+
+---
+
+## Current evaluation summary
+
+| Item | Current convention |
+|---|---|
+| Primary task | Galaxy morphology classification |
+| Primary metric | Balanced accuracy |
+| Secondary metrics | Accuracy, macro-F1, per-class precision/recall/F1, confusion matrix |
+| Uncertainty tools | MC Dropout, conformal prediction, calibration diagnostics |
+| Interpretability tools | Grad-CAM, physical interpretation, morphometry comparison |
+| Flagged model | Late-fusion multimodal model |
+| Current headline result | **86.3% balanced accuracy** |
+| Key known weakness | Disturbed galaxies remain difficult, with approximately **0.53** class-level performance in the current analysis |
+
+:::warning Verification note
+Before a manuscript or public release, verify the exact split seed, class counts, and final metric values directly from the training logs and exported reports. This page is intended as the stable evaluation contract, not as a replacement for raw experiment artifacts.
+:::
+
+---
+
+## Dataset split policy
+
+AstroVision should report every result with enough information to reproduce the train/validation/test separation.
+
+| Requirement | Description |
+|---|---|
+| Split level | The split should be performed at the image/object level, not after augmentation. |
+| Random seed | The exact seed must be documented for every published run. |
+| Stratification | The split should preserve class balance as much as possible. |
+| Leakage prevention | Images from the same physical source or derived variants must not appear in both training and test sets. |
+| Test isolation | The final test set should not be used for model selection. |
+
+### Recommended reporting block
+
+For each major experiment, include a short block like this:
+
+```md
+**Split protocol.** The dataset was split into train, validation, and test subsets using a fixed random seed. Class stratification was used when possible. All reported final metrics are computed on the held-out test set, which was not used for hyperparameter selection.
+```
+
+---
+
+## Metric hierarchy
+
+### Primary metric: balanced accuracy
+
+Balanced accuracy is the preferred headline metric because galaxy morphology classes can be unevenly represented.
+
+```text
+balanced accuracy = mean(recall per class)
+```
+
+This makes the score less dominated by common classes and more honest about weak classes such as disturbed or ambiguous morphologies.
+
+### Secondary metrics
+
+| Metric | Use |
+|---|---|
+| Accuracy | Useful for quick comparison but should not be the main score if classes are imbalanced. |
+| Macro-F1 | Good summary of precision/recall balance across classes. |
+| Per-class recall | Essential for identifying weak morphology classes. |
+| Per-class precision | Essential for identifying classes that absorb false positives. |
+| Confusion matrix | Required for every final benchmark. |
+| ROC-AUC / PR-AUC | Optional; useful for one-vs-rest analysis if probabilities are stable. |
+
+:::tip Reporting rule
+The landing page can show the single headline score, but the Results section should always show the confusion matrix and per-class scores next to the global metric.
+:::
+
+---
+
+## Model comparison protocol
+
+AstroVision compares models that do not all use the same type of input. This makes the comparison scientifically interesting, but it also requires careful framing.
+
+| Model family | Input type | Evaluation role |
+|---|---|---|
+| Baseline CNN | Images only | Minimal supervised reference |
+| EfficientNet | Images only | Strong conventional CNN baseline |
+| DINOv2 probing | Frozen foundation features | Representation quality test |
+| DINOv2 fine-tuned | Images with adapted representation | Strong vision foundation baseline |
+| Late-fusion multimodal | Image features + physical/morphometric metadata | Primary AstroVision model |
+| Segmentation / morphometry pipeline | Derived structural features | Physical interpretation support |
+
+### Required comparison rules
+
+1. Compare all models on the same test set.
+2. Report the same primary metric for all models.
+3. Mark clearly when a model uses additional non-image metadata.
+4. Avoid presenting late-fusion gains as purely visual improvements.
+5. Include an ablation when possible: image-only branch vs metadata-only branch vs fused model.
+
+---
+
+## Calibration and uncertainty protocol
+
+AstroVision does not only need accurate predictions; it also needs reliable confidence estimates.
+
+| Method | What it tests |
+|---|---|
+| MC Dropout | Approximate epistemic uncertainty through stochastic forward passes |
+| Calibration curves | Whether predicted probabilities match empirical correctness |
+| Expected Calibration Error (ECE) | Global calibration quality |
+| Temperature Scaling | Post-hoc probability calibration |
+| Conformal prediction | Coverage-controlled prediction sets |
+
+:::warning Calibration finding
+The current documentation should explicitly preserve the counter-intuitive result that Temperature Scaling did not improve the late-fusion model in the current run. This should be treated as a result to report and investigate, not hidden as a failed technical detail.
+:::
+
+### Recommended uncertainty figure set
+
+| Figure | Purpose |
+|---|---|
+| Reliability diagram | Show probability calibration |
+| Confidence histogram | Show over/under-confidence |
+| Uncertainty vs correctness | Show whether errors are more uncertain |
+| Conformal coverage plot | Show empirical coverage against target coverage |
+| Example prediction sets | Make conformal prediction intuitive |
+
+---
+
+## Interpretability protocol
+
+Interpretability is a scientific component of AstroVision, not only a visualization add-on.
+
+| Tool | Required output |
+|---|---|
+| Grad-CAM | Class-specific attention maps for representative correct and incorrect predictions |
+| Morphometry | Quantitative structural descriptors linked to physical interpretation |
+| Segmentation masks | Visual quality checks and failure examples |
+| Confusion matrix | Error modes by morphology class |
+| Physical interpretation page | Narrative linking model behavior to galaxy structure |
+
+### Grad-CAM reporting rules
+
+Grad-CAM examples should include:
+
+- the original image,
+- the predicted class,
+- the true class,
+- the confidence,
+- the heatmap overlay,
+- one sentence explaining whether the highlighted region is physically meaningful.
+
+:::caution
+A visually convincing Grad-CAM is not sufficient evidence that the model learned the correct physical concept. Use it as supporting evidence alongside quantitative metrics and failure cases.
+:::
+
+---
+
+## Failure case protocol
+
+Failure cases should not be treated as embarrassing exceptions. They are part of the scientific result.
+
+| Failure mode | Required discussion |
+|---|---|
+| Disturbed galaxies | Ambiguous morphology, class definition limits, low class-level performance |
+| Edge-on systems | Projection effects and dust lanes |
+| Low-surface-brightness structures | Sensitivity and contrast limitations |
+| Close pairs / mergers | Segmentation and labeling ambiguity |
+| Small or faint targets | Resolution and signal limitations |
+
+The `results/limitations` page should remain the primary location for failure-case discussion, while this page defines how those failures are measured and reported.
+
+---
+
+## Publication-ready result checklist
+
+Before a result is considered publication-ready, the following items should be complete:
+
+- [ ] Exact dataset version documented.
+- [ ] Exact train/validation/test split documented.
+- [ ] Random seed documented.
+- [ ] Primary and secondary metrics computed on held-out test data.
+- [ ] Confusion matrix exported.
+- [ ] Per-class metrics exported.
+- [ ] Calibration diagnostics exported.
+- [ ] Uncertainty examples exported.
+- [ ] Grad-CAM examples exported.
+- [ ] Failure cases described.
+- [ ] Known limitations linked from the result page.
+- [ ] Claims added to the Scientific Claims Register.
+
+---
+
+## Links to related pages
+
+| Page | Role |
+|---|---|
+| [Benchmarking](./benchmarking) | Main quantitative comparison across models |
+| [Uncertainty](./uncertainty) | Calibration, MC Dropout, and conformal prediction |
+| [Grad-CAM](./attention-gradcam) | Visual interpretability of morphology predictions |
+| [Physical Interpretation](./physical-interpretation) | Scientific interpretation of learned features |
+| [Limitations](./limitations) | Known weaknesses and failure cases |
+| [Late-Fusion Multimodal](../models/late-fusion) | Primary model architecture |
+| [Roadmap](../community/roadmap) | Next evaluation milestones |

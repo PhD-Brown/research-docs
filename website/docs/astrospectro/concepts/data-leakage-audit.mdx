@@ -1,0 +1,102 @@
+---
+title: Data Leakage Audit
+description: Systematic audit of AstroSpectro features for data leakage — documenting what was excluded, what was retained, and the scientific rationale.
+---
+
+# 🔍 Data Leakage Audit
+
+This page documents the full audit of the AstroSpectro feature set for data leakage — any situation where a feature provides information about the target label that would not be available at inference time, or that introduces a circularity in the training process.
+
+:::info[Why this page exists]
+The `spectro_only=True` architecture decision was made precisely to address leakage concerns. But as of run v6 (`ST_350k_xgb_AFGKM_v6`), the implementation allows some Gaia photometric features. This page documents exactly what is and is not considered leakage, and why.
+:::
+
+---
+
+## Categories of features audited
+
+| Category | Description | Leakage risk |
+|---|---|---|
+| Spectroscopic line descriptors | EW, FWHM, prominence, depth, asymmetry of specific lines | None — derived from the spectrum directly |
+| Continuum features | slope, RMS, curvature across wavelength ranges | None — derived from spectrum |
+| Spectral indices | Lick indices, Dn4000, CaH2, G4300, etc. | None — derived from spectrum |
+| Color indices from spectrum | synthetic B-V, flux ratios | Low — derived from spectrum only |
+| Gaia absolute magnitudes | M_BP, M_G, M_RP (requires parallax) | **Medium** — depends on Gaia cross-match quality |
+| Gaia extinction | ag_gspphot | **Medium** — GSP-Phot derived, uses stellar model assumptions |
+| Gaia colors | bp_g, g_rp | Low — photometric, not spectroscopic |
+| SNR per band | snr_u, snr_g, snr_r, snr_i, snr_z | **High** — correlates with spectral type and instrument sensitivity |
+| Observation metadata | ra, dec, fiber_id, mjd | **High** — positional/observational bias |
+| FITS-level flags | chi2, quality flags | **High** — correlates with data quality, not stellar physics |
+
+---
+
+## What was removed (spectro_only=True)
+
+The following feature categories are **excluded** when `spectro_only=True` is active in `data_loader.py`:
+
+```python
+# Excluded feature families in spectro_only mode
+EXCLUDED_FAMILIES = [
+    "snr_*",          # SNR per photometric band (u/g/r/i/z)
+    "chi2_*",         # Fit quality metrics
+    "ra", "dec",      # Sky coordinates
+    "fiber_id",       # Instrument fiber
+    "mjd",            # Observation date
+    "heliocentric_correction",
+    "seeing",
+    # ... additional FITS metadata columns
+]
+```
+
+These were removed after a feature importance analysis showed that SNR bands were appearing in the top features of an early run, creating a circularity: high-SNR spectra are easier to classify precisely because they're brighter, and brightness correlates with spectral type in the LAMOST selection function.
+
+---
+
+## What remains — and the v6 clarification
+
+In run v6, the following **Gaia-derived features are retained** in `selected_features_`:
+
+| Feature | Type | SHAP contribution | Status |
+|---|---|---|---|
+| `M_BP` | Gaia absolute magnitude (BP band) | Minor | ⚠️ Review |
+| `M_G` | Gaia absolute magnitude (G band) | Minor | ⚠️ Review |
+| `M_RP` | Gaia absolute magnitude (RP band) | Minor | ⚠️ Review |
+| `ag_gspphot` | Gaia GSP-Phot extinction | Minor | ⚠️ Review |
+| `feature_bp_g` | Gaia BP-G color | Minor | Low risk |
+| `feature_g_rp` | Gaia G-RP color | Minor | Low risk |
+
+These 6 features collectively account for **3.2% of total SHAP importance** (confirmed in `physical_vs_observational.png`).
+
+### Are these leakage?
+
+Strictly speaking, no — they do not encode the label directly. However:
+
+1. **M_BP, M_G, M_RP** depend on Gaia parallax quality (RUWE filter applied via `is_good_ruwe`). Stars with poor parallax measurements are excluded from training, creating a selection bias toward nearby, well-measured stars.
+2. **ag_gspphot** is a GSP-Phot parameter derived using a stellar atmospheric model that implicitly assumes a spectral type — this is a mild circularity.
+3. **bp_g, g_rp** are broadband colors that correlate strongly with Teff and therefore spectral type. They are not leakage per se, but they are non-spectroscopic.
+
+### What this means for the manuscript
+
+The claim "spectro_only=True" must be qualified in the RNAAS/A&A manuscript as:
+
+> *"The pipeline is configured to exclude observational metadata and SNR-band features. Gaia absolute magnitudes and broad-band colors are retained (contributing 3.2% of SHAP importance) since they represent physical stellar parameters, not instrumental artifacts."*
+
+---
+
+## Validation: no leakage detected for excluded features
+
+To verify the exclusion was effective:
+
+1. A control model was trained **with** the full feature set (including SNR bands and coordinates)
+2. SNR features appeared in the top-10 in that run
+3. After enforcing `spectro_only=True`, no SNR or metadata features appear in the selected feature set
+4. Balanced accuracy changed by less than 0.5% — confirming the excluded features were not informationally critical, just spuriously correlated
+
+---
+
+## Actionable items before RNAAS submission
+
+- [ ] Clarify the definition of `spectro_only=True` in the manuscript methods section
+- [ ] Explicitly state that M_BP, M_G, M_RP, ag_gspphot, bp_g, g_rp are retained (3.2% SHAP)
+- [ ] Decide whether to run a fully spectroscopic-only ablation (remove all 6 Gaia features) for a clean comparison
+- [ ] Update `spectro-only-mode.mdx` to reflect the v6 definition

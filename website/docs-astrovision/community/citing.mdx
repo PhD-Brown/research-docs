@@ -1,0 +1,109 @@
+---
+title: Citing AstroVision
+description: "How to cite the AstroVision project, documentation, code, and future manuscript."
+---
+
+# Citing AstroVision
+
+AstroVision is an active research and documentation project on machine learning for galaxy morphology classification, multimodal late-fusion models, uncertainty estimation, and physically interpretable computer vision.
+
+:::info[Current status]
+AstroVision is not yet a peer-reviewed publication. Until a DOI, Zenodo archive, or manuscript identifier exists, use the provisional citation below for internal references, presentations, and project documentation.
+:::
+
+---
+
+## Provisional citation
+
+Use this citation when referring to the project as a research software and documentation effort:
+
+```bibtex
+@misc{baker_astrovision_2026,
+  author       = {Baker, Alex},
+  title        = {AstroVision: Multimodal Deep Learning for Galaxy Morphology Classification},
+  year         = {2026},
+  howpublished = {\url{https://phd-brown.github.io/research-docs/docs/astrovision/}},
+  note         = {Research documentation and active manuscript preparation}
+}
+```
+
+### Plain-text format
+
+> Baker, A. (2026). *AstroVision: Multimodal Deep Learning for Galaxy Morphology Classification*. Research documentation and active manuscript preparation.
+
+---
+
+## What to cite for each use case
+
+| Use case | Recommended citation |
+|---|---|
+| General project overview | Provisional AstroVision citation |
+| Late-fusion architecture | Provisional citation + link to the Late-Fusion page |
+| Benchmark score or model comparison | Provisional citation + Benchmarking / Evaluation Protocol pages |
+| Grad-CAM interpretation | Provisional citation + Grad-CAM page |
+| Segmentation or morphometry pipeline | Provisional citation + Morphometry / Segmentation pages |
+| Future manuscript | Replace provisional citation with the final paper citation once available |
+
+---
+
+## Project components
+
+AstroVision currently includes:
+
+- supervised galaxy morphology classification,
+- baseline CNN and EfficientNet models,
+- DINOv2 probing and fine-tuning experiments,
+- a late-fusion multimodal architecture,
+- uncertainty estimation with MC Dropout and conformal prediction,
+- Grad-CAM interpretability,
+- segmentation-assisted morphometry,
+- a bridge to the AstroSpectro scientific documentation ecosystem.
+
+---
+
+## Preferred wording
+
+When referencing the current state of the project, use wording like:
+
+```md
+AstroVision is an active research project investigating multimodal deep learning for galaxy morphology classification, with emphasis on uncertainty estimation, interpretability, and physically meaningful evaluation.
+```
+
+Avoid wording that implies peer-reviewed publication until the manuscript has been accepted.
+
+---
+
+## Citation caveats
+
+:::warning
+Do not cite the current 86.3% balanced accuracy score without specifying the dataset, split, model version, and evaluation protocol. The score is meaningful only in the context of the documented benchmark setup.
+:::
+
+The strongest citation-ready claims should eventually be registered in the transversal [Scientific Claims Register](../../atlas/claims-register).
+
+---
+
+## Future DOI / archive
+
+When the project reaches a stable release, the preferred citation should be updated to include:
+
+| Item | Status |
+|---|---|
+| GitHub release tag | To add |
+| Zenodo DOI | To add |
+| Manuscript DOI / arXiv ID | To add |
+| Final title | To confirm |
+| Final author list | To confirm |
+| Versioned documentation URL | To add |
+
+---
+
+## Related pages
+
+| Page | Why it matters |
+|---|---|
+| [Key Results](../overview/key-results) | Main quantitative and scientific outcomes |
+| [Evaluation Protocol](../results/evaluation-protocol) | How reported metrics should be interpreted |
+| [Benchmarking](../results/benchmarking) | Model comparison details |
+| [Late-Fusion Multimodal](../models/late-fusion) | Primary architecture |
+| [Roadmap](./roadmap) | Planned manuscript and release milestones |

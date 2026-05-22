@@ -1,0 +1,105 @@
+---
+title: Citing ξ Dark Energy
+description: "How to cite the ξ Dark Energy exploratory cosmology project, documentation, code, and future releases."
+---
+
+# Citing ξ Dark Energy
+
+ξ Dark Energy is an exploratory cosmology project comparing ΛCDM, CPL, and an oscillatory dark-energy extension using Type Ia supernovae and BAO measurements.
+
+:::warning[Current status]
+This project is exploratory and should not be cited as evidence for a new cosmological model. It can be cited as a research-code and methodology project, especially for portfolio, documentation, and reproducibility purposes.
+:::
+
+---
+
+## Provisional citation
+
+Use this citation for the current documentation and codebase:
+
+```bibtex
+@misc{baker_xi_dark_energy_2026,
+  author       = {Baker, Alex},
+  title        = {{\(\xi\)} Dark Energy: Exploratory BAO and Supernova MCMC Constraints},
+  year         = {2026},
+  howpublished = {\url{https://phd-brown.github.io/research-docs/docs/xi-dark-energy/}},
+  note         = {Exploratory research documentation and reproducible cosmology pipeline}
+}
+```
+
+### Plain-text format
+
+> Baker, A. (2026). *ξ Dark Energy: Exploratory BAO and Supernova MCMC Constraints*. Exploratory research documentation and reproducible cosmology pipeline.
+
+---
+
+## How to describe the project
+
+Recommended wording:
+
+```md
+ξ Dark Energy is an exploratory cosmology pipeline that compares ΛCDM, CPL, and an oscillatory dark-energy parameterization using Pantheon+SH0ES supernovae and DESI DR2 BAO data. The project emphasizes reproducible MCMC inference, diagnostic transparency, and explicit caveats.
+```
+
+Avoid wording that implies discovery or confirmation of oscillatory dark energy.
+
+---
+
+## What to cite for each use case
+
+| Use case | Recommended citation |
+|---|---|
+| General project reference | Provisional ξ Dark Energy citation |
+| Data-likelihood implementation | Provisional citation + Likelihood page |
+| MCMC setup | Provisional citation + MCMC Setup page |
+| Priors | Provisional citation + Prior Specification page |
+| Parameter constraints | Provisional citation + Parameter Constraints page |
+| Caveats and limitations | Provisional citation + Known Limitations page |
+| Future tagged release | Replace with Zenodo DOI once available |
+
+---
+
+## Citation caveats
+
+The current analysis should always be cited with the following qualifiers:
+
+- the model is phenomenological,
+- the result is exploratory,
+- convergence diagnostics must be inspected,
+- prior sensitivity is not yet fully closed,
+- the v0.2 roadmap includes corrections and robustness checks,
+- the project should not be presented as evidence for a departure from ΛCDM without further validation.
+
+:::caution
+Do not cite ξ-model parameter constraints without also citing the caveats page. In this project, the limitations are part of the scientific interpretation.
+:::
+
+---
+
+## Future DOI / release metadata
+
+A stable citation should eventually include:
+
+| Item | Status |
+|---|---|
+| GitHub release tag | To add |
+| Zenodo DOI | To add |
+| Commit hash for final results | To add |
+| Exact data release versions | Pantheon+SH0ES and DESI DR2 BAO |
+| Environment file | To add / verify |
+| Posterior sample archive | To add if public |
+| Figure archive | To add if public |
+
+---
+
+## Related pages
+
+| Page | Role |
+|---|---|
+| [Scientific Motivation](../overview/scientific-motivation) | Why the model was explored |
+| [Models](../overview/models) | ΛCDM, CPL, and ξ model definitions |
+| [Prior Specification](../inference/priors) | Priors required for reproducibility |
+| [MCMC Setup](../inference/mcmc-setup) | Sampler configuration |
+| [Convergence](../inference/convergence) | Chain diagnostics |
+| [Known Limitations](../results/caveats) | Required caveats for interpretation |
+| [Roadmap](./roadmap) | Planned v0.2 improvements |
