@@ -148,7 +148,7 @@ const config: Config = {
         },
         // ── Other ─────────────────────────────────────────────────────────
         {
-          to: "/journal",
+          to: "/blog",
           label: "Blog",
           position: "left",
         },

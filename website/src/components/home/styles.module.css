@@ -20,10 +20,11 @@
 
 .pageLead {
   margin: 0.75rem 0 0;
-  max-width: 58ch;
+  max-width: none;
   color: rgba(226, 234, 255, 0.74);
   line-height: 1.72;
   font-size: 0.98rem;
+  text-wrap: pretty;
 }
 
 .heroSection {
@@ -69,10 +70,13 @@
 
 .heroTitle {
   margin: 0;
+  max-width: none;
   font-size: clamp(1.9rem, 3vw, 2.7rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
-  max-width: 10.5ch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08em;
 }
 
 .heroLead {
@@ -120,6 +124,9 @@
 
 .heroPanel {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 1.05rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
@@ -130,14 +137,18 @@
 }
 
 .heroPanelContent {
-  position: relative;
-  z-index: 2;
+  width: min(100%, 430px);
+  margin: auto;
   padding: 1rem 1rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .heroPanelLabel {
   display: inline-block;
-  margin-bottom: 0.75rem;
+  margin: 0 auto 0.85rem;
   padding: 0.28rem 0.62rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.05);
@@ -151,6 +162,8 @@
 .miniProgramStack {
   display: grid;
   gap: 0.7rem;
+  align-content: center;
+  width: 100%;
 }
 
 .miniProgramCard {
@@ -194,16 +207,8 @@
 }
 
 .sectionHead {
-  display: grid;
-  gap: 0.7rem;
+  display: block;
   margin-bottom: 1rem;
-}
-
-@media (min-width: 996px) {
-  .sectionHead {
-    grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.75fr);
-    align-items: end;
-  }
 }
 
 .sectionTitle {
@@ -212,12 +217,13 @@
   letter-spacing: -0.03em;
 }
 
-.sectionNote {
-  margin: 0;
-  max-width: 32ch;
+.sectionSubnote {
+  margin: 0.45rem 0 0;
+  max-width: 52ch;
   color: rgba(215, 224, 249, 0.58);
   line-height: 1.68;
   font-size: 0.95rem;
+  text-wrap: pretty;
 }
 
 .projectGrid,
