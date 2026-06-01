@@ -1,19 +1,6 @@
 ---
 title: AstroSpectro — Interpretable ML Pipeline for Stellar Spectral Classification
 description: >
-<<<<<<< HEAD
-  Complete overview of AstroSpectro: an interpretable XGBoost pipeline trained on
-  N = 349,998 LAMOST DR5 × Gaia DR3 spectra with 99 physical features, achieving
-  89.2 % balanced accuracy and ROC-AUC macro 0.986. Central finding: metallicity-sensitive
-  Ca II H&K and Mg b features outrank classical Balmer temperature proxies in the
-  SHAP global importance ranking.
-sidebar_position: 1
----
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import ProgressionPipeline from '@site/src/components/ProgressionPipeline';
-=======
   Introduction to AstroSpectro: a physics-first XGBoost pipeline for stellar spectral
   classification from LAMOST DR5 × Gaia DR3 data. Physics-informed feature engineering,
   spectro_only mode, TreeSHAP interpretability. Central finding: metallicity-sensitive
@@ -29,29 +16,11 @@ import ResearchSections      from '@site/src/components/ResearchSections';
 import ResultsLocator        from '@site/src/components/ResultsLocator';
 import RunProvenance         from '@site/src/components/RunProvenance';
 import CrossReferences       from '@site/src/components/CrossReferences';
->>>>>>> aaedf24 (AstroSpectro index v1)
 
 # AstroSpectro
 
 **Interpretable machine-learning pipeline for stellar spectral classification.**
 
-<<<<<<< HEAD
-> LAMOST DR5 × Gaia DR3 · 99 physical features · XGBoost · 89.2 % balanced accuracy · SHAP interpretability
-
-AstroSpectro is a fully automated, physics-informed pipeline that classifies stellar spectra
-into five Harvard spectral types (A, F, G, K, M) from 99 spectroscopic descriptors derived
-from N = 349,998 LAMOST DR5 × Gaia DR3 cross-matched spectra.
-SHAP post-hoc interpretability reveals that metallicity-sensitive features —
-Ca II H&K and Mg b — rank *above* the classical Balmer temperature proxies in the global
-importance structure of the trained classifier, challenging the primary-temperature assumption
-of the MK system. This result is the central scientific contribution of the project and the
-focus of a manuscript in preparation.
-
-:::info Run context
-**Experiment:** `ST_350k_xgb_AFGKM_v6` · **Saved:** `20260522T161236Z` ·
-**N:** 349,998 spectra · **Features:** 99 selected (from 183 engineered) ·
-**Model:** XGBoost (`tree_method = hist`, 600 estimators) + isotonic calibration
-=======
 > LAMOST DR5 × Gaia DR3 · 183 engineered features · XGBoost · TreeSHAP
 
 <ProjectHero />
@@ -60,56 +29,10 @@ focus of a manuscript in preparation.
 AstroSpectro is actively evolving. Current metrics, SHAP rankings, and model comparisons
 are intentionally centralised in the dedicated results, model-card, and claims-register
 pages — not here. This introduction page is designed to stay stable as the project grows.
->>>>>>> aaedf24 (AstroSpectro index v1)
 :::
 
 ---
 
-<<<<<<< HEAD
-## Key results at a glance
-
-<div className="stats-row">
-
-**89.2 %**
-Balanced accuracy
-XGBoost v6 · N = 349,998 · `spectro_only = True`
-
-**0.986**
-ROC-AUC macro
-5-class A/F/G/K/M · micro = 0.988
-
-**99**
-Selected features
-From 183 engineered descriptors · post-importance pruning
-
-**97.9 %**
-Physical features — SHAP top-30
-Ca II · Mg b · Balmer · molecular bands
-
-**Ca II > Hα**
-Central SHAP finding
-Metallicity indicators outrank temperature proxies globally
-
-**96.3 %**
-Median classification confidence
-Isotonic-calibrated · well-resolved probability distributions
-
-</div>
-
----
-
-## What is AstroSpectro?
-
-AstroSpectro addresses a long-standing question in stellar astrophysics:
-*which physical indicators drive a modern ML classifier when trained on a large
-spectroscopic survey?*
-The pipeline ingests raw LAMOST DR5 FITS spectra, extracts 183 physics-motivated features
-spanning atomic lines, molecular band indices, continuum slopes, and Lick/IDS spectral
-indices, cross-matches with Gaia DR3 for astrometric and photometric anchoring, and trains
-a gradient-boosted classifier with full SHAP post-hoc interpretability.
-
-The project is structured in three tiers that build on each other:
-=======
 ## Scientific purpose
 
 AstroSpectro exists to investigate a deceptively simple question: when a machine learning
@@ -156,7 +79,6 @@ The pipeline operates in six stages, from raw FITS files to astrophysical interp
 ## Three-tier architecture
 
 The project is organised in three tiers that build on each other and can be read independently.
->>>>>>> aaedf24 (AstroSpectro index v1)
 
 <div className="summary-cards">
 
@@ -165,13 +87,6 @@ The project is organised in three tiers that build on each other and can be read
 **Tier 1 — Core pipeline**
 *Preprocessing → Feature engineering → Classification*
 
-<<<<<<< HEAD
-- LAMOST DR5 FITS ingestion, continuum normalisation, SNR filter (SNRg > 10)
-- 183 spectroscopic descriptors: EW, FWHM, depth, line indices, ratios
-- Gaia DR3 cross-match via CDS XMatch (`vizier:I/355/gaiadr3`)
-- XGBoost multiclass with `spectro_only = True`
-- Isotonic probability calibration · W&B experiment tracking
-=======
 The foundational tier: from raw FITS spectra to a trained, calibrated classifier.
 It covers the `SmartDownloader`, the `FeatureEngineer` (183 descriptors), the
 `GaiaCrossmatcher` (Gaia DR3 positional match), and the `SpectralClassifier`
@@ -179,7 +94,6 @@ It covers the `SmartDownloader`, the `FeatureEngineer` (183 descriptors), the
 `spectro_only = True` is the central design constraint of this tier.
 
 See: [Core Pipeline](./astrospectro/pipeline)
->>>>>>> aaedf24 (AstroSpectro index v1)
 
 </div>
 
@@ -188,13 +102,6 @@ See: [Core Pipeline](./astrospectro/pipeline)
 **Tier 2 — Dimensionality reduction**
 *PCA · UMAP · t-SNE · Autoencoder · HDBSCAN*
 
-<<<<<<< HEAD
-- PC1 ↔ T_eff (ρ = +0.831) — thermal axis confirmed
-- PC2 partially contaminated by SNR (ρ = −0.310)
-- 20 HDBSCAN clusters extracted from UMAP embedding
-- t-SNE ~60× more reproducible than UMAP (Procrustes distance)
-- Autoencoder latent axis 1 ↔ log g — not T_eff (opposite of PCA)
-=======
 An independent multi-method exploration of the 183-feature matrix in low dimensions.
 This tier covers the algorithmic foundations of each method, their hyperparameter
 sensitivity, their Procrustes stability, and the physical interpretation of their axes
@@ -202,22 +109,12 @@ and clusters. It constitutes the analytical core of the PHY-3500 course project
 (Baker, Caillat & Jean, Université Laval, 2026).
 
 See: [Dimensionality Reduction](./astrospectro/dimred)
->>>>>>> aaedf24 (AstroSpectro index v1)
 
 </div>
 
 <div className="summary-card accent-green">
 
 **Tier 3 — Scientific validation**
-<<<<<<< HEAD
-*SHAP · Physical purity · Astrophysical cross-checks*
-
-- 97.9 % physical spectroscopic features in SHAP global top-30
-- Ca II H&K + Mg b rank 1–2 above Hα globally
-- ρ(CaIIK, [Fe/H]_GSP) validates the metallicity channel
-- SHAP beeswarm per class confirms differential metallicity sensitivity
-- Median confidence 96.3 % — well-calibrated across all classes
-=======
 *SHAP · Physical cross-checks · Claims register*
 
 Post-hoc interpretability and astrophysical validation of the classifier's decisions.
@@ -226,7 +123,6 @@ feature interaction matrices, physical cross-validation against Gaia DR3 paramet
 and the Scientific Claims Register that tracks every finding with its evidence level.
 
 See: [Scientific Analysis](./astrospectro/science)
->>>>>>> aaedf24 (AstroSpectro index v1)
 
 </div>
 
@@ -234,253 +130,6 @@ See: [Scientific Analysis](./astrospectro/science)
 
 ---
 
-<<<<<<< HEAD
-## Pipeline architecture
-
-<ProgressionPipeline />
-
-### Component map
-
-| Module | Source file | Role in pipeline |
-|---|---|---|
-| Preprocessing | `preprocessor.py` | Continuum normalisation · SNR filter · masking |
-| Peak detection | `peak_detector.py` | Line-finding backbone (prominence, width, depth) |
-| Feature engineering | `feature_engineering.py` | 183 spectroscopic descriptors |
-| Dataset builder | `dataset_builder.py` | Feature matrix assembly · `spectro_only` guard |
-| Gaia cross-matcher | `gaia_crossmatcher.py` | CDS XMatch · GSP-Phot parameter mapping |
-| Classifier | `classifier.py` | XGBoost · calibration · SHAP · evaluation |
-| Visualizer | `visualizer.py` | Diagnostic figures · Plotly HTML |
-| Dimensionality reduction | `embedding.py` | PCA · UMAP · t-SNE · Autoencoder |
-| HDBSCAN analyzer | `hdbscan_analyzer.py` | Cluster extraction · profile figures |
-| Run reporter | `run_reporter.py` | W&B logging · JSON session report |
-
-```python
-# src/classifier.py — minimal usage example
-
-from src.classifier import SpectralClassifier
-
-clf = SpectralClassifier(spectro_only=True)
-clf.fit(X_train, y_train)
-
-proba  = clf.predict_proba(X_test)   # → (N, 5) isotonic-calibrated
-labels = clf.predict(X_test)          # → ['A', 'G', 'K', ...]
-shap_v = clf.shap_values(X_test)      # → (N, 99) TreeSHAP values
-```
-
----
-
-## Performance overview
-
-### Per-class performance — experiment `ST_350k_xgb_AFGKM_v6`
-
-| Class | Precision | Recall | F1-score | Support | ROC-AUC |
-|---|---|---|---|---|---|
-| **A** | 0.854 | 0.935 | 0.893 | 3,738 | 0.997 |
-| **F** | 0.810 | 0.835 | 0.822 | 12,803 | 0.974 |
-| **G** | 0.885 | 0.839 | 0.861 | 21,902 | 0.971 |
-| **K** | 0.879 | 0.907 | 0.893 | 13,642 | 0.989 |
-| **M** | 0.948 | 0.944 | 0.946 | 8,862 | 0.997 |
-| **Macro avg** | 0.875 | **0.892** | 0.883 | 60,947 | **0.986** |
-
-:::note F/G boundary
-F and G classes show the lowest F1 scores (0.822 and 0.861 respectively), consistent with
-the spectral continuum at the F/G boundary (~5,000–6,500 K). The UMAP projection confirms
-this overlap is a physical continuum, not a modelling artefact. See
-[Science — F/G Confusion Analysis](./science/fg-confusion) for the full investigation.
-:::
-
-### Calibration quality — Brier scores
-
-| Class | Brier score | Interpretation |
-|---|---|---|
-| A | 0.0097 | Excellent — sharp, well-separated |
-| F | 0.0517 | Good — some F/G overlap |
-| G | 0.0675 | Good — most populated class |
-| K | 0.0345 | Very good |
-| M | 0.0116 | Excellent — TiO bands highly discriminative |
-
----
-
-## Central scientific finding
-
-:::tip Key finding
-**SHAP analysis reveals that metallicity-sensitive features (Ca II H&K and Mg b) rank
-above classical Balmer temperature proxies** in the global feature importance of a
-classifier trained on N = 349,998 LAMOST DR5 × Gaia DR3 spectra.
-This result challenges the traditional MK spectral classification framework, where
-effective temperature (traced by Balmer series strength) is considered the primary
-classification discriminant.
-:::
-
-### SHAP global top-10 features
-
-| Rank | Feature | Mean \|SHAP\| | Family | Category |
-|---|---|---|---|---|
-| **1** | `feature_index_CaH2` | 0.297 | Ca II | Physical (spectroscopic) |
-| **2** | `feature_Mg_b_eq_width` | 0.271 | Mg b | Physical (spectroscopic) |
-| **3** | `feature_Hα_eq_width` | 0.252 | Hα (Balmer) | Physical (spectroscopic) |
-| 4 | `feature_index_Hbeta_index` | 0.194 | Hβ (Balmer) | Physical (spectroscopic) |
-| 5 | `feature_CaIIK_eq_width` | 0.191 | Ca II | Physical (spectroscopic) |
-| 6 | `feature_slope_deep_red` | 0.157 | Continuum | Physical (spectroscopic) |
-| 7 | `feature_index_G4300` | 0.143 | Mol. CN/CH | Physical (spectroscopic) |
-| 8 | `feature_index_CN_2` | 0.117 | Mol. CN/CH | Physical (spectroscopic) |
-| 9 | `feature_index_Mg_2` | 0.114 | Mg b | Physical (spectroscopic) |
-| 10 | `feature_CNO_index` | 0.110 | Mol. CN/CH | Physical (spectroscopic) |
-
-<span className="badge badge--success">🔭 Discovery</span>
-
-Ca II H&K features occupy **ranks 1 and 5** globally; Mg b occupies **rank 2**.
-The first Balmer line (Hα) appears only at rank 3. This ordering confirms that the
-classifier has learned a **metallicity-first, temperature-second** discriminant structure —
-consistent with the role of Ca II H&K as a [Fe/H] proxy in late-type stars.
-
-<details>
-<summary>Physical interpretation of the top feature families</summary>
-
-| Family | Dominant class sensitivity | Physical meaning |
-|---|---|---|
-| **Ca II (H&K, triplet)** | G, K, M | Surface gravity + metallicity proxy; maximal near 4,500 K |
-| **Mg b (5167–5183 Å)** | G, K | Lick Mg b index — atmospheric [Mg/Fe]; strengthens in metal-rich dwarfs |
-| **Hα / Hβ (Balmer)** | A, F | T_eff proxy; peaks ~10,000 K; weakens in cool stars |
-| **Mol. CN/CH (G-band)** | G, K | Carbon chemistry; sensitive to luminosity class and [C/Fe] |
-| **Mol. TiO/VO** | M | T_eff < 4,000 K flag; highly class-specific for M dwarfs |
-| **Continuum slope** | A → M | Pseudo-colour proxy correlated with T_eff and extinction |
-
-</details>
-
----
-
-## Dataset at a glance
-
-| Property | Value | Notes |
-|---|---|---|
-| Survey | LAMOST DR5 | Low-resolution (R ≈ 1,800) optical survey |
-| Cross-match | Gaia DR3 | CDS XMatch · `vizier:I/355/gaiadr3` · GSP-Phot parameters |
-| Total spectra (raw) | ~250,000 downloaded | ~139k still unprocessed |
-| Total spectra (used) | 349,998 | After class filter (excl. B, C, D, S, W, s) |
-| Training set | 229,274 | 65 % stratified split · random state 42 |
-| Test set | 60,947 | 17.4 % — held out throughout |
-| Features (engineered) | 183 | All spectroscopic · `spectro_only = True` |
-| Features (selected) | 99 | Post-importance pruning |
-| Classes | A, F, G, K, M | 5 Harvard spectral types |
-| Wavelength range | 3,700–9,000 Å | LAMOST low-resolution optical arm |
-| SNR quality filter | SNRg > 10 | Applied at dataset-build step |
-| Excluded classes | B, C, D, S, W, s | 1,668 rows removed — rare / degenerate |
-
-:::warning Known limitation
-The Gaia DR3 GSP-Phot parameters (`teff_gspphot`, `logg_gspphot`, `mh_gspphot`) are
-available for ~40 % of the cross-matched sample. Validation plots and correlations are
-computed on this subset. The classification model itself uses only LAMOST-derived
-spectroscopic features (`spectro_only = True`) and is not affected by this incompleteness.
-:::
-
----
-
-## Dimensionality reduction snapshot
-
-<Tabs>
-  <TabItem value="pca" label="PCA" default>
-
-| Component | Variance | λ | Physical interpretation |
-|---|---|---|---|
-| **PC1** | 16.9 % | 30.19 | Thermal axis — ρ(PC1, T_eff) = +0.831 |
-| **PC2** | 12.0 % | 21.39 | Mixed metallicity / SNR contamination (ρ_SNR = −0.310) |
-| PC1–PC2 | 28.8 % | — | 2D visualisation only |
-| PC1–PC10 | 50.6 % | — | Half of physical information |
-| **PC1–PC91** | **95.0 %** | — | **Threshold used for UMAP/t-SNE input** |
-
-PC1 is dominated by Balmer lines (31.5 % of loading) and Ca II (22.4 %).
-PC2 is dominated by iron-peak metals (43.3 %) but partially contaminated by SNR.
-
-  </TabItem>
-  <TabItem value="umap" label="UMAP + HDBSCAN">
-
-| Property | Value | Notes |
-|---|---|---|
-| `n_neighbors` | 15 | Best local/global trade-off (sensitivity test) |
-| `min_dist` | 0.1 | Compact without over-compression |
-| Input | PC1–PC91 (95 % variance) | Whitened PCA pre-reduction |
-| HDBSCAN clusters | 20 | `min_cluster_size = 150` |
-| ρ(UMAP ax.1, T_eff) | +0.464 | Thermal gradient preserved |
-| Stability | Low (Procrustes ~0.3) | t-SNE ~60× more reproducible |
-
-Structure is continuous (Harvard sequence) with niche isolation for M dwarfs
-and QSO contaminants at the periphery.
-
-  </TabItem>
-  <TabItem value="tsne" label="t-SNE">
-
-| Property | Value | Notes |
-|---|---|---|
-| Perplexity | 30 | Optimal in range [15, 50] (sensitivity test) |
-| `init` | `'pca'` | Maximum reproducibility |
-| `n_iter` | 2,000 | Convergence confirmed |
-| Procrustes distance | 5 × 10⁻⁴ | ~60× lower than UMAP |
-| Cluster topology | Archipelago | Compact, well-separated islands |
-
-t-SNE produces the most reproducible embedding on this dataset and reveals
-a clear archipelago structure contrasting with UMAP's continental layout.
-
-  </TabItem>
-  <TabItem value="ae" label="Autoencoder">
-
-| Property | Value | Notes |
-|---|---|---|
-| Architecture | 183 → 256 → 128 → 64 → **z=2** → 64 → 128 → 256 → 183 | Symmetric MLP |
-| Latent dim | z = 2 | Matched to PCA k=2 for comparison |
-| Reconstruction MSE | 0.489 | ≈ PCA(k=10) = 0.494 |
-| Training epochs | 145 | Early stopping (patience = 15) |
-| ρ(AE lat.1, log g) | +0.340 | **log g** axis — opposite of PCA PC1 |
-
-<span className="badge badge--success">🔭 Discovery</span>
-
-AE latent axis 1 encodes **surface gravity** (ρ(log g) = +0.340) — *not* temperature.
-This is the opposite of PCA PC1 (thermal axis), demonstrating that the autoencoder
-captures a complementary physical structure.
-
-  </TabItem>
-</Tabs>
-
----
-
-## Current status & roadmap
-
-:::info Manuscript in preparation
-The SHAP metallicity-dominance finding is being prepared for submission as a
-**Research Note of the AAS (RNAAS)** (~1,000 words), targeting **June 2026**.
-An arXiv preprint is planned before the November 2026 graduate application deadlines.
-A full-length article targeting *Astronomy & Astrophysics* or *MNRAS* is planned
-following dataset scaling to the remaining ~139k unprocessed LAMOST spectra.
-:::
-
-| Milestone | Status | Notes |
-|---|---|---|
-| Core pipeline (preprocessing → classification) | ✅ Complete | v6 · `20260522T161236Z` |
-| Gaia DR3 cross-match (349,998 spectra) | ✅ Complete | CDS XMatch workaround |
-| SHAP interpretability analysis | ✅ Complete | 97.9 % physical top-30 |
-| Dimensionality reduction suite (PCA/UMAP/t-SNE/AE) | ✅ Complete | PHY-3500 article |
-| Docusaurus documentation site | ✅ Live | `phd-brown.github.io/AstroSpectro` |
-| RNAAS submission draft | 🔄 In progress | Target: June 2026 |
-| Full dataset scaling (~139k remaining spectra) | ⏳ Planned | Pre-paper |
-| Optuna hyperparameter tuning | ⏳ Planned | `E08` in experiments table |
-| Full A&A / MNRAS paper | ⏳ Planned | Post-scaling |
-
----
-
-## Quick navigation
-
-| Section | What you'll find |
-|---|---|
-| [Overview](./overview/) | Scientific motivation, key results, project map, current status |
-| [Concepts & Architecture](./concepts/) | Architecture decisions, `spectro_only` mode, physical purity criterion |
-| [Data & Datasets](./data/) | LAMOST DR5, Gaia DR3, feature catalogue (183 descriptors) |
-| [Core Pipeline](./pipeline/) | Preprocessing, feature engineering, classification, calibration |
-| [Dimensionality Reduction](./dimred/) | PCA, UMAP, t-SNE, autoencoder, HDBSCAN |
-| [Scientific Analysis](./science/) | SHAP finding, physical validation, F/G confusion, limitations |
-| [Guides](./guides/) | Installation, quick start, downloading data, training a model |
-| [API Reference](./api/) | Full module reference — `preprocessor`, `feature_engineering`, `classifier` |
-| [Community](./community/) | Roadmap, contributing, how to cite |
-=======
 ## Research sections
 
 <ResearchSections />
@@ -503,29 +152,11 @@ following dataset scaling to the remaining ~139k unprocessed LAMOST spectra.
   stack="Python 3.11.9 / XGBoost 3.1.1"
   keyResultsHref="./astrospectro/overview/key-results"
 />
->>>>>>> aaedf24 (AstroSpectro index v1)
 
 ---
 
 ## Cross-references
 
-<<<<<<< HEAD
-| Related page | Relation |
-|---|---|
-| [Overview — What is AstroSpectro?](./overview/what-is-astrospectro) | Expanded scientific motivation and project history |
-| [Key Results at a Glance](./overview/key-results) | Extended per-class performance analysis |
-| [Data — LAMOST DR5](./data/lamost-dr5) | Survey provenance, schema, and download guide |
-| [Data — Gaia DR3](./data/gaia-dr3) | Astrometric cross-match details and GSP-Phot parameters |
-| [Data — Feature Catalogue](./data/feature-catalog) | All 183 descriptors with physical meaning and family |
-| [Pipeline — Classification](./pipeline/classification) | XGBoost training, calibration, hyperparameters, W&B logs |
-| [Dimred — PCA](./dimred/pca) | Physical interpretation of PC1 and PC2 |
-| [Dimred — UMAP & HDBSCAN](./dimred/umap-hdbscan) | Non-parametric topology and cluster profiles |
-| [Dimred — Autoencoder](./dimred/autoencoder) | Non-linear compression and gravity-axis discovery |
-| [Science — SHAP Interpretability](./science/shap) | Full SHAP analysis, beeswarm, interaction matrix |
-| [Science — Physical Validation](./science/validation) | Ca II K vs [Fe/H], Hα FWHM vs T_eff plots |
-| [Science — F/G Confusion](./science/fg-confusion) | Why F and G show the lowest F1 |
-| [Community — Citing](./community/citing) | How to cite AstroSpectro |
-=======
 <CrossReferences links={[
   { href: './astrospectro/science/shap-interpretability',           label: '⭐ SHAP Interpretability',      relation: 'Central scientific contribution',                featured: true },
   { href: './astrospectro/overview/key-results',   label: 'Key Results at a Glance',       relation: 'All current performance metrics' },
@@ -535,4 +166,3 @@ following dataset scaling to the remaining ~139k unprocessed LAMOST spectra.
   { href: '../astrovision',        label: 'AstroVision',                   relation: 'Companion project — galaxy morphology' },
   { href: 'https://github.com/PhD-Brown/AstroSpectro', label: 'GitHub — AstroSpectro', relation: 'Code · releases · notebooks' },
 ]} />
->>>>>>> aaedf24 (AstroSpectro index v1)

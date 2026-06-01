@@ -460,8 +460,7 @@
 :global(.theme-doc-markdown) .section :global(h2) {
   border-bottom: 0 !important;
   padding-bottom: 0 !important;
-<<<<<<< HEAD
-=======
+
 }
 
 .sectionSubnote {
@@ -478,5 +477,4 @@
     white-space: normal;
     line-height: 1.68;
   }
->>>>>>> aaedf24 (AstroSpectro index v1)
 }
