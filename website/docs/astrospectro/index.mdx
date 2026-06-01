@@ -1,6 +1,7 @@
 ---
 title: AstroSpectro — Interpretable ML Pipeline for Stellar Spectral Classification
 description: >
+<<<<<<< HEAD
   Complete overview of AstroSpectro: an interpretable XGBoost pipeline trained on
   N = 349,998 LAMOST DR5 × Gaia DR3 spectra with 99 physical features, achieving
   89.2 % balanced accuracy and ROC-AUC macro 0.986. Central finding: metallicity-sensitive
@@ -12,11 +13,29 @@ sidebar_position: 1
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import ProgressionPipeline from '@site/src/components/ProgressionPipeline';
+=======
+  Introduction to AstroSpectro: a physics-first XGBoost pipeline for stellar spectral
+  classification from LAMOST DR5 × Gaia DR3 data. Physics-informed feature engineering,
+  spectro_only mode, TreeSHAP interpretability. Central finding: metallicity-sensitive
+  features dominate over classical Balmer temperature proxies.
+sidebar_position: 1
+---
+
+import ProgressionPipeline  from '@site/src/components/ProgressionPipeline';
+import ProjectHero           from '@site/src/components/ProjectHero';
+import ProjectPhilosophy     from '@site/src/components/ProjectPhilosophy';
+import WhatAstroSpectroDoes  from '@site/src/components/WhatAstroSpectroDoes';
+import ResearchSections      from '@site/src/components/ResearchSections';
+import ResultsLocator        from '@site/src/components/ResultsLocator';
+import RunProvenance         from '@site/src/components/RunProvenance';
+import CrossReferences       from '@site/src/components/CrossReferences';
+>>>>>>> aaedf24 (AstroSpectro index v1)
 
 # AstroSpectro
 
 **Interpretable machine-learning pipeline for stellar spectral classification.**
 
+<<<<<<< HEAD
 > LAMOST DR5 × Gaia DR3 · 99 physical features · XGBoost · 89.2 % balanced accuracy · SHAP interpretability
 
 AstroSpectro is a fully automated, physics-informed pipeline that classifies stellar spectra
@@ -32,10 +51,21 @@ focus of a manuscript in preparation.
 **Experiment:** `ST_350k_xgb_AFGKM_v6` · **Saved:** `20260522T161236Z` ·
 **N:** 349,998 spectra · **Features:** 99 selected (from 183 engineered) ·
 **Model:** XGBoost (`tree_method = hist`, 600 estimators) + isotonic calibration
+=======
+> LAMOST DR5 × Gaia DR3 · 183 engineered features · XGBoost · TreeSHAP
+
+<ProjectHero />
+
+:::info[Results are versioned elsewhere]
+AstroSpectro is actively evolving. Current metrics, SHAP rankings, and model comparisons
+are intentionally centralised in the dedicated results, model-card, and claims-register
+pages — not here. This introduction page is designed to stay stable as the project grows.
+>>>>>>> aaedf24 (AstroSpectro index v1)
 :::
 
 ---
 
+<<<<<<< HEAD
 ## Key results at a glance
 
 <div className="stats-row">
@@ -79,6 +109,54 @@ indices, cross-matches with Gaia DR3 for astrometric and photometric anchoring, 
 a gradient-boosted classifier with full SHAP post-hoc interpretability.
 
 The project is structured in three tiers that build on each other:
+=======
+## Scientific purpose
+
+AstroSpectro exists to investigate a deceptively simple question: when a machine learning
+classifier is trained on a large stellar spectroscopic survey, *which physical indicators
+actually determine its decisions?*
+
+The classical MK spectral classification system places effective temperature — traced by
+Balmer series strength — at the centre of the A/F/G/K/M hierarchy.
+Modern surveys like LAMOST DR5 now make it possible to train classifiers on hundreds of
+thousands of spectra and then interrogate those models via post-hoc interpretability
+methods. AstroSpectro does exactly this, with four explicit scientific goals:
+
+- **Classify** stellar spectra into five Harvard types (A, F, G, K, M) with calibrated
+  confidence, using only features derivable from the spectrum itself.
+- **Extract** physically meaningful descriptors that encode astrophysical observables —
+  line strengths, profile shapes, molecular band indices — rather than raw flux pixels.
+- **Validate** what the model learns against independent stellar parameters from Gaia DR3,
+  confirming or challenging the astrophysical coherence of the classification structure.
+- **Avoid** observational shortcuts: positional, temporal, and survey-specific metadata
+  are excluded at the architectural level via `spectro_only = True`.
+
+---
+
+## What AstroSpectro does
+
+The pipeline operates in six stages, from raw FITS files to astrophysical interpretation.
+
+<WhatAstroSpectroDoes />
+
+---
+
+## Project philosophy
+
+<ProjectPhilosophy />
+
+---
+
+## Pipeline at a glance
+
+<ProgressionPipeline />
+
+---
+
+## Three-tier architecture
+
+The project is organised in three tiers that build on each other and can be read independently.
+>>>>>>> aaedf24 (AstroSpectro index v1)
 
 <div className="summary-cards">
 
@@ -87,11 +165,21 @@ The project is structured in three tiers that build on each other:
 **Tier 1 — Core pipeline**
 *Preprocessing → Feature engineering → Classification*
 
+<<<<<<< HEAD
 - LAMOST DR5 FITS ingestion, continuum normalisation, SNR filter (SNRg > 10)
 - 183 spectroscopic descriptors: EW, FWHM, depth, line indices, ratios
 - Gaia DR3 cross-match via CDS XMatch (`vizier:I/355/gaiadr3`)
 - XGBoost multiclass with `spectro_only = True`
 - Isotonic probability calibration · W&B experiment tracking
+=======
+The foundational tier: from raw FITS spectra to a trained, calibrated classifier.
+It covers the `SmartDownloader`, the `FeatureEngineer` (183 descriptors), the
+`GaiaCrossmatcher` (Gaia DR3 positional match), and the `SpectralClassifier`
+(XGBoost, isotonic calibration, SHAP output).
+`spectro_only = True` is the central design constraint of this tier.
+
+See: [Core Pipeline](./astrospectro/pipeline)
+>>>>>>> aaedf24 (AstroSpectro index v1)
 
 </div>
 
@@ -100,17 +188,28 @@ The project is structured in three tiers that build on each other:
 **Tier 2 — Dimensionality reduction**
 *PCA · UMAP · t-SNE · Autoencoder · HDBSCAN*
 
+<<<<<<< HEAD
 - PC1 ↔ T_eff (ρ = +0.831) — thermal axis confirmed
 - PC2 partially contaminated by SNR (ρ = −0.310)
 - 20 HDBSCAN clusters extracted from UMAP embedding
 - t-SNE ~60× more reproducible than UMAP (Procrustes distance)
 - Autoencoder latent axis 1 ↔ log g — not T_eff (opposite of PCA)
+=======
+An independent multi-method exploration of the 183-feature matrix in low dimensions.
+This tier covers the algorithmic foundations of each method, their hyperparameter
+sensitivity, their Procrustes stability, and the physical interpretation of their axes
+and clusters. It constitutes the analytical core of the PHY-3500 course project
+(Baker, Caillat & Jean, Université Laval, 2026).
+
+See: [Dimensionality Reduction](./astrospectro/dimred)
+>>>>>>> aaedf24 (AstroSpectro index v1)
 
 </div>
 
 <div className="summary-card accent-green">
 
 **Tier 3 — Scientific validation**
+<<<<<<< HEAD
 *SHAP · Physical purity · Astrophysical cross-checks*
 
 - 97.9 % physical spectroscopic features in SHAP global top-30
@@ -118,6 +217,16 @@ The project is structured in three tiers that build on each other:
 - ρ(CaIIK, [Fe/H]_GSP) validates the metallicity channel
 - SHAP beeswarm per class confirms differential metallicity sensitivity
 - Median confidence 96.3 % — well-calibrated across all classes
+=======
+*SHAP · Physical cross-checks · Claims register*
+
+Post-hoc interpretability and astrophysical validation of the classifier's decisions.
+This tier contains the SHAP global importance analysis, per-class beeswarm plots,
+feature interaction matrices, physical cross-validation against Gaia DR3 parameters,
+and the Scientific Claims Register that tracks every finding with its evidence level.
+
+See: [Scientific Analysis](./astrospectro/science)
+>>>>>>> aaedf24 (AstroSpectro index v1)
 
 </div>
 
@@ -125,6 +234,7 @@ The project is structured in three tiers that build on each other:
 
 ---
 
+<<<<<<< HEAD
 ## Pipeline architecture
 
 <ProgressionPipeline />
@@ -370,11 +480,36 @@ following dataset scaling to the remaining ~139k unprocessed LAMOST spectra.
 | [Guides](./guides/) | Installation, quick start, downloading data, training a model |
 | [API Reference](./api/) | Full module reference — `preprocessor`, `feature_engineering`, `classifier` |
 | [Community](./community/) | Roadmap, contributing, how to cite |
+=======
+## Research sections
+
+<ResearchSections />
+
+---
+
+## Where to find current results
+
+<ResultsLocator />
+
+---
+
+## Run provenance
+
+<RunProvenance
+  experiment="ST_350k_xgb_AFGKM_v6"
+  savedAt="20260522T161236Z"
+  md5="e752bb7ce5494364364f77a4200aa480"
+  notes="Full dataset retraining · 350k spectra · spectro_only = True · isotonic calibration"
+  stack="Python 3.11.9 / XGBoost 3.1.1"
+  keyResultsHref="./astrospectro/overview/key-results"
+/>
+>>>>>>> aaedf24 (AstroSpectro index v1)
 
 ---
 
 ## Cross-references
 
+<<<<<<< HEAD
 | Related page | Relation |
 |---|---|
 | [Overview — What is AstroSpectro?](./overview/what-is-astrospectro) | Expanded scientific motivation and project history |
@@ -390,3 +525,14 @@ following dataset scaling to the remaining ~139k unprocessed LAMOST spectra.
 | [Science — Physical Validation](./science/validation) | Ca II K vs [Fe/H], Hα FWHM vs T_eff plots |
 | [Science — F/G Confusion](./science/fg-confusion) | Why F and G show the lowest F1 |
 | [Community — Citing](./community/citing) | How to cite AstroSpectro |
+=======
+<CrossReferences links={[
+  { href: './astrospectro/science/shap-interpretability',           label: '⭐ SHAP Interpretability',      relation: 'Central scientific contribution',                featured: true },
+  { href: './astrospectro/overview/key-results',   label: 'Key Results at a Glance',       relation: 'All current performance metrics' },
+  { href: './astrospectro/pipeline/classification',label: 'Model Card — XGBoost',          relation: 'Full architecture, hyperparams, per-class metrics' },
+  { href: './astrospectro/concepts/data-leakage-audit',  label: 'Data Leakage Audit',            relation: 'Which features are and are not spectroscopic' },
+  { href: './atlas/claims-register',label: 'Scientific Claims Register',    relation: 'Evidence level for all findings on this project' },
+  { href: '../astrovision',        label: 'AstroVision',                   relation: 'Companion project — galaxy morphology' },
+  { href: 'https://github.com/PhD-Brown/AstroSpectro', label: 'GitHub — AstroSpectro', relation: 'Code · releases · notebooks' },
+]} />
+>>>>>>> aaedf24 (AstroSpectro index v1)

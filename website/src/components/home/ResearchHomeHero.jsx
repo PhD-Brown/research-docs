@@ -26,8 +26,7 @@ export default function ResearchHomeHero() {
         <p className={styles.pageKicker}>Home</p>
         <h1 className={styles.pageTitle}>Alex Baker · Research Documentation</h1>
         <p className={styles.pageLead}>
-          Technical and scientific reference for my astrophysics, astro-ML,
-          and computational physics research projects.
+          Technical and scientific reference for my astrophysics, astro-ML, and computational physics research projects.
         </p>
       </div>
 
@@ -35,7 +34,8 @@ export default function ResearchHomeHero() {
         <div className={styles.heroCopy}>
           <p className={styles.heroEyebrow}>Technical library · scientific reference · reproducibility layer</p>
           <h2 className={styles.heroTitle}>
-            One place to understand, reproduce, and extend my research
+            <span>One place to understand,</span>
+            <span>reproduce, and extend my research</span>
           </h2>
           <p className={styles.heroLead}>
             This home page is the editorial entry point to three open research programs:
