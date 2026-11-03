@@ -1,0 +1,51 @@
+AstroSpectro | PHY-3500 UMAP/t-SNE Run Report
+========================================================================
+Timestamp (UTC)             : 20260402T164336Z
+PCA input file              : <ASTROSPECTRO_ROOT>\data\reports\phy3500_pca_output.joblib
+Figures directory           : <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260305T174836Z
+
+[Saved artifacts]
+- Embeddings joblib         : <ASTROSPECTRO_ROOT>\data\reports\phy3500_embeddings.joblib
+- JSON run report           : <ASTROSPECTRO_ROOT>\data\reports\runs\phy3500_umap_tsne\phy3500_umap_tsne_run_20260402T164336Z.json
+
+[Shapes]
+- scores_95                 : (42920, 50)
+- Z_umap                    : (42920, 2)
+- Z_tsne                    : (42920, 2)
+- meta                      : (42920, 25)
+
+[Class counts]
+- y                         : {'GALAXY': 54, 'QSO': 4, 'STAR': 42862}
+
+[Timing]
+- UMAP fit                  : 39.94s
+- t-SNE fit                 : 77.46s
+
+[Parameters]
+- UMAP                      : {'n_neighbors': 15, 'min_dist': 0.1, 'metric': 'euclidean', 'n_epochs': 200, 'low_memory': False}
+- t-SNE                     : {'perplexity': 30, 'learning_rate': 'auto', 'max_iter': 1000, 'metric': 'euclidean', 'init': 'pca'}
+
+Stabilite UMAP (table complete):
+ seed  procrustes_distance method
+    0             0.000000   UMAP
+    1             0.016305   UMAP
+    2             0.043790   UMAP
+    3             0.038240   UMAP
+    4             0.045195   UMAP
+
+Stabilite t-SNE (table complete):
+ seed  procrustes_distance method
+    0             0.000000   TSNE
+    1             0.000442   TSNE
+    2             0.000071   TSNE
+    3             0.000112   TSNE
+    4             0.000395   TSNE
+
+Sensibilite UMAP (shape par configuration):
+{'n_neighbors=5': [42920, 2], 'n_neighbors=15': [42920, 2], 'n_neighbors=30': [42920, 2], 'n_neighbors=50': [42920, 2], 'n_neighbors=100': [42920, 2]}
+
+Sensibilite t-SNE (shape par configuration):
+{'perplexity=5': [42920, 2], 'perplexity=15': [42920, 2], 'perplexity=30': [42920, 2], 'perplexity=50': [42920, 2], 'perplexity=100': [42920, 2]}
+
+Controle negatif UMAP (stats):
+{'shape': [42920, 2], 'x_min': 3.3860509395599365, 'x_max': 15.270622253417969, 'y_min': -0.9905980229377747, 'y_max': 9.03872013092041, 'x_mean': 10.138301849365234, 'y_mean': 3.4803216457366943, 'x_std': 1.8150646686553955, 'y_std': 2.1606411933898926}

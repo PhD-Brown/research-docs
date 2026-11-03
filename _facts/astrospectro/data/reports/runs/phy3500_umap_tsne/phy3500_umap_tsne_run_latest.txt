@@ -1,0 +1,120 @@
+AstroSpectro | PHY-3500 UMAP/t-SNE Run Report
+==============================================================================
+Timestamp (UTC)             : 20260522T205645Z
+Notebook                    : notebooks/dimred/phy3500_02_umap_tsne.ipynb
+PCA input file              : <ASTROSPECTRO_ROOT>\data\reports\phy3500_pca_output.joblib
+Figures directory           : <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z
+
+[Saved artifacts]
+- Embeddings joblib (legacy): <ASTROSPECTRO_ROOT>\data\reports\phy3500_embeddings.joblib
+- Embeddings joblib (run)   : <ASTROSPECTRO_ROOT>\data\reports\runs\phy3500_umap_tsne\phy3500_embeddings_20260522T205645Z.joblib
+- Embeddings joblib (latest): <ASTROSPECTRO_ROOT>\data\reports\runs\phy3500_umap_tsne\phy3500_embeddings_latest.joblib
+
+[Captured sections]
+- has_Z_umap                : True
+- has_Z_tsne                : True
+- has_Z_umap3               : True
+- has_hdbscan               : True
+- has_xgboost               : True
+
+[Shapes]
+- scores_95                 : [153060, 93]
+- Z_umap                    : [153060, 2]
+- Z_tsne                    : [153060, 2]
+- Z_umap3                   : [153060, 3]
+- meta                      : [153060, 25]
+
+[Class counts]
+- y                         : {'GALAXY': 162, 'QSO': 28, 'STAR': 152870}
+
+[Timing]
+- UMAP fit                  : 102.32s
+- t-SNE fit                 : 360.84s
+
+[Zoom pair summary]
+- zoom_x                    : [1.0, 4.0]
+- zoom_y                    : [5.5, 8.0]
+- n_points_total            : 0
+- counts_in_zoom            : {'STAR': 0, 'GALAXY': 0, 'QSO': 0}
+
+[HDBSCAN summary]
+- n_clusters                : 56
+- n_noise                   : 19059
+- pct_noise                 : 12.451979615836926
+- largest_clusters          : {'46': 44733, '50': 23990, '11': 9740, '49': 8996, '39': 8100, '55': 3539, '53': 3266, '6': 3248, '14': 2381, '38': 2285, '18': 2160, '3': 1928}
+
+[XGBoost summary]
+- n_predictions             : 152774
+- pred_class_counts         : {'A': 9076, 'F': 37984, 'G': 71214, 'K': 30514, 'M': 3986}
+- accuracy_vs_reference     : 0.0
+- confidence_stats          : {'n': 152774, 'min': 0.23518517985085882, 'max': 1.0, 'mean': 0.8902927303194969, 'std': 0.1394731982839338, 'p05': 0.5847648871159964, 'p50': 0.9643065117484747, 'p95': 1.0}
+
+[UMAP 3D summary]
+- axis3_best_param          : T_eff (K)
+- axis3_best_corr           : 0.7095124513126247
+
+Stabilité UMAP:
+ seed  procrustes_distance method
+    0             0.000000   UMAP
+    1             0.028279   UMAP
+    2             0.054239   UMAP
+    3             0.057727   UMAP
+    4             0.012186   UMAP
+
+Sensibilité UMAP (shapes):
+{'n_neighbors=5': [153060, 2], 'n_neighbors=15': [153060, 2], 'n_neighbors=30': [153060, 2], 'n_neighbors=50': [153060, 2], 'n_neighbors=100': [153060, 2]}
+
+Sensibilité t-SNE (shapes):
+{'perplexity=5': [153060, 2], 'perplexity=15': [153060, 2], 'perplexity=30': [153060, 2], 'perplexity=50': [153060, 2], 'perplexity=100': [153060, 2]}
+
+[Artifacts inventory]
+- PNG count                 : 41
+- HTML count                : 3
+
+PNG files:
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\hr_diagram_pca_pc1.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\hr_diagram_pca_pc2.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\hr_diagram_tsne_ax1.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\hr_diagram_umap_ax1.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\hr_diagram_umap_ax2.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\hr_teff_regions.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_correlation_heatmap.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_eigenspectra.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_loadings_family_bar.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_loadings_family_donut.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_loadings_heatmap.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_loadings_pc1.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_loadings_pc2.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_reconstruction_error.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_scores_classes.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_scores_grid.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_spectra_variance_explained.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\pca_variance_explained.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\stability_umap.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\tsne_classes.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\tsne_grid.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\tsne_sensitivity_perplexity.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\tsne_teff.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_all_classes_pair.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_classes.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_grid.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_clusters.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_feature_heatmap.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_feature_profiles.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_hr.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_present.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_present_hr.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_present_umap.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_hdbscan_sensitivity.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_negative_control.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_no_star_pair.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_sensitivity_n_neighbors.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_teff.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_trustworthiness.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_xgboost_FG_confusion.png
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap_xgboost_predictions.png
+
+HTML files:
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap3d_classes.html
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap3d_feh.html
+  - <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260522T153123Z\umap3d_teff.html

@@ -1,0 +1,716 @@
+{
+  "run_timestamp_utc": "20260522T205645Z",
+  "notebook": "notebooks/dimred/phy3500_02_umap_tsne.ipynb",
+  "captured_sections": {
+    "has_scores_95": true,
+    "has_Z_umap": true,
+    "has_Z_tsne": true,
+    "has_Z_umap3": true,
+    "has_labels": true,
+    "has_meta": true,
+    "has_hdbscan": true,
+    "has_xgboost": true
+  },
+  "paths": {
+    "pca_output_path": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\phy3500_pca_output.joblib",
+    "figures_dir": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z",
+    "embeddings_joblib_path_legacy": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\phy3500_embeddings.joblib",
+    "embeddings_joblib_path_run": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\runs\\phy3500_umap_tsne\\phy3500_embeddings_20260522T205645Z.joblib",
+    "embeddings_joblib_path_latest": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\runs\\phy3500_umap_tsne\\phy3500_embeddings_latest.joblib",
+    "run_dir": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\runs\\phy3500_umap_tsne",
+    "xgboost_prediction_figure": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_xgboost_predictions.png",
+    "xgboost_fg_confusion_figure": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_xgboost_FG_confusion.png"
+  },
+  "shapes": {
+    "scores_95": [
+      153060,
+      93
+    ],
+    "Z_umap": [
+      153060,
+      2
+    ],
+    "Z_tsne": [
+      153060,
+      2
+    ],
+    "Z_umap3": [
+      153060,
+      3
+    ],
+    "meta": [
+      153060,
+      25
+    ]
+  },
+  "class_counts": {
+    "GALAXY": 162,
+    "QSO": 28,
+    "STAR": 152870
+  },
+  "timings_seconds": {
+    "umap_fit_time": 102.32369890005793,
+    "tsne_fit_time": 360.8383515999885
+  },
+  "parameters": {
+    "umap": {
+      "n_neighbors": 15,
+      "min_dist": 0.1,
+      "metric": "euclidean",
+      "n_epochs": 200,
+      "low_memory": false
+    },
+    "tsne": {
+      "perplexity": 30,
+      "learning_rate": "auto",
+      "max_iter": 1000,
+      "metric": "euclidean",
+      "init": "pca"
+    },
+    "zoom_x": [
+      1.0,
+      4.0
+    ],
+    "zoom_y": [
+      5.5,
+      8.0
+    ]
+  },
+  "embedding_stats": {
+    "umap": {
+      "shape": [
+        153060,
+        2
+      ],
+      "x_min": -5.4485321044921875,
+      "x_max": 16.27033042907715,
+      "y_min": -7.079096794128418,
+      "y_max": 19.01039695739746,
+      "x_mean": 9.737534523010254,
+      "y_mean": 1.3753975629806519,
+      "x_std": 2.7202770709991455,
+      "y_std": 5.873187065124512
+    },
+    "tsne": {
+      "shape": [
+        153060,
+        2
+      ],
+      "x_min": -97.9202880859375,
+      "x_max": 98.13245391845703,
+      "y_min": -92.82872009277344,
+      "y_max": 96.24614715576172,
+      "x_mean": 0.2570801079273224,
+      "y_mean": -0.4999906122684479,
+      "x_std": 47.68635940551758,
+      "y_std": 43.3552131652832
+    },
+    "umap3d": {
+      "shape": [
+        153060,
+        3
+      ],
+      "axis_1_min": -3.2730910778045654,
+      "axis_1_max": 15.019615173339844,
+      "axis_1_mean": 10.055404663085938,
+      "axis_1_std": 1.8859527111053467,
+      "axis_2_min": -5.083171844482422,
+      "axis_2_max": 15.912163734436035,
+      "axis_2_mean": 1.0031523704528809,
+      "axis_2_std": 4.664486885070801,
+      "axis_3_min": -7.539573669433594,
+      "axis_3_max": 8.259936332702637,
+      "axis_3_mean": 2.548464298248291,
+      "axis_3_std": 2.4466476440429688
+    },
+    "umap_negative_control": {
+      "shape": [
+        153060,
+        2
+      ],
+      "x_min": 1.7526979446411133,
+      "x_max": 16.78955078125,
+      "y_min": -9.668685913085938,
+      "y_max": 9.454920768737793,
+      "x_mean": 9.895759582519531,
+      "y_mean": -0.2431606650352478,
+      "x_std": 2.2916274070739746,
+      "y_std": 2.0914132595062256
+    }
+  },
+  "stability": {
+    "umap": [
+      {
+        "seed": 0,
+        "procrustes_distance": 0.0,
+        "method": "UMAP"
+      },
+      {
+        "seed": 1,
+        "procrustes_distance": 0.028279224004241883,
+        "method": "UMAP"
+      },
+      {
+        "seed": 2,
+        "procrustes_distance": 0.05423897410523268,
+        "method": "UMAP"
+      },
+      {
+        "seed": 3,
+        "procrustes_distance": 0.057726633907296016,
+        "method": "UMAP"
+      },
+      {
+        "seed": 4,
+        "procrustes_distance": 0.012185629064294514,
+        "method": "UMAP"
+      }
+    ],
+    "tsne": null,
+    "umap_numeric_means": {
+      "seed": 2.0,
+      "procrustes_distance": 0.03048609221621302
+    },
+    "tsne_numeric_means": null
+  },
+  "sensitivity": {
+    "umap_shapes": {
+      "n_neighbors=5": [
+        153060,
+        2
+      ],
+      "n_neighbors=15": [
+        153060,
+        2
+      ],
+      "n_neighbors=30": [
+        153060,
+        2
+      ],
+      "n_neighbors=50": [
+        153060,
+        2
+      ],
+      "n_neighbors=100": [
+        153060,
+        2
+      ]
+    },
+    "tsne_shapes": {
+      "perplexity=5": [
+        153060,
+        2
+      ],
+      "perplexity=15": [
+        153060,
+        2
+      ],
+      "perplexity=30": [
+        153060,
+        2
+      ],
+      "perplexity=50": [
+        153060,
+        2
+      ],
+      "perplexity=100": [
+        153060,
+        2
+      ]
+    }
+  },
+  "zoom_pair_summary": {
+    "zoom_x": [
+      1.0,
+      4.0
+    ],
+    "zoom_y": [
+      5.5,
+      8.0
+    ],
+    "n_points_total": 0,
+    "counts_in_zoom": {
+      "STAR": 0,
+      "GALAXY": 0,
+      "QSO": 0
+    }
+  },
+  "hdbscan_summary": {
+    "n_points": 153060,
+    "n_clusters": 56,
+    "n_noise": 19059,
+    "pct_noise": 12.451979615836926,
+    "largest_clusters": {
+      "46": 44733,
+      "50": 23990,
+      "11": 9740,
+      "49": 8996,
+      "39": 8100,
+      "55": 3539,
+      "53": 3266,
+      "6": 3248,
+      "14": 2381,
+      "38": 2285,
+      "18": 2160,
+      "3": 1928
+    },
+    "params": {
+      "min_cluster_size": 75,
+      "min_samples": 20,
+      "metric": "euclidean",
+      "cluster_selection_method": "eom"
+    },
+    "presentation_mode": {
+      "n_clusters": 29,
+      "n_noise": 11125,
+      "pct_noise": 7.268391480465177,
+      "largest_clusters": {
+        "22": 46305,
+        "28": 23990,
+        "12": 17210,
+        "7": 9740,
+        "27": 8996,
+        "24": 8100,
+        "4": 3248,
+        "8": 2921,
+        "23": 2285,
+        "13": 2160,
+        "2": 1928,
+        "0": 1708
+      }
+    }
+  },
+  "xgboost_summary": {
+    "n_predictions": 152774,
+    "pred_class_counts": {
+      "A": 9076,
+      "F": 37984,
+      "G": 71214,
+      "K": 30514,
+      "M": 3986
+    },
+    "model_path": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_xgboost_predictions.png",
+    "confidence_stats": {
+      "n": 152774,
+      "min": 0.23518517985085882,
+      "max": 1.0,
+      "mean": 0.8902927303194969,
+      "std": 0.1394731982839338,
+      "p05": 0.5847648871159964,
+      "p50": 0.9643065117484747,
+      "p95": 1.0
+    },
+    "classes_pred_list": [
+      "A",
+      "F",
+      "G",
+      "K",
+      "M"
+    ],
+    "accuracy_vs_reference": 0.0,
+    "confusion_matrix": {
+      "index": [
+        "GALAXY",
+        "QSO",
+        "STAR"
+      ],
+      "columns": [
+        "A",
+        "F",
+        "G",
+        "K",
+        "M"
+      ],
+      "values": [
+        [
+          12,
+          34,
+          83,
+          26,
+          5
+        ],
+        [
+          5,
+          3,
+          15,
+          5,
+          0
+        ],
+        [
+          9059,
+          37947,
+          71116,
+          30483,
+          3981
+        ]
+      ]
+    },
+    "top3_pred_by_cluster": {
+      "noise": {
+        "G": 8932,
+        "F": 4743,
+        "K": 3757
+      },
+      "0": {
+        "G": 830,
+        "F": 393,
+        "K": 352
+      },
+      "1": {
+        "G": 66,
+        "F": 35,
+        "K": 30
+      },
+      "2": {
+        "G": 292,
+        "F": 159,
+        "K": 124
+      },
+      "3": {
+        "G": 918,
+        "F": 454,
+        "K": 387
+      },
+      "4": {
+        "G": 104,
+        "F": 69,
+        "K": 53
+      },
+      "5": {
+        "G": 161,
+        "F": 75,
+        "K": 65
+      },
+      "6": {
+        "G": 1520,
+        "F": 837,
+        "K": 615
+      },
+      "7": {
+        "G": 248,
+        "F": 132,
+        "K": 120
+      },
+      "8": {
+        "G": 169,
+        "F": 106,
+        "K": 76
+      },
+      "9": {
+        "G": 81,
+        "F": 49,
+        "K": 35
+      },
+      "10": {
+        "G": 63,
+        "F": 32,
+        "K": 28
+      },
+      "11": {
+        "G": 4508,
+        "F": 2400,
+        "K": 1960
+      },
+      "12": {
+        "G": 203,
+        "F": 112,
+        "K": 97
+      },
+      "13": {
+        "G": 40,
+        "F": 27,
+        "A": 9
+      },
+      "14": {
+        "G": 1097,
+        "F": 581,
+        "K": 497
+      },
+      "15": {
+        "G": 62,
+        "F": 34,
+        "K": 21
+      },
+      "16": {
+        "G": 132,
+        "F": 67,
+        "K": 60
+      },
+      "17": {
+        "G": 38,
+        "F": 24,
+        "K": 19
+      },
+      "18": {
+        "G": 1028,
+        "F": 547,
+        "K": 424
+      },
+      "19": {
+        "G": 365,
+        "F": 176,
+        "K": 158
+      },
+      "20": {
+        "G": 38,
+        "F": 24,
+        "K": 19
+      },
+      "21": {
+        "G": 191,
+        "F": 106,
+        "K": 81
+      },
+      "22": {
+        "G": 62,
+        "F": 27,
+        "K": 21
+      },
+      "23": {
+        "G": 398,
+        "F": 210,
+        "K": 186
+      },
+      "24": {
+        "G": 93,
+        "F": 71,
+        "K": 41
+      },
+      "25": {
+        "G": 44,
+        "F": 30,
+        "K": 17
+      },
+      "26": {
+        "G": 621,
+        "F": 333,
+        "K": 288
+      },
+      "27": {
+        "G": 412,
+        "F": 255,
+        "K": 207
+      },
+      "28": {
+        "G": 114,
+        "F": 70,
+        "K": 44
+      },
+      "29": {
+        "G": 72,
+        "K": 45,
+        "F": 37
+      },
+      "30": {
+        "G": 119,
+        "F": 68,
+        "K": 49
+      },
+      "31": {
+        "G": 215,
+        "F": 101,
+        "K": 83
+      },
+      "32": {
+        "G": 690,
+        "F": 400,
+        "K": 261
+      },
+      "33": {
+        "G": 96,
+        "F": 44,
+        "K": 43
+      },
+      "34": {
+        "G": 215,
+        "F": 112,
+        "K": 104
+      },
+      "35": {
+        "G": 174,
+        "F": 78,
+        "K": 78
+      },
+      "36": {
+        "G": 113,
+        "K": 60,
+        "F": 56
+      },
+      "37": {
+        "G": 51,
+        "F": 25,
+        "K": 21
+      },
+      "38": {
+        "G": 1081,
+        "F": 562,
+        "K": 449
+      },
+      "39": {
+        "G": 3798,
+        "F": 2008,
+        "K": 1629
+      },
+      "40": {
+        "G": 588,
+        "F": 340,
+        "K": 256
+      },
+      "41": {
+        "G": 267,
+        "F": 162,
+        "K": 109
+      },
+      "42": {
+        "G": 45,
+        "F": 18,
+        "K": 14
+      },
+      "43": {
+        "G": 98,
+        "F": 53,
+        "K": 38
+      },
+      "44": {
+        "G": 49,
+        "F": 26,
+        "K": 13
+      },
+      "45": {
+        "G": 92,
+        "F": 40,
+        "K": 35
+      },
+      "46": {
+        "G": 20721,
+        "F": 11174,
+        "K": 8855
+      },
+      "47": {
+        "G": 66,
+        "F": 30,
+        "K": 23
+      },
+      "48": {
+        "G": 895,
+        "F": 461,
+        "K": 373
+      },
+      "49": {
+        "G": 4229,
+        "F": 2166,
+        "K": 1816
+      },
+      "50": {
+        "G": 11148,
+        "F": 5850,
+        "K": 4837
+      },
+      "51": {
+        "G": 42,
+        "K": 27,
+        "F": 23
+      },
+      "52": {
+        "G": 360,
+        "F": 211,
+        "K": 148
+      },
+      "53": {
+        "G": 1507,
+        "F": 817,
+        "K": 653
+      },
+      "54": {
+        "G": 44,
+        "F": 16,
+        "K": 9
+      },
+      "55": {
+        "G": 1609,
+        "F": 928,
+        "K": 696
+      }
+    },
+    "n_pred_F_or_G": 109198
+  },
+  "umap3d_summary": {
+    "embedding_stats": {
+      "shape": [
+        153060,
+        3
+      ],
+      "axis_1_min": -3.2730910778045654,
+      "axis_1_max": 15.019615173339844,
+      "axis_1_mean": 10.055404663085938,
+      "axis_1_std": 1.8859527111053467,
+      "axis_2_min": -5.083171844482422,
+      "axis_2_max": 15.912163734436035,
+      "axis_2_mean": 1.0031523704528809,
+      "axis_2_std": 4.664486885070801,
+      "axis_3_min": -7.539573669433594,
+      "axis_3_max": 8.259936332702637,
+      "axis_3_mean": 2.548464298248291,
+      "axis_3_std": 2.4466476440429688
+    },
+    "axis3_best_param": "T_eff (K)",
+    "axis3_best_corr": 0.7095124513126247,
+    "html_exports": {
+      "umap3d_classes": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap3d_classes.html",
+      "umap3d_teff": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap3d_teff.html",
+      "umap3d_feh": "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap3d_feh.html"
+    }
+  },
+  "artifacts": {
+    "png_files": [
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\hr_diagram_pca_pc1.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\hr_diagram_pca_pc2.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\hr_diagram_tsne_ax1.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\hr_diagram_umap_ax1.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\hr_diagram_umap_ax2.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\hr_teff_regions.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_correlation_heatmap.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_eigenspectra.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_loadings_family_bar.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_loadings_family_donut.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_loadings_heatmap.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_loadings_pc1.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_loadings_pc2.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_reconstruction_error.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_scores_classes.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_scores_grid.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_spectra_variance_explained.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\pca_variance_explained.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\stability_umap.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\tsne_classes.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\tsne_grid.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\tsne_sensitivity_perplexity.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\tsne_teff.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_all_classes_pair.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_classes.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_grid.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_clusters.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_feature_heatmap.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_feature_profiles.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_hr.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_present.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_present_hr.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_present_umap.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_hdbscan_sensitivity.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_negative_control.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_no_star_pair.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_sensitivity_n_neighbors.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_teff.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_trustworthiness.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_xgboost_FG_confusion.png",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap_xgboost_predictions.png"
+    ],
+    "html_files": [
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap3d_classes.html",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap3d_feh.html",
+      "<HOME>\\Documents\\Projets\\AstroSpectro\\data\\reports\\figures\\phy3500\\features_20260522T153123Z\\umap3d_teff.html"
+    ],
+    "n_png": 41,
+    "n_html": 3
+  }
+}

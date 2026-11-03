@@ -1,0 +1,63 @@
+AstroSpectro | PHY-3500 Autoencoder Run Report
+========================================================================
+Timestamp (UTC)             : 20260405T214933Z
+Features file               : <ASTROSPECTRO_ROOT>\data\processed\features_20260305T174836Z.csv
+Catalog file                : <ASTROSPECTRO_ROOT>\data\catalog\master_catalog_gaia.csv
+Figures directory           : <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260305T174836Z
+
+[Saved artifacts]
+- Autoencoder joblib        : <ASTROSPECTRO_ROOT>\data\reports\phy3500_autoencoder_output.joblib
+- JSON run report           : <ASTROSPECTRO_ROOT>\data\reports\runs\phy3500_autoencoder\phy3500_autoencoder_run_20260405T214933Z.json
+
+[Shapes]
+- X                         : (43019, 184)
+- Z_ae                      : (43019, 2)
+- X_recon                   : (43019, 184)
+
+[Class counts]
+- y                         : {'GALAXY': 56, 'QSO': 7, 'STAR': 42956}
+
+[Metrics]
+- AE fit time               : 167.41s
+- AE epochs                 : 154
+- AE best val_loss          : 0.554385244846344
+- AE final train_loss       : 0.5159633720391675
+- AE final val_loss         : 0.5571823716163635
+- AE MSE global             : 0.5036840696399616
+- PCA MSE (2)               : 0.6979075944632447
+- PCA MSE (n95)             : 0.2000438066918137
+- n_pcs_95                  : 51
+
+[AE latent correlations - Spearman]
+{'teff_gspphot': {'latent_axis_1': -0.8315990585943729, 'latent_axis_2': -0.6115113422862127}, 'logg_gspphot': {'latent_axis_1': 0.2085906957221656, 'latent_axis_2': -0.039202210581559524}, 'mh_gspphot': {'latent_axis_1': 0.5310414696227905, 'latent_axis_2': 0.4927557727405882}, 'bp_rp': {'latent_axis_1': 0.735684551763856, 'latent_axis_2': 0.6576203736153018}}
+
+Comparison AE vs PCA:
+            method  n_components  mse_mean
+Autoencodeur (z=2)             2  0.503684
+               PCA             1  0.814161
+               PCA             2  0.697908
+               PCA             3  0.652123
+               PCA             5  0.585522
+               PCA             8  0.526258
+               PCA            10  0.496436
+               PCA            15  0.435347
+               PCA            20  0.385645
+               PCA            30  0.312011
+               PCA            50  0.200044
+
+Reconstruction summary by class:
+classe     n  mse_mean   mse_std  mse_median   mse_q95
+GALAXY    56  2.981122 11.488666    1.206855  3.416090
+   QSO     7  5.791308  7.598385    1.014464 18.536635
+  STAR 42956  0.499593  5.137022    0.230871  0.973533
+
+Method summary table:
+                   ρ(axe 1, T_eff) MSE recon. (2 dims)   Paramétrique Non-linéaire   Interprétable
+PCA (PC1/PC2)               +0.831             0.69791            Oui          Non  Oui (loadings)
+Autoencodeur (z=2)          -0.832             0.50368            Oui          Oui       Partielle
+UMAP                        +0.464                 N/A  Oui (partiel)          Oui             Non
+
+Interpolation:
+- idx_cold                  : 1074
+- idx_hot                   : 41659
+- latent_distance           : 8.602632

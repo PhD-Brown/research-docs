@@ -1,0 +1,118 @@
+AstroSpectro | PHY-3500 PCA Run Report
+========================================================================
+Timestamp (UTC)             : 20260405T180648Z
+Features file               : <ASTROSPECTRO_ROOT>\data\processed\features_20260305T174836Z.csv
+Catalog file                : <ASTROSPECTRO_ROOT>\data\catalog\master_catalog_gaia.csv
+Figures directory           : <ASTROSPECTRO_ROOT>\data\reports\figures\phy3500\features_20260305T174836Z
+
+[Saved artifacts]
+- Joblib                    : <ASTROSPECTRO_ROOT>\data\reports\phy3500_pca_output.joblib
+- JSON run report           : <ASTROSPECTRO_ROOT>\data\reports\runs\phy3500_pca\phy3500_pca_run_20260405T180648Z.json
+
+[Shapes]
+- X                         : (43335, 184)
+- Scores                    : (43335, 100)
+- X_spec                    : (10000, 3921)
+- Scores_spec               : (10000, 100)
+- Scores (95% var)          : (43335, 94) (94 PCs)
+- Scores_spec (95% var)     : (10000, 5) (5 PCs)
+
+[Class counts]
+- y                         : {'GALAXY': 56, 'QSO': 7, 'STAR': 42956, 'Unknown': 316}
+- y_spec                    : {'GALAXY': 20, 'QSO': 2, 'STAR': 9852, 'Unknown': 126}
+
+[PCA features]
+- Variance explained (50)   : 96.29%
+- Components for variance   : {'80pct': 53, '90pct': 76, '95pct': 94, '99pct': 100}
+
+Variance summary (top 10):
+  PC  variance_individuelle  variance_cumulee  valeur_propre
+ PC1               0.158414          0.158414      28.515263
+ PC2               0.116713          0.275128      21.008886
+ PC3               0.045530          0.320658       8.195626
+ PC4               0.035263          0.355921       6.347560
+ PC5               0.031379          0.387301       5.648375
+ PC6               0.021959          0.409260       3.952725
+ PC7               0.020558          0.429818       3.700501
+ PC8               0.017179          0.446996       3.092285
+ PC9               0.015841          0.462838       2.851498
+PC10               0.014491          0.477329       2.608397
+
+Top features PC1:
+                       feature   loading  abs_loading  PC
+           feature_Hα_eq_width  0.177886     0.177886 PC1
+   feature_continuum_asymmetry  0.176652     0.176652 PC1
+         feature_Mg_b_eq_width -0.175381     0.175381 PC1
+          feature_synthetic_BV -0.166166     0.166166 PC1
+   feature_flux_ratio_blue_red  0.164160     0.164160 PC1
+feature_continuum_slope_global -0.159390     0.159390 PC1
+     feature_Hepsilon_eq_width -0.152148     0.152148 PC1
+           feature_H8_eq_width -0.151506     0.151506 PC1
+       feature_CaII_H_eq_width -0.149182     0.149182 PC1
+           feature_slope_green -0.142398     0.142398 PC1
+
+Top features PC2:
+                     feature   loading  abs_loading  PC
+           feature_FeH_proxy  0.207091     0.207091 PC2
+feature_metal_index_combined  0.199545     0.199545 PC2
+    feature_metal_poor_index -0.196098     0.196098 PC2
+feature_alpha_elements_index  0.195866     0.195866 PC2
+    feature_Fe_5270_eq_width  0.176658     0.176658 PC2
+    feature_Mg_5184_eq_width  0.171656     0.171656 PC2
+     feature_iron_peak_index  0.170909     0.170909 PC2
+    feature_Fe_4531_eq_width  0.168389     0.168389 PC2
+    feature_Cr_5206_eq_width  0.168247     0.168247 PC2
+    feature_Cr_5208_eq_width  0.166192     0.166192 PC2
+
+[PCA spectra]
+- Variance explained (50)   : 99.45%
+- Components for variance   : {'80pct': 3, '90pct': 3, '95pct': 5, '99pct': 36}
+
+Corrélations Spearman (PC x Gaia):
+      teff_gspphot  logg_gspphot  mh_gspphot  bp_rp   bp_g   g_rp  phot_g_mean_mag  distance_gspphot   pmra  pmdec  parallax   ruwe  ag_gspphot  ebpminrp_gspphot  snr_u  snr_g  snr_r  snr_i  snr_z     ra    dec  redshift
+PC1          0.825        -0.150      -0.542 -0.767 -0.758 -0.750           -0.090             0.320 -0.043  0.094    -0.269 -0.075      -0.076            -0.072  0.606  0.354  0.075 -0.098 -0.169 -0.024  0.057     0.025
+PC2          0.155         0.085      -0.082 -0.027 -0.030 -0.023            0.180             0.103  0.014  0.074    -0.095  0.020       0.191             0.192 -0.191 -0.326 -0.312 -0.239 -0.223 -0.106  0.049     0.026
+PC3          0.215        -0.350       0.022  0.052  0.048  0.056           -0.329             0.266  0.003  0.159    -0.239  0.071       0.314             0.313  0.172  0.211  0.224  0.173  0.224 -0.071  0.133     0.049
+PC4         -0.139         0.291      -0.114  0.057  0.052  0.056            0.522             0.045  0.011  0.025    -0.100 -0.050      -0.072            -0.073 -0.465 -0.576 -0.636 -0.594 -0.634 -0.059 -0.058     0.033
+PC5          0.035         0.098      -0.182 -0.165 -0.170 -0.157            0.086            -0.079 -0.041 -0.061     0.100 -0.023      -0.180            -0.178  0.164  0.164  0.031  0.028 -0.031  0.036 -0.067     0.031
+PC6         -0.099        -0.077       0.100  0.052  0.062  0.045           -0.124             0.077  0.033  0.017    -0.093  0.015       0.006             0.005 -0.017  0.025  0.059  0.028  0.055  0.001  0.011    -0.074
+PC7          0.214        -0.263      -0.135  0.130  0.128  0.131           -0.033             0.252  0.035  0.116    -0.288  0.042       0.233             0.235 -0.106 -0.293 -0.261 -0.197 -0.118 -0.117  0.081    -0.035
+PC8          0.045         0.018       0.067  0.019  0.014  0.022           -0.020            -0.013  0.027  0.025     0.027  0.018       0.146             0.145 -0.023 -0.017 -0.054 -0.055 -0.034 -0.012  0.031     0.100
+PC9          0.010         0.024      -0.113 -0.064 -0.061 -0.063            0.055             0.002 -0.006 -0.052    -0.008 -0.024      -0.098            -0.097  0.102  0.058  0.068  0.058  0.033 -0.002 -0.057    -0.183
+PC10        -0.084         0.155      -0.033 -0.005 -0.006 -0.004            0.130            -0.084  0.010 -0.072     0.082 -0.005      -0.054            -0.055  0.023 -0.021 -0.032 -0.042 -0.064  0.001 -0.060    -0.149
+
+Séparation classes (résumé):
+    n   mean   std  median    q25    q75
+   56 -1.571 3.654  -2.175 -4.312  1.343
+   56  1.149 3.882   0.677 -1.747  3.279
+   56  0.118 3.117   0.662 -1.564  1.806
+   56  2.498 2.841   2.714  0.606  4.540
+   56 -0.475 4.551  -0.125 -2.899  2.015
+    7 -1.553 4.598   0.137 -4.103  1.314
+    7  2.122 3.578   3.784  0.435  4.820
+    7 -1.045 3.005  -1.912 -3.429  0.953
+    7  3.581 4.969   1.883  1.112  4.204
+    7 -2.715 3.363  -3.905 -5.448 -0.035
+42956  0.008 5.346   1.207 -4.580  4.435
+42956 -0.029 4.568  -1.053 -3.583  2.390
+42956  0.008 2.843   0.076 -1.947  2.080
+42956 -0.033 2.465  -0.345 -1.648  1.303
+42956  0.017 2.348   0.013 -1.136  1.041
+  316 -0.791 4.621  -0.168 -4.269  2.936
+  316  3.681 5.222   2.738 -0.365  7.185
+  316 -1.073 4.677  -1.524 -3.398  1.288
+  316  3.918 5.033   3.385  1.021  6.210
+  316 -2.218 4.017  -2.215 -4.699 -0.083
+
+Erreur reconstruction (10 premières lignes):
+ n_components  mse_mean  mse_std
+            1  0.823290 6.519263
+            2  0.709114 6.495561
+            3  0.664574 6.475784
+            4  0.630077 6.456509
+            5  0.599380 6.441195
+            6  0.577898 6.404960
+            7  0.557787 6.390998
+            8  0.540982 6.350652
+            9  0.525485 5.615029
+           10  0.511309 5.525525

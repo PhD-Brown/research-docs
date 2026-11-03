@@ -1,0 +1,5 @@
+Feature,Theory_Matches,Correlation,Notes
+Hα FWHM,False,"ρ(Teff,FWHM)=-0.397",Deviation from A>F>G>K order; weak correlation reflects LAMOST resolution limits. Visual separation still useful for ML.
+Ca II K Prominence,True,"ρ(type,CaK)=+0.041, ρ([M/H],CaK)=N/A (spectro_only)",Weak positive type trend (ρ=+0.041); metallicity N/A (spectro_only). Visual class separation preserved.
+Colour Indices (g−r),True,"r(type,g−r)=+0.014",Monotonic g−r increase A→M confirmed; weak correlation (r=+0.014) but correct trend preserved.
+SNR Quality,True,"r(SNR,residual)=-0.006",Recommended minimum SNR: 0. Extremely weak SNR dependence suggests robust feature extraction.

@@ -1,0 +1,31 @@
+feature,family,mean_abs_shap,global_rank,type,verdict
+num__feature_index_G4300,Spectral Index,0.4776608943939209,3,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_CaIIK_eq_width,Ca II,0.46225762367248535,5,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_Hα_eq_width,Hα (Balmer),0.40549376606941223,7,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_index_Mgb_index,Mg b,0.3402062952518463,9,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__redshift,Redshift,0.2967163920402527,10,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__snr_r,SNR,0.26760703325271606,12,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__snr_g,SNR,0.2667340934276581,13,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__redshift_error,Redshift,0.2600029706954956,14,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_cont_curvature,Continuum,0.23334886133670807,16,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_Hβ_eq_width,Hβ (Balmer),0.23204880952835083,17,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_cont_slope,Continuum,0.20624597370624542,19,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_index_Dn4000,Spectral Index,0.18533891439437866,21,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__parallax,Astrometry,0.17463602125644684,22,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_CaIIK_fwhm,Ca II,0.170896515250206,24,unexpected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_index_CaH2,Ca II,1.1104803085327148,1,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_Mg_b_eq_width,Mg b,0.8908308148384094,2,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_index_Hbeta_index,Hβ (Balmer),0.4718092381954193,4,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_Na_D_eq_width,Na D,0.4382408559322357,6,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_index_TiO5,Spectral Index,0.38005325198173523,8,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_index_CaH3,Ca II,0.2723051607608795,11,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__bp_rp0,Photometry,0.2511015236377716,15,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_color_gr,Colour,0.20881284773349762,18,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__ratio_EW_CaK_CaH,Line Ratio,0.18633247911930084,20,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_Na_D_prominence,Na D,0.17420364916324615,23,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_color_index_BlueRed,Colour,0.17056392133235931,25,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_color_ri,Colour,0.1623321920633316,26,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_Mg_b_fwhm,Mg b,0.14375905692577362,27,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__ratio_EW_Ha_Hb,Hα (Balmer),0.1431952863931656,28,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__feature_ratio_prom_CaK_Hbeta,Hβ (Balmer),0.13382884860038757,29,expected,GOOD — Model is primarily physics-driven with minor observational contribution.
+num__match_Na_D_prom,Na D,0.13071852922439575,30,expected,GOOD — Model is primarily physics-driven with minor observational contribution.

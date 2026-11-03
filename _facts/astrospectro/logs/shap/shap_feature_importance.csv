@@ -1,0 +1,59 @@
+feature,mean_abs_shap,family,category
+num__feature_index_CaH2,1.1104803,Ca II,Physical (spectroscopic)
+num__feature_Mg_b_eq_width,0.8908308,Mg b,Physical (spectroscopic)
+num__feature_index_G4300,0.4776609,Spectral Index,Physical (spectroscopic)
+num__feature_index_Hbeta_index,0.47180924,Hβ (Balmer),Physical (spectroscopic)
+num__feature_CaIIK_eq_width,0.46225762,Ca II,Physical (spectroscopic)
+num__feature_Na_D_eq_width,0.43824086,Na D,Physical (spectroscopic)
+num__feature_Hα_eq_width,0.40549377,Hα (Balmer),Physical (spectroscopic)
+num__feature_index_TiO5,0.38005325,Spectral Index,Physical (spectroscopic)
+num__feature_index_Mgb_index,0.3402063,Mg b,Physical (spectroscopic)
+num__redshift,0.2967164,Redshift,Gaia / Photometric
+num__feature_index_CaH3,0.27230516,Ca II,Physical (spectroscopic)
+num__snr_r,0.26760703,SNR,Observational / Metadata
+num__snr_g,0.2667341,SNR,Observational / Metadata
+num__redshift_error,0.26000297,Redshift,Gaia / Photometric
+num__bp_rp0,0.25110152,Photometry,Gaia / Photometric
+num__feature_cont_curvature,0.23334886,Continuum,Physical (spectroscopic)
+num__feature_Hβ_eq_width,0.23204881,Hβ (Balmer),Physical (spectroscopic)
+num__feature_color_gr,0.20881285,Colour,Physical (spectroscopic)
+num__feature_cont_slope,0.20624597,Continuum,Physical (spectroscopic)
+num__ratio_EW_CaK_CaH,0.18633248,Line Ratio,Physical (spectroscopic)
+num__feature_index_Dn4000,0.18533891,Spectral Index,Physical (spectroscopic)
+num__parallax,0.17463602,Astrometry,Gaia / Photometric
+num__feature_Na_D_prominence,0.17420365,Na D,Physical (spectroscopic)
+num__feature_CaIIK_fwhm,0.17089652,Ca II,Physical (spectroscopic)
+num__feature_color_index_BlueRed,0.17056392,Colour,Physical (spectroscopic)
+num__feature_color_ri,0.16233219,Colour,Physical (spectroscopic)
+num__feature_Mg_b_fwhm,0.14375906,Mg b,Physical (spectroscopic)
+num__ratio_EW_Ha_Hb,0.14319529,Hα (Balmer),Physical (spectroscopic)
+num__feature_ratio_prom_CaK_Hbeta,0.13382885,Hβ (Balmer),Physical (spectroscopic)
+num__match_Na_D_prom,0.13071853,Na D,Physical (spectroscopic)
+num__ratio_EW_MgB_NaD,0.12937836,Mg b,Physical (spectroscopic)
+num__flux_g_rp_ratio,0.12266336,Photometry,Gaia / Photometric
+num__feature_CaIIH_eq_width,0.12223309,Ca II,Physical (spectroscopic)
+num__contrast_metals_vs_balmer,0.11810625,Line Ratio,Physical (spectroscopic)
+num__feature_Mg_b_prominence,0.116156586,Mg b,Physical (spectroscopic)
+num__M_G0,0.11550361,Photometry,Gaia / Photometric
+num__feature_ratio_prom_Mgb_Hbeta,0.11355943,Hβ (Balmer),Physical (spectroscopic)
+num__feature_Hβ_fwhm,0.10935422,Hβ (Balmer),Physical (spectroscopic)
+num__feature_index_Ca4227,0.10858789,Ca II,Physical (spectroscopic)
+num__snr_z,0.10759426,SNR,Observational / Metadata
+num__teff_gspphot,0.094703585,Gaia Params,Gaia / Photometric
+num__M_BP_dist,0.093369246,Photometry,Gaia / Photometric
+num__feature_Hα_fwhm,0.08846429,Hα (Balmer),Physical (spectroscopic)
+num__feature_CaIIH_fwhm,0.08817154,Ca II,Physical (spectroscopic)
+num__feature_Hβ_prominence,0.082383014,Hβ (Balmer),Physical (spectroscopic)
+num__bp_g,0.08079044,Photometry,Gaia / Photometric
+num__depthproxy_Ha,0.08015419,Other,Observational / Metadata
+num__depthproxy_Hb,0.07712127,Other,Observational / Metadata
+num__EW_CaHK_sum,0.07671307,Ca II,Physical (spectroscopic)
+num__M_BP_parallax,0.071326934,Photometry,Gaia / Photometric
+num__M_BP_minus_M_RP,0.057105113,Photometry,Gaia / Photometric
+num__match_Hβ_prom,0.053079933,Hβ (Balmer),Physical (spectroscopic)
+num__bp_rp,0.05228701,Photometry,Gaia / Photometric
+num__match_Mg_b_prom,0.045135725,Mg b,Physical (spectroscopic)
+num__M_BP,0.040222142,Photometry,Gaia / Photometric
+num__flux_bp_rp_ratio,0.030399686,Photometry,Gaia / Photometric
+num__flux_bp_g_ratio,0.027961837,Photometry,Gaia / Photometric
+num__flux_g_rp_ratio_log10,0.026543396,Photometry,Gaia / Photometric

@@ -1,0 +1,31 @@
+feature,family,mean_abs_shap,global_rank,type,verdict
+num__feature_Hα_eq_width,Hα (Balmer),0.25213614106178284,3,unexpected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_CaH2,Ca II,0.29658156633377075,1,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Mg_b_eq_width,Mg b,0.27110978960990906,2,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_Hbeta_index,Hβ (Balmer),0.1942307949066162,4,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_CaIIK_eq_width,Ca II,0.1912529617547989,5,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_slope_deep_red,Continuum,0.1565413773059845,6,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_G4300,Mol. CN/CH,0.14302857220172882,7,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_CN_2,Mol. CN/CH,0.11685670912265778,8,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_Mg_2,Mg b,0.11413317918777466,9,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_CNO_index,Mol. CN/CH,0.10998620092868805,10,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_continuum_rms,Continuum,0.10989973694086075,11,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_Mgb_index,Mg b,0.1070249080657959,12,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Hgamma_fwhm,Hβ (Balmer),0.08839822560548782,13,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_TiO5,Mol. TiO/VO,0.08406932651996613,14,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Mg_5173_eq_width,Mg b,0.07777873426675797,15,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Na_D_eq_width,Na D,0.07052009552717209,16,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_molecular_CH_4300,Mol. CN/CH,0.06970706582069397,17,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_CN_1,Mol. CN/CH,0.06631138920783997,18,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__match_Na_D_prom,Na D,0.06271439790725708,19,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_CaIIK_depth,Ca II,0.06168981269001961,20,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Hdelta_fwhm,Hβ (Balmer),0.05800702050328255,21,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Na_D_prominence,Na D,0.05773680657148361,22,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_index_NaD_Lick,Na D,0.05667687579989433,23,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_cont_curvature,Continuum,0.05613957718014717,24,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_molecular_TiO_6180,Mol. TiO/VO,0.05495057255029678,25,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Al_3944_eq_width,Metal Lines,0.05112610012292862,26,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Mg_5184_eq_width,Mg b,0.051003597676754,27,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__ratio_EW_Ha_Hb,Line Ratio,0.050368715077638626,28,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_Ca_8542_eq_width,Ca II,0.04901457950472832,29,expected,EXCELLENT — Model is overwhelmingly physics-driven.
+num__feature_UV_excess_3900,Colour,0.04359617084264755,30,expected,EXCELLENT — Model is overwhelmingly physics-driven.
