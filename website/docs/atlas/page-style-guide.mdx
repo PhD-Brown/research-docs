@@ -1,0 +1,420 @@
+---
+title: Page Style Guide
+description: How research-docs pages are built and how they look — page templates by type, the visual layer derived from the most complete AstroSpectro pages (key-metrics components, admonitions, galleries, related-pages blocks), theme rules, and the publishing checklist. Companion to the Editorial Guide.
+---
+
+import CrossReferences from '@site/src/components/CrossReferences';
+
+# Page Style Guide
+
+This guide defines **how a page is built and how it looks**. The [Editorial Guide](../editorial-guide) defines **what a page says** (tone, canonical pages, metric context, calibrated claims). When the two disagree, the Editorial Guide wins on wording and this guide wins on layout.
+
+:::info[Status]
+Version 2 (2026-11). Replaces `_internal/page-style-guide.v1.mdx`. The page templates and writing rules of v1 are kept; the visual layer is rewritten from the pages that actually ship today. v1 prescribed `<div className="stats-row">` and `<div className="summary-cards">` blocks: **no stylesheet defines these classes**, so they render as plain text. Do not use them.
+:::
+
+---
+
+## 1. Reference pages
+
+The visual layer below is derived from the five most complete pages that import `@site/src/components`. Open them side by side when writing a new page.
+
+<div style={{ overflowX: 'auto' }}>
+
+| Page | Type | What to copy from it | Known debt (do not copy) |
+|---|---|---|---|
+| [Autoencoder](../astrospectro/dimred/autoencoder) | Method | Key-metrics component first; "Why this method?" comparison table; architecture component; per-class table followed by a `:::tip`; reference-figure gallery; implementation block; related pages | `RelatedPages` hrefs point to old routes; "107×" has no source |
+| [PCA](../astrospectro/dimred/pca) | Analysis | One component per H2, each introduced by a sentence and followed by an interpretation paragraph; `:::caution` for artefacts; explicit limitations section | `VarianceChart` uses approximate values |
+| [Dimensionality reduction](../astrospectro/dimred) | Method hub | `:::info[Central question]` framing; pipeline diagram before results; numbered H2 per method with identical sub-structure (principle → hyperparameters → results); evaluation and limitations sections | Relative hrefs resolved from the category URL (see §4.9) |
+| [Feature catalogue](../astrospectro/data/feature-dataset) | Data | "Two reading levels" intro; overview component, then one H3 per physical family, each with the same component (`SpectralLineRows`) and a `---` separator; code reference section | Some hrefs point to old routes |
+| [AstroSpectro index](../astrospectro) | Project landing | Theme-aware, prop-driven components (`RunProvenance`, `CrossReferences`, `ResultsLocator`); the `:::info` that sends readers to the canonical results pages instead of repeating metrics | Uses `summary-cards` (unstyled) |
+
+</div>
+
+All numbers on these pages must still be checked against `_facts/` before reuse: see `FACTS_INDEX.md` at the repository root.
+
+---
+
+## 2. The five ingredients every page shares
+
+| # | Ingredient | What it looks like now |
+|---|---|---|
+| **1** | Opening paragraph | What the page covers + dataset context (N, number of features, survey, data generation) in ≤ 3 sentences, key terms in **bold** |
+| **2** | Context admonition | `:::note[…]` (paper reference), `:::info[…]` (run or central question) |
+| **3** | Key results block | A key-metrics **component** directly under `## Key results` — not an HTML `div` |
+| **4** | At least one table | Comparison, parameter, or schema table |
+| **5** | Closing navigation | `---` then `<RelatedPages …/>` or `## Cross-references` + `<CrossReferences …/>` |
+
+---
+
+## 3. Page templates by type
+
+Templates are unchanged in spirit from v1; the slots now name the component to use.
+
+### 3.1 Method / analysis page
+
+*PCA, UMAP, t-SNE, autoencoder, SHAP, classification.*
+
+```text
+frontmatter (title, description)
+imports (all at the top, one per line)
+# Title
+Opening paragraph
+:::note[Paper / run reference]
+---
+## Key results                 ← key-metrics component, ALWAYS first
+---
+## Why [this method]?          ← comparison table vs alternatives
+---
+## Architecture / Theory       ← diagram component or KaTeX, then a code block
+---
+## [Result sections]           ← lead-in sentence → component/table → interpretation
+   :::tip[…] for the one key finding · :::caution[…] for artefacts
+---
+## Comparative synthesis       ← table across methods
+---
+## Reference figures           ← export const xFigures = [...]; <FigureGallery …/>
+---
+## Implementation              ← code block with module path
+---
+<RelatedPages pages={[…]} />
+```
+
+**Opening paragraph formula** — *"This page documents [what] applied to the [N spectra · p features] of [dataset, generation]. [Method] is [role in the project]. [One sentence positioning it against the other methods.]"*
+
+### 3.2 Data page
+
+*LAMOST DR5, Gaia DR3, feature catalogue, master catalogue, class taxonomy.*
+
+```text
+# Title
+Opening paragraph (+ "two reading levels" when the page is long)
+:::info[Context]
+---
+## At a glance                 ← stats component (e.g. DatasetStats, LAMOSTSpecs)
+---
+## Source & provenance
+## Schema / column reference   ← table or FITSFieldsTable-style component
+## Quality filters applied     ← QualityPipeline-style component, criteria quoted from code
+## Known limitations
+## How to load                 ← code block
+## Code reference
+---
+<RelatedPages pages={[…]} />
+```
+
+### 3.3 Pipeline / concept page
+
+*Preprocessing, peak detection, feature engineering, spectro_only, physical purity.*
+
+```text
+# Title
+Opening paragraph
+---
+## Why this step exists        ← motivation + what goes wrong without it
+## Pipeline position           ← Mermaid diagram or flow component
+---
+## [Main content]              ← step-by-step or theory, code blocks
+---
+## Parameters used (reference run)
+## Validation / sanity check
+---
+<RelatedPages pages={[…]} />
+```
+
+### 3.4 Guide page
+
+*Installation, quick start, downloading data, model training, visualization.*
+
+```text
+# Title
+Opening paragraph (what this guide helps you do)
+:::note[Prerequisites]
+---
+## Step 1 — …                  ← one code block per step
+## Step 2 — …
+---
+## Expected outputs            ← file tree (ArtifactsTree-style) or sample output
+## Troubleshooting
+## Next steps
+```
+
+### 3.5 Result / science page
+
+*SHAP, classification performance, scientific validation, F/G confusion, model card.*
+
+```text
+# Title
+Opening paragraph
+:::info[Run context]           ← or <RunProvenance …/> for classifier results
+---
+## Key results                 ← key-metrics component
+---
+## [Main finding]              ← Result → Interpretation → Caveat (Editorial Guide §5.2)
+---
+## Physical interpretation
+## Limitations of this result
+---
+<RelatedPages pages={[…]} />
+```
+
+### 3.6 API page
+
+Follow Editorial Guide §10: Overview · Constructor / signature · Parameters (table) · Returns · Methods · Example · Notes. No components, no scientific narrative, link to the concept page instead.
+
+---
+
+## 4. Visual layer
+
+### 4.1 Page skeleton
+
+- Frontmatter: `title` and `description` (the description carries dataset context and, for results pages, the run).
+- Imports immediately after the frontmatter, one per line, in order of appearance on the page.
+- `# Title` equal to the frontmatter title. No FontAwesome icons in headings (they come from the old site and render inconsistently); a single leading emoji is tolerated on hub pages only.
+- `---` between every `##` section. `##` for sections, `###` for subsections, **never** `####`.
+
+### 4.2 Key results block
+
+The stat-card row is a **component**, placed directly under `## Key results` with no text in between.
+
+<div style={{ overflowX: 'auto' }}>
+
+| Page family | Existing component | Shape |
+|---|---|---|
+| Autoencoder | `AEKeyMetrics` | 4 cards, hard-coded |
+| PCA | `PCAxisCards` | 2 axis cards, hard-coded |
+| Classification | `ClassifierMetrics` | 3 cards, hard-coded (values outdated) |
+| Results hub | `ResultsHero` | 5 cards, hard-coded (values outdated) |
+| Dataset | `DatasetStats` | 5 cards, hard-coded |
+
+</div>
+
+Rules:
+
+- 3–6 cards. Each card = value (with sign and unit) · metric name · context line (N, run, condition).
+- If no component fits, use a three-column Markdown table `Metric | Value | Context` (as in the [Model Card](../astrospectro/science/model-card)) — never raw HTML with custom class names.
+- New key-metrics components must be **prop-driven** (values passed from the page, so they can be checked against `_facts/`) and theme-aware; see `.claude/skills/docs-component`.
+
+### 4.3 Admonitions
+
+Use the bracket-title form, which is what the reference pages use: `:::note[PHY-3500 article reference]`.
+
+<div style={{ overflowX: 'auto' }}>
+
+| Type | Use for | Frequency |
+|---|---|---|
+| `:::info[…]` | Central question, run context, "where the canonical numbers live" | Any |
+| `:::note[…]` | Paper reference, exact counts, clarifications | Any |
+| `:::tip[…]` | **The** key finding of the section — specific and quantified | Max 1–2 per page |
+| `:::caution[…]` | Artefacts and interpretation traps (e.g. instrumental PC3) | As needed |
+| `:::warning[…]` | Limitations and scientific risks (e.g. `spectro_only` scope) | As needed |
+| `:::danger[…]` | What not to do (pipeline and guide pages) | Rare |
+
+</div>
+
+The v1 "discovery badge" (`badge badge--success`) is not used on any page: state discoveries in a `:::tip[…]`.
+
+### 4.4 Placing a component
+
+The reference pages always follow the same rhythm:
+
+````mdx
+## Explained variance
+
+### Characteristic thresholds and reconstruction error
+
+One sentence saying what the reader is about to see and why it matters.
+
+<VarianceChart />
+
+**Bold one-line result** with the numbers (sourced). Then one paragraph of interpretation.
+````
+
+Never stack two data components without text between them (galleries excepted). A page must still make sense if a component fails to render (Editorial Guide §9.3).
+
+### 4.5 Tables
+
+Comparison table (method vs method), parameter table and sensitivity table keep the v1 formats:
+
+```mdx
+| Property | PCA | UMAP | t-SNE | AE |
+|---|---|---|---|---|
+| Linear? | ✓ | ✗ | ✗ | ✗ |
+
+| Parameter | Value | Why |
+|---|---|---|
+| `n_neighbors` | {value} | {reason, with the sensitivity test it comes from} |
+
+| Value | Behaviour | Status |
+|---|---|---|
+| **{retained}** | **Best local/global trade-off** | **✓ Retained** |
+| {other} | Cluster coalescence | ✗ Avoid |
+```
+
+Centred columns (`|:---:|`) for numeric tables; bold the reference row; always units and signs (`ρ = +0.83`, not `0.83`).
+
+### 4.6 Figures
+
+Reference figures are grouped in a gallery declared right under its heading:
+
+````mdx
+## Reference figures
+
+export const aeFigures = [
+  {
+    src: '/img/dimred/ae_vs_pca_mse.png',
+    title: 'MSE: AE(z=2) vs PCA(k=1…50)',
+    desc: 'Run 20260405T220839Z · N = 43,019',
+    tag: 'Benchmark',
+  },
+];
+
+<FigureGallery figures={aeFigures} columns={3} />
+````
+
+- `src` is a site path under `website/static/` (no base URL; the component adds it). Never hot-link images from another site (some pages still load `https://phd-brown.github.io/AstroSpectro/img/…`).
+- A figure coming from `_facts/` is first copied to `website/static/img/<project>/`; if it is already published, reuse the path listed in `_facts/astrospectro/MANIFEST.md` ("Figures déjà sur le site").
+- `title` describes what the figure shows (Editorial Guide §9.2); `desc` carries the run and N; `tag` is one word.
+- `columns={3}` by default, `2` for wide figures.
+- A single inline figure uses Markdown plus an italic caption: `*Figure 1 — what it shows.*`, with descriptive alt text.
+
+### 4.7 Code blocks
+
+Always a language, and a comment with the module path on the first line:
+
+```python
+# src/dimred/autoencoder.py
+from src.dimred.autoencoder import SpectralAutoencoder
+```
+
+### 4.8 Tabs
+
+Use `@theme/Tabs` only to compare two variants of the same thing (UMAP vs t-SNE, G1 vs G2, v6 vs v7). Leave a blank line after `<TabItem …>` and before `</TabItem>` so Markdown inside renders.
+
+### 4.9 Closing navigation and links
+
+- **Method, data, result pages**: `---` then `<RelatedPages pages={[…]} />` with 3–6 entries (`href`, `title`, `desc`, `category`, optional `badge`).
+- **Landing and overview pages**: `## Cross-references` then `<CrossReferences links={[…]} />` (table, theme-aware) — as at the bottom of this page. Do not set `featured: true` for now: the highlighted row is unreadable in dark mode (light-blue background under light text).
+- Both components render raw `<a href>` elements: **Docusaurus does not check these links**, and the href is resolved from the *rendered URL*, not from the file. On a category index (`dimred/index.mdx`, served at `/docs/astrospectro/dimred`), `./pca` resolves to `/docs/astrospectro/pca` — write `./dimred/pca`. Run `check-links.mjs` (skill `docs-verify`) on every page you touch.
+- In prose, prefer Markdown links to the source file (`[PCA](./pca.mdx)`): those are checked by the build.
+
+### 4.10 Run provenance
+
+- Classifier results: `<RunProvenance experiment=… savedAt=… md5=… notes=… stack=… keyResultsHref=… />`, values copied from the files listed in `FACTS_INDEX.md` §1.
+- Dimensionality-reduction results: a `:::note[Run]` naming the run ID(s) and the data generation (G1 = 43,019 spectra, PHY-3500; G2 = 350k). Never mix the two generations in one block.
+
+### 4.11 Colour and theme
+
+The site defaults to dark mode but must read in light mode too.
+
+- Text, backgrounds and borders: Infima variables only — `var(--ifm-font-color-base)`, `var(--ifm-card-background-color)`, `var(--ifm-code-background)`, `var(--ifm-toc-border-color)`, `var(--ifm-color-emphasis-700)`, `var(--ifm-link-color)`, `var(--ifm-color-primary)`.
+- **Do not** use `rgba(255,255,255,x)` for borders or grid lines, nor hard-coded dark backgrounds (`#06080f`, `#0a0c14`, `#0d1117`): they disappear or turn into black boxes in light mode. Most older data components still do; `CrossReferences`, `RunProvenance`, `ResultsLocator`, `ProjectHero`, `ProjectPhilosophy`, `WhatAstroSpectroDoes` and `ResearchSections` are the theme-aware models.
+- Accent colours carry meaning across pages; reuse them:
+
+| Colour | Hex | Meaning |
+|---|---|---|
+| Sky | `#38BDF8` | PCA · primary series |
+| Amber | `#F59E0B` | UMAP · PC2 · secondary series |
+| Violet | `#A78BFA` | t-SNE |
+| Green | `#34D399` | Autoencoder · retained / current · Mg & α-elements |
+| Purple | `#C084FC` | Latent space · Ca II |
+| Blue | `#60A5FA` | Balmer lines |
+| Orange | `#FB923C` | Iron-peak metals |
+| Yellow | `#FBBF24` | Lick / SDSS indices |
+| Red | `#F87171` | Continuum · excluded variables |
+| Slate | `#94A3B8` | Neutral / baseline |
+
+- Fonts come from `src/css/custom.css`: Inter for text, JetBrains Mono for numbers and code.
+
+### 4.12 Patterns not to reuse
+
+<div style={{ overflowX: 'auto' }}>
+
+| Pattern | Why |
+|---|---|
+| `<div className="stats-row">`, `summary-cards`, `summary-card accent-*` | No CSS defines them |
+| Raw Infima card grids (`card`, `card__header`, `col col--6`…) with FontAwesome icons | Inherited from the old French site; use a component instead |
+| `<UnderConstruction />` on a page with content | Use the `:::info Under construction` admonition (Editorial Guide §6.3) |
+| Hard-coded numbers inside new components | Unverifiable; pass them as props from the page |
+| Images hot-linked from `phd-brown.github.io/AstroSpectro` | Breaks when the old site moves |
+| Wide Markdown tables (many columns, long cells or code) left bare | `src/css/custom.css` forces `.markdown table { display: table }`, which disables Infima's horizontal scrolling: on a phone the whole page overflows. Until that rule is fixed, keep tables short or wrap them in `<div style={{ overflowX: 'auto' }}>` (blank line after the opening tag and before `</div>`), as this page does |
+
+</div>
+
+---
+
+## 5. Writing rules
+
+These complement the [Editorial Guide](../editorial-guide) (tone, canonical pages, calibrated language) and are kept from v1.
+
+### 5.1 Sentences and structure
+
+- First paragraph: "This page presents / documents …" + present tense for the result.
+- Analysis goes in tables, not bullet lists; bullets are for short reference lists.
+- Every result is followed by its physical meaning; use "suggests" vs "confirms" according to the evidence level in the [Claims Register](./claims-register).
+
+### 5.2 Numbers
+
+- **Every number comes from `_facts/`**, through the file and key listed in `FACTS_INDEX.md`. A number that cannot be traced is not published.
+- Always units and signs: `N = 43,019 spectra`, `MSE = 0.489`, `ρ(T_eff) = +0.831`.
+- English thousands separator (`43,019`) and decimal point.
+- Hardware context when timing is quoted (CPU, threads).
+
+### 5.3 Dataset context
+
+Every method or analysis page states its dataset once in the first paragraph, including the generation:
+
+> *"… applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra (PHY-3500 dataset)."*
+
+Classifier pages quote the reference run instead (experiment name, N processed, test size, number of selected features) from `FACTS_INDEX.md` §1. Never attach a classifier metric to the 43,019-spectrum dimensionality-reduction dataset.
+
+---
+
+## 6. Frontmatter template
+
+```yaml
+---
+title: {Page title} — {Subtitle}
+description: {1–2 sentences for SEO and og:description, with dataset context and, for results pages, the run and the key sourced result.}
+sidebar_position: {n}   # when the page is in a sidebar
+---
+```
+
+---
+
+## 7. Publishing checklist
+
+**All pages**
+
+- [ ] Frontmatter with `title` and `description` (dataset context)
+- [ ] Opening paragraph ≤ 3 sentences; `---` after the intro and between sections
+- [ ] Key results component (or table) present and first, where the template asks for it
+- [ ] Every number traced to `_facts/` (`check_facts.py` run, no unexplained "NOT FOUND")
+- [ ] No `TBD`, `????`, "What this page covers" placeholder list or `<UnderConstruction />` left
+- [ ] Figures have a title, a desc with run/N, and a local `src`
+- [ ] Closing `RelatedPages` / `CrossReferences`; `check-links.mjs` reports no broken link on the page
+- [ ] `npm run build` passes with no new warning
+- [ ] Screenshots reviewed in light and dark, desktop and mobile
+
+**Method pages** — comparison table vs other methods · physical interpretation · code block with module path.
+**Data pages** — schema table · "how to load" code block.
+**Guide pages** — prerequisites in a `:::note` · one code block per step · expected outputs.
+
+---
+
+## 8. Component reference
+
+The full catalogue of the components in `website/src/components/` — role, props, data source, light-mode status and an example page for each — lives in `.claude/skills/docs-component/catalog.md` in the repository. Read it before creating a component: most visual needs are already covered.
+
+---
+
+## Cross-references
+
+<CrossReferences links={[
+  { href: '../editorial-guide', label: 'Editorial Guide', relation: 'Writing rules, canonical pages, metric context' },
+  { href: '../astrospectro/dimred/autoencoder', label: 'Autoencoder', relation: 'Reference method page' },
+  { href: '../astrospectro/dimred/pca', label: 'Physical Interpretation of PCA', relation: 'Reference analysis page' },
+  { href: '../astrospectro/data/feature-dataset', label: 'Catalogue of 183 Spectral Features', relation: 'Reference data page' },
+  { href: '../astrospectro/science/model-card', label: 'Model Card — XGBoost', relation: 'Key results as a Markdown table' },
+  { href: './claims-register', label: 'Scientific Claims Register', relation: 'Evidence levels for calibrated wording' },
+]} />
