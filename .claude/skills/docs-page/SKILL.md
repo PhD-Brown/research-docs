@@ -57,6 +57,7 @@ Règles qui reviennent le plus souvent :
 
 - Le commentaire MDX `{/* facts: … */}` (invisible) liste les fichiers de `_facts/` utilisés : il sert à la relecture et à la mise à jour.
 - Chaque métrique avec son contexte : modèle, mode (`spectro_only`), N, classes, run (editorial-guide §5.1). Préciser *accuracy* vs *balanced accuracy*.
+- Décisions éditoriales (`CLAUDE.md`) : v6 toujours cité avec la mention de fuite Gaia (formulation : `FACTS_INDEX.md` §1.1) ; v7 jamais mis en avant ; pages dimred étiquetées « PHY-3500 · G1 · 43,019 spectra » ; courriel `albak1@ulaval.ca`.
 - Résultat → interprétation → réserve (editorial-guide §5.2) ; « suggests » / « confirms » selon le [Claims Register](../../../website/docs/atlas/claims-register.mdx).
 - Composants : choisir dans `.claude/skills/docs-component/catalog.md` ; un composant aux chiffres marqués ❌ n'est pas réutilisé tel quel.
 - Figures : chemins locaux `/img/...` (copier depuis `_facts/` vers `website/static/img/<projet>/` si besoin, en réutilisant les chemins déjà publiés listés dans `_facts/astrospectro/MANIFEST.md`).

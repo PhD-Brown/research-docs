@@ -12,6 +12,16 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 5. **Dépôts de code en lecture seule** pour la doc : `PhD-Brown/AstroSpectro`, `PhD-Brown/AstroVision`, `PhD-Brown/xi-dark-energy-bao-mcmc`.
 6. Pas de commit sur `main` (hook pre-commit `no-commit-to-branch`) : travailler sur une branche, ouvrir une PR.
 
+## Décisions éditoriales (2026-11-03)
+
+| # | Décision | Conséquence pratique |
+|---|---|---|
+| 1 | **Run de référence = XGBoost v6** `20260522T161236Z` (`ST_350k_xgb_AFGKM_v6`, run complet, G2). | Toute page qui cite v6 mentionne la **fuite Gaia** : `M_G`, `M_BP`, `M_RP` et `ag_gspphot` figurent parmi ses 99 features sélectionnées. Formulation de référence (EN) dans `FACTS_INDEX.md` §1.1. |
+| 1b | **v7** `20260525T191109Z` (`VALIDATION_spectro_only_v7`) = run de validation **partiel** (cross-match Gaia incomplet, SHAP partiel). | Documenté (`FACTS_INDEX.md` §1.2), cité au besoin dans l'audit de fuite ou les limitations ; **jamais mis en avant** (ni *Key results*, ni hero, ni résumé). |
+| 2 | Les pages de réduction de dimension restent sur G1. | Étiquette obligatoire **« PHY-3500 · G1 · 43,019 spectra »** (version anglaise de « PHY-3500 · G1 · 43 019 spectres ») sur chaque page dimred et dans le contexte de chaque résultat dimred. |
+| 3 | Courriel de contact : **`albak1@ulaval.ca`**. | Remplace `alex.baker.1@ulaval.ca` de l'ancien site lors des migrations. |
+| 4 | **La doc doit se mettre à jour en quelques minutes à chaque nouveau run.** | Un run de référence n'est nommé qu'au registre en tête de `FACTS_INDEX.md` ; chaque page déclare ses sources (`{/* facts: … */}`) ; les nouveaux composants reçoivent leurs chiffres par props. Procédure : `FACTS_INDEX.md` §7. |
+
 ## Carte du dépôt
 
 | Chemin | Rôle |

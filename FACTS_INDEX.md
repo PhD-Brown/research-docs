@@ -8,6 +8,23 @@
 > Source du pack : `_facts/astrospectro/MANIFEST.md` (export du 2026-11-03, 1 198 fichiers).
 > Toutes les valeurs citées ci-dessous ont été relues dans les fichiers lors de la rédaction de cet index.
 > Chemins relatifs à `_facts/astrospectro/`.
+> Décisions éditoriales qui s'appliquent ici : `CLAUDE.md` § « Décisions éditoriales ».
+
+---
+
+## Registre des runs de référence — **le seul endroit à changer quand un run arrive**
+
+| Rôle | Run | Statut éditorial |
+|---|---|---|
+| Classifieur de référence | `20260522T161236Z` — `ST_350k_xgb_AFGKM_v6` (G2, 349 998 spectres) | **Mis en avant.** Toujours accompagné de la mention de fuite Gaia (§1.1) |
+| Classifieur — validation | `20260525T191109Z` — `VALIDATION_spectro_only_v7` (G2) | Run de validation **partiel** : documenté (§1.2), **jamais mis en avant** |
+| PCA | G1 `phy3500_pca_run_20260408T012751Z` | Pages dimred, étiquette « PHY-3500 · G1 · 43 019 spectres » |
+| UMAP / t-SNE / HDBSCAN | G1 `phy3500_umap_tsne_run_20260405T214233Z` (+ résumés `…_20260430T215407Z.json`) | idem |
+| Autoencodeur | G1 `phy3500_autoencoder_run_20260405T220839Z` | idem |
+| SHAP | v6 : `logs/shap/features_20260522T153123Z/01_data_leak/` | Avec la mention de fuite |
+| Validation scientifique | G2 : `logs/validation/features_20260522T153123Z/` | — |
+
+Procédure de mise à jour : §7.
 
 ---
 
@@ -22,7 +39,9 @@ Le pack contient **deux générations de features** ; le site actuel mélange le
 
 - Le classifieur de référence (v6) a été entraîné sur **G2** ; les analyses dimred publiées viennent de **G1**.
   Une page ne doit **jamais** juxtaposer « N = 43 019 » et « 87 %/89 % de balanced accuracy » comme s'il s'agissait du même jeu.
-- Décision éditoriale ouverte (voir §6) : migrer les pages dimred vers G2 **ou** les étiqueter explicitement « PHY-3500 · G1 ».
+- **Décision** : les pages dimred restent sur G1 et portent l'étiquette **« PHY-3500 · G1 · 43 019 spectres »**
+  (sur le site, en anglais : « PHY-3500 · G1 · 43,019 spectra »). Les runs G2 du 2026-05-22 restent documentés ici,
+  sans être publiés tant que cette décision n'est pas revue.
 
 ---
 
@@ -61,12 +80,26 @@ Le pack contient **deux générations de features** ; le site actuel mélange le
 | Stack | Python 3.11.9 · numpy 2.3.4 · scikit-learn 1.7.2 · XGBoost 3.1.1 | meta : `python`, `numpy`, `scikit_learn`, `xgboost` |
 | Fichier d'entraînement | `features_20260522T153123Z.csv` | meta : `trained_on_file` |
 
-> ⚠️ **Fuite à signaler sur toute page qui cite v6.** Bien que `notes` dise « spectro_only », les 99 features
-> sélectionnées de v6 contiennent `M_BP`, `M_G`, `M_RP`, `ag_gspphot` (Gaia/photométrie). La liste exacte des
-> 22 colonnes absentes de v7 s'obtient par différence de `feature_columns` entre v6 et v7 (§1.2).
-> La page `concepts/data-leakage-audit.mdx` traite ce point ; le SHAP correspondant est rangé dans `01_data_leak/` (§3).
+> ⚠️ **Mention obligatoire partout où v6 est cité** (décision éditoriale). Bien que `notes` dise « spectro_only »,
+> les 99 features sélectionnées de v6 contiennent `M_G`, `M_BP`, `M_RP` et `ag_gspphot` (Gaia/photométrie) —
+> vérifiable dans `selected_features` du session report. La page `concepts/data-leakage-audit.mdx` traite ce point ;
+> le SHAP correspondant est rangé dans `01_data_leak/` (§3).
+>
+> Formulation de référence à réutiliser sur le site (EN) :
+>
+> > *Run v6 (`ST_350k_xgb_AFGKM_v6`) was trained with `spectro_only` enabled, but its 99 selected features include four
+> > Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`). Its metrics are therefore not purely spectroscopic;
+> > see the [Data Leakage Audit](…/concepts/data-leakage-audit).*
+>
+> Sous forme courte (cartes, légendes) : *« v6 · includes 4 Gaia/photometric features — see Data Leakage Audit »*.
 
 ### 1.2 XGBoost v7 — validation du correctif spectro_only · `20260525T191109Z`
+
+> **Statut éditorial : run de validation partiel — documenté, jamais mis en avant.** Selon l'auteur, le cross-match
+> Gaia y est incomplet et le SHAP associé partiel ; ces deux points ne sont pas vérifiables dans `_facts/` (le pack ne
+> contient ni statistiques de cross-match ni journal SHAP rattaché explicitement à v7). Ses métriques peuvent figurer
+> dans une page de limitations ou dans l'audit de fuite, à titre de comparaison avec v6, jamais dans un bloc
+> *Key results*, un hero ou un résumé.
 
 | Fichier | `data/reports/20260525T191109Z/session_report_xgboost_20260525T191109Z.json` (+ `_meta.json`, figures ROC/PR/calibration/feature_importance) |
 |---|---|
@@ -89,7 +122,7 @@ Tous dans `data/reports/<run>/session_report_*.json`. Clés : `accuracy`, `balan
 | `20260306T013341Z` | ST_100k_xgb_AFGKM_v4 (spectro only) | 99 999 | 12 493 | 0.8558 | 0.8638 | 0.8678 | 0.9787 |
 | `20260306T020848Z` | ST_100k_xgb_AFGKM_v5 (spectro only, isotonic) | 99 999 | 12 493 | 0.8559 | **0.8732** | 0.8665 | 0.9825 |
 | `20260522T161236Z` | **v6** | 349 998 | 60 947 | 0.8744 | **0.8919** | 0.8830 | 0.9857 |
-| `20260525T191109Z` | v7 (validation) | 349 998 | 60 947 | 0.8606 | 0.8804 | 0.8714 | 0.9824 |
+| `20260525T191109Z` | v7 (validation partielle — ne pas mettre en avant) | 349 998 | 60 947 | 0.8606 | 0.8804 | 0.8714 | 0.9824 |
 
 Les runs 2025 (`20250823T…` → `20251217T…`) n'ont plus de PNG (allègement post-export) mais leurs JSON restent ; ils ne servent qu'à l'historique.
 Le « 87 % » omniprésent sur le site correspond à la **BA de v5** (0.8732, 100k) — ou à l'**accuracy de v6** (0.8744) : préciser lequel.
@@ -163,7 +196,7 @@ Dossier : `logs/shap/`. Le fichier chiffré est toujours `shap_feature_importanc
 | Dossier | Modèle analysé (déduit) | n features | Part de Σ\|SHAP\| « Physical (spectroscopic) » | Top 3 |
 |---|---|---|---|---|
 | `features_20260522T153123Z/01_data_leak/` | **v6** (99 features sélectionnées, dont Gaia) | 99 | **96.8 %** (Gaia/photométrie 3.2 %) | Mg b EW · CaH2 · slope_deep_red |
-| `features_20260522T153123Z/` (racine) | modèle spectro-only patché (**v7 probable** : 185 colonnes → 176 après filtre de colinéarité — *déduction, à confirmer*) | 176 | **100 %** | CaH2 · Mg b EW · Hα EW |
+| `features_20260522T153123Z/` (racine) | modèle spectro-only patché (**v7 probable** : 185 colonnes → 176 après filtre de colinéarité — *déduction, à confirmer*). SHAP **partiel** selon l'auteur → ne pas mettre en avant | 176 | **100 %** | CaH2 · Mg b EW · Hα EW |
 | `features_20260305T174836Z/` | **v5** (98 features sélectionnées = v5) | 98 | **97.9 %** (Gaia/photométrie 2.1 %) | CaH2 · Mg b EW · Hα EW |
 | `logs/shap/` (racine) | modèle antérieur (58 features) | 58 | 77.6 % | CaH2 · Mg b EW · G4300 |
 
@@ -224,3 +257,29 @@ Figures : `FIGURE_1_validation_composite.png`, `caii_validation.png`, `cak_hbeta
 | `editorial-guide.mdx` | « 87 % BA … 43,019-spectrum » | Mélange G1/G2 (le classifieur n'a jamais été évalué sur 43 019 spectres) |
 | `index.mdx` (`AstroSpectroIndex`, non utilisé) | 89.2 % · 0.986 · 350k · 99/207 | ✓ conforme à v6 |
 | `science/model-card.mdx` | 89.19 · 88.3 | ✓ conforme à v6 |
+
+---
+
+## 7. Procédure « nouveau run » (objectif : quelques minutes)
+
+Principe (décision éditoriale) : la documentation doit pouvoir passer à un nouveau run en quelques minutes.
+Concrètement, un run de référence n'est nommé qu'à **un** endroit (registre en tête de ce fichier) et chaque page
+déclare les fichiers dont elle tire ses chiffres (commentaire `{/* facts: … */}`, skill `docs-page`).
+
+1. **Exporter** le nouveau run dans `_facts/astrospectro/` (même arborescence ; `MANIFEST.md` régénéré).
+2. **Lire ses chiffres** : `session_report_*.json` (classifieur) ou `phy3500_*_run_<ID>.txt` (dimred). Comparer aux
+   tableaux §1–§4 ; vérifier en particulier la présence de colonnes Gaia/photométriques dans `selected_features`.
+3. **Mettre à jour ce fichier** : registre en tête, section concernée (§1.1 ou §2.x), historique §1.3, et la mention de
+   fuite si elle change.
+4. **Trouver les pages touchées** :
+
+   ```bash
+   grep -rln "<ancien run ID>" website/docs* website/src/components   # pages et composants qui citent l'ancien run
+   grep -rln "facts:.*<ancien fichier>" website/docs*                  # pages qui déclarent l'ancienne source
+   python3 .claude/skills/docs-verify/scripts/check_facts.py <page> --all   # après remplacement des valeurs
+   ```
+
+5. **Remplacer les valeurs** dans les pages (et dans les props des composants), puis lancer le skill `docs-verify`.
+6. **Composants à chiffres codés en dur** (catalogue `.claude/skills/docs-component/catalog.md`, §3) : ce sont eux qui
+   rendent la mise à jour lente. À chaque passage, préférer les convertir en composants *prop-driven* (valeurs passées
+   par la page) — à faire dans une tâche dédiée, pas au fil de l'eau.

@@ -300,8 +300,8 @@ Use `@theme/Tabs` only to compare two variants of the same thing (UMAP vs t-SNE,
 
 ### 4.10 Run provenance
 
-- Classifier results: `<RunProvenance experiment=… savedAt=… md5=… notes=… stack=… keyResultsHref=… />`, values copied from the files listed in `FACTS_INDEX.md` §1.
-- Dimensionality-reduction results: a `:::note[Run]` naming the run ID(s) and the data generation (G1 = 43,019 spectra, PHY-3500; G2 = 350k). Never mix the two generations in one block.
+- Classifier results: `<RunProvenance experiment=… savedAt=… md5=… notes=… stack=… keyResultsHref=… />`, values copied from the files listed in `FACTS_INDEX.md` §1. The reference run is v6; every block that cites it also states that its 99 selected features include four Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`) and links to the [Data Leakage Audit](../astrospectro/concepts/data-leakage-audit). The v7 validation run is never featured.
+- Dimensionality-reduction results: a `:::note[Run]` carrying the label **PHY-3500 · G1 · 43,019 spectra** and the run ID(s). Never mix data generations in one block.
 
 ### 4.11 Colour and theme
 
@@ -364,7 +364,7 @@ These complement the [Editorial Guide](../editorial-guide) (tone, canonical page
 
 Every method or analysis page states its dataset once in the first paragraph, including the generation:
 
-> *"… applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra (PHY-3500 dataset)."*
+> *"… applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra (**PHY-3500 · G1 · 43,019 spectra**)."*
 
 Classifier pages quote the reference run instead (experiment name, N processed, test size, number of selected features) from `FACTS_INDEX.md` §1. Never attach a classifier metric to the 43,019-spectrum dimensionality-reduction dataset.
 
