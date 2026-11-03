@@ -55,3 +55,5 @@ venv/
 *.bak
 *.tmp
 *.orig
+# ── Captures Playwright (skill docs-verify) ───────────────────────────────────
+.screenshots/
