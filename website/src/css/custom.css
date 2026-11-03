@@ -286,3 +286,138 @@ body[data-docs-slug='/'] li {
   font-size: 1.8rem !important;
   /* Ajuste selon ce que tu préfères, ex : 2.2rem, 1.8rem, etc. */
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   AstroSpectro index — stat cards & pipeline row
+   Add these to: src/css/custom.css
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Stat cards row */
+.as-stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin: 1.5rem 0 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .as-stats-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.as-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding: 0.95rem 1.05rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(14, 18, 32, 0.95), rgba(9, 12, 24, 0.98));
+  border-left: 3px solid rgba(255, 255, 255, 0.08);
+  transition: transform 130ms ease, border-color 130ms ease;
+}
+
+.as-stat:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.13);
+}
+
+.as-stat--accent {
+  border-left-color: #4B9FE1;
+  background:
+    radial-gradient(circle at top left, rgba(75, 159, 225, 0.1), transparent 55%),
+    linear-gradient(180deg, rgba(14, 18, 32, 0.95), rgba(9, 12, 24, 0.98));
+}
+
+.as-stat__value {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-weight: 600;
+  color: #f0f4ff;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.as-stat__label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4B9FE1;
+  letter-spacing: 0.02em;
+  margin-top: 0.18rem;
+}
+
+.as-stat__ctx {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.68rem;
+  color: rgba(214, 224, 255, 0.48);
+  line-height: 1.45;
+  margin-top: 0.08rem;
+}
+
+/* Pipeline flow row */
+.as-pipeline-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0 1.75rem;
+  padding: 1rem 1.1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(10, 14, 26, 0.96), rgba(7, 10, 19, 0.98));
+}
+
+.as-pipeline-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.025);
+  min-width: 110px;
+  flex: 1;
+}
+
+.as-pipeline-step--star {
+  border-color: rgba(75, 159, 225, 0.3);
+  background: rgba(75, 159, 225, 0.06);
+}
+
+.as-pipeline-step__num {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(75, 159, 225, 0.7);
+  letter-spacing: 0.1em;
+}
+
+.as-pipeline-step strong {
+  font-size: 0.88rem;
+  color: #f0f4ff;
+}
+
+.as-pipeline-step span {
+  font-size: 0.72rem;
+  color: rgba(214, 224, 255, 0.58);
+  line-height: 1.45;
+}
+
+.as-pipeline-arrow {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 1rem;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+  .as-pipeline-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .as-pipeline-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+}

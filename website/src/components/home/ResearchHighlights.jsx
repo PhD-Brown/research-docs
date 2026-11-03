@@ -15,11 +15,10 @@ export default function ResearchHighlights() {
         <div>
           <p className={styles.sectionEyebrow}>Why this documentation exists</p>
           <h2 className={styles.sectionTitle}>Scientific directions worth opening first</h2>
+          <p className={styles.sectionSubnote}>
+            This site is not only a code manual. It is a scientific reference built around method, validation, interpretation, and reproducibility.
+          </p>
         </div>
-        <p className={styles.sectionNote}>
-          This site is not only a code manual. It is a scientific reference built around method,
-          validation, interpretation, and reproducibility.
-        </p>
       </div>
 
       <div className={styles.highlightGrid}>

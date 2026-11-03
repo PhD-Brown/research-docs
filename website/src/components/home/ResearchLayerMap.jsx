@@ -27,10 +27,10 @@ export default function ResearchLayerMap() {
         <div>
           <p className={styles.sectionEyebrow}>Architecture</p>
           <h2 className={styles.sectionTitle}>How this site is organised</h2>
+          <p className={styles.sectionSubnote}>
+            The ecosystem is intentionally split into three complementary layers.
+          </p>
         </div>
-        <p className={styles.sectionNote}>
-          The ecosystem is intentionally split into three complementary layers.
-        </p>
       </div>
 
       <div className={styles.layerGrid}>

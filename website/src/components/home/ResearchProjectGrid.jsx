@@ -15,10 +15,10 @@ export default function ResearchProjectGrid() {
         <div>
           <p className={styles.sectionEyebrow}>Projects</p>
           <h2 className={styles.sectionTitle}>Three research programs</h2>
+          <p className={styles.sectionSubnote}>
+            Each project has its own scientific identity, documentation logic, and repository surface.
+          </p>
         </div>
-        <p className={styles.sectionNote}>
-          Each project has its own scientific identity, documentation logic, and repository surface.
-        </p>
       </div>
 
       <div className={styles.projectGrid}>

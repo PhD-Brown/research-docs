@@ -11,10 +11,10 @@ export default function ResearchReadingPaths() {
         <div>
           <p className={styles.sectionEyebrow}>Navigation</p>
           <h2 className={styles.sectionTitle}>Where to start</h2>
+          <p className={styles.sectionSubnote}>
+            Choose an entry point based on what you need from the documentation today.
+          </p>
         </div>
-        <p className={styles.sectionNote}>
-          Choose an entry point based on what you need from the documentation today.
-        </p>
       </div>
 
       <div className={styles.readingGrid}>

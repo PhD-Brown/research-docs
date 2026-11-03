@@ -11,10 +11,10 @@ export default function ResearchBrowseGrid() {
         <div>
           <p className={styles.sectionEyebrow}>Browse by type</p>
           <h2 className={styles.sectionTitle}>Use the site like a library, not just a sidebar</h2>
+          <p className={styles.sectionSubnote}>
+            These shortcuts help visitors move across projects by intent, not only by folder structure.
+          </p>
         </div>
-        <p className={styles.sectionNote}>
-          These shortcuts help visitors move across projects by intent, not only by folder structure.
-        </p>
       </div>
 
       <div className={styles.browseGrid}>
