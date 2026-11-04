@@ -157,6 +157,13 @@ export default function UMAPPredictions() {
 
   const current = imgs[activeImg];
 
+  // Image déjà chargée avant l'hydratation : l'événement `load` est perdu, on la marque chargée au montage.
+  const imgRef = React.useRef(null);
+  React.useEffect(() => {
+    const el = imgRef.current;
+    if (el && el.complete && el.naturalWidth > 0) setImgLoaded(true);
+  }, [current.src]);
+
   return (
     <div style={{ margin: '28px 0' }}>
       {/* Tab switcher */}
@@ -246,6 +253,7 @@ export default function UMAPPredictions() {
               </div>
             )}
             <img
+              ref={imgRef}
               key={current.src}
               src={current.src}
               alt={current.label}
