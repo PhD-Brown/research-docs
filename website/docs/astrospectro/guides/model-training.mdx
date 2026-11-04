@@ -15,6 +15,13 @@ import TrainingPipelineFlow from '@site/src/components/TrainingPipelineFlow';
 import ArtifactsTree from '@site/src/components/ArtifactsTree';
 import ClassifierMetrics from '@site/src/components/ClassifierMetrics';
 import RelatedPages from '@site/src/components/RelatedPages';
+import RunFact from '@site/src/components/RunFact';
+import GaiaLeakNote from '@site/src/components/GaiaLeakNote';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+{/* facts: runs.json classifier (reference run v6: metrics.balanced_accuracy, features.gaia_photometric) and runs 20260306T011253Z / 20260306T013341Z / 20260306T020848Z (v3, v4, v5: metrics.balanced_accuracy) · FACTS_INDEX §1.1, §1.3 */}
+
+export const baLabel = `${fmt.pct(getReferenceRun('classifier').metrics.balanced_accuracy)} BA`;
 
 # Guide: Model Training
 
@@ -109,7 +116,11 @@ clf.train_and_evaluate(features_df, spectro_only=True)
 - Observing conditions: `redshift`, `seeing`, `snr_*`, `jd`, `fiber_id`, `magnitude_*`
 - Gaia columns: `parallax`, `bp_rp`, `teff_gspphot`, `logg_gspphot`, `M_G`, `v_tan_kms`, etc.
 
-The improvement from 84% → 87% *after removing* these features is explained by the elimination of **data-leakage noise**: `ra`/`dec`/`redshift` provided a signal correlated with spectral types through LAMOST observational biases (observation programs targeted by type), not through real stellar physics.
+`ra`, `dec` and `redshift` are excluded because they can correlate with spectral type through LAMOST observational biases (observation programs targeted by type) rather than through stellar physics. The exported run reports do not show a measurable accuracy gain from this exclusion: in the 100k runs, v3 (before `spectro_only`) and v4 (`spectro_only`) reach a balanced accuracy of <RunFact run="20260306T011253Z" path="metrics.balanced_accuracy" format="pct" /> and <RunFact run="20260306T013341Z" path="metrics.balanced_accuracy" format="pct" /> respectively, and v5 (`spectro_only` plus isotonic calibration) <RunFact run="20260306T020848Z" path="metrics.balanced_accuracy" format="pct" />.
+
+In practice, `spectro_only` does not remove every Gaia column: the reference run still selected four Gaia/photometric features.
+
+<GaiaLeakNote />
 
 ---
 
@@ -162,10 +173,10 @@ import json
 with open("data/reports/20260213T225019Z/spectral_classifier_xgboost_20260213T225019Z_meta.json") as f:
     meta = json.load(f)
 
-print(meta["trained_on_file"])     # → features_20251217T160120Z.csv
+print(meta["trained_on_file"])     # → the features CSV used for training
 print(meta["best_params_"])        # → final hyperparameters
-print(meta["n_features_used"])     # → 183
-print(meta["balanced_accuracy"])   # → 0.87
+print(meta["n_features_used"])     # → number of features used by this run
+print(meta["balanced_accuracy"])   # → balanced accuracy of this run
 ```
 
 ---
@@ -186,9 +197,9 @@ print(meta["balanced_accuracy"])   # → 0.87
   {
     href: '/docs/astrospectro/science/classification-performance',
     title: 'XGBoost — supervised comparison',
-    desc: 'Detailed results 87% · SHAP · UMAP coherence',
+    desc: 'Detailed results of the reference run · SHAP · UMAP coherence',
     category: 'science',
-    badge: '87% BA',
+    badge: baLabel,
   },
   {
     href: '../science/results-analysis',
@@ -199,7 +210,7 @@ print(meta["balanced_accuracy"])   # → 0.87
   {
     href: 'https://docs.wandb.ai',
     title: 'W&B Documentation',
-    desc: 'Weights & Biases — visualization of the 85+ AstroSpectro runs',
+    desc: 'Weights & Biases — experiment tracking and run visualization',
     category: 'external',
   },
 ]} />

@@ -14,6 +14,11 @@ import HyperparamSensitivity from '@site/src/components/HyperparamSensitivity';
 import DimRedPipeline from '@site/src/components/DimRedPipeline';
 import UMAP3DViewer from '@site/src/components/UMAP3DViewer';
 import RelatedPages from '@site/src/components/RelatedPages';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+{/* facts: runs.json classifier (reference run v6: metrics.balanced_accuracy) · FACTS_INDEX §1.1 */}
+
+export const baLabel = `${fmt.pct(getReferenceRun('classifier').metrics.balanced_accuracy)} BA (G2 run)`;
 
 # Dimensionality Reduction — PCA, UMAP, t-SNE
 
@@ -338,7 +343,7 @@ The logic is encapsulated in the `src/dimred/` package (v0.3.0): `pca_analyzer.p
     title: 'XGBoost — supervised comparison',
     desc: 'Consistency of supervised predictions with UMAP structure',
     category: 'science',
-    badge: '87% BA',
+    badge: baLabel,
   },
   {
     href: '/docs/astrospectro/guides/visualization',

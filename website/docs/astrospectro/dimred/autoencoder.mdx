@@ -3,7 +3,7 @@ id: autoencoder
 title: Autoencoder — Non-linear Dimensionality Reduction
 sidebar_label: Autoencoder
 sidebar_position: 6
-description: "Complete results of the SpectralAutoencoder applied to the 183 LAMOST DR5 features: symmetric MLP architecture, latent space z=2, MSE(AE)=0.489 ≈ PCA(k=10), gravity axis discovery on latent axis 1, QSO anomaly detection (107× error), interpolation and latent arithmetic."
+description: "Complete results of the SpectralAutoencoder applied to the 183 LAMOST DR5 features: symmetric MLP architecture, latent space z=2, MSE(AE)=0.489 ≈ PCA(k=10), gravity axis discovery on latent axis 1, QSO anomaly detection (7 QSOs, reconstruction error ≈ 4× the stellar median), interpolation and latent arithmetic."
 tags: [autoencoder, dimensionality-reduction, pytorch, latent-space, anomaly, lamost]
 ---
 
@@ -90,10 +90,10 @@ The per-class breakdown reveals an important astrophysical result:
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | **STAR** | 42,956 | 0.485 | **0.227** | 0.974 | 1× (reference) |
 | GALAXY | 56 | 3.009 | 1.170 | 3.043 | ~5× |
-| **QSO** | 7 | 5.794 | **0.954** | 18.637 | **~107× (median)** |
+| **QSO** | 7 | 5.794 | **0.954** | 18.637 | **≈ 4.2× (median)** · ≈ 11.9× (mean) |
 
 :::tip[Unsupervised anomaly detection]
-QSOs (*quasi-stellar objects*) have a reconstruction error 107× higher than stars (median). The autoencoder, trained almost exclusively on stars (99.85% of the sample), has never learned the spectral structure of QSOs — their broad emission lines (Ly-α, CIV) are radically different. This result demonstrates that **reconstruction error can serve as an anomaly score**: a spectrum with MSE >> 1 is likely non-stellar.
+With only 7 QSOs in the sample, the ratios are fragile. QSOs (*quasi-stellar objects*) have a median reconstruction error about 4.2× that of stars (0.954 / 0.227) and a mean error about 11.9× (5.794 / 0.485). The autoencoder, trained almost exclusively on stars (99.85% of the sample), has never learned the spectral structure of QSOs — their broad emission lines (Ly-α, CIV) are radically different. This result **suggests** that **reconstruction error can serve as an anomaly score**: a spectrum with MSE >> 1 is likely non-stellar.
 :::
 
 ---
@@ -162,7 +162,7 @@ The result indicates that the latent space encodes **the dwarf↔giant direction
 | Non-linear | ✗ | ✓ | ✓ |
 | Parametric (transform) | ✓ | ✓ | Partial |
 | Interpretable | ✓ (loadings) | ~ (correlations) | ✗ |
-| Anomaly detection | ✓ (high MSE) | ✓ (MSE ×107 QSO) | ✗ directly |
+| Anomaly detection | ✓ (high MSE) | ✓ (QSO median MSE ≈ 4× stars, N = 7) | ✗ directly |
 
 ---
 

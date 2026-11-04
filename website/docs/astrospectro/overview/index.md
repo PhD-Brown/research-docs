@@ -26,7 +26,7 @@ The project is designed to answer a fundamental question:
 - **Physics-first features:** every feature corresponds to a physically interpretable spectral property
 - **Leakage-free mode:** `spectro_only=True` removes all non-physical metadata
 - **SHAP validation:** model decisions are validated against known astrophysical priors
-- **Full reproducibility:** 85+ experiment runs tracked with Weights & Biases
+- **Full reproducibility:** every run saves a session report (hyper-parameters, selected features, model MD5), with optional Weights & Biases logging
 
 ## Navigate this section
 

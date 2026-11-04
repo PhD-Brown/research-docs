@@ -4,6 +4,10 @@ description: "Definitions of all technical and scientific terms used across Astr
 sidebar_position: 1
 ---
 
+import RunFact from '@site/src/components/RunFact';
+
+{/* facts: runs.json classifier (reference run v6: metrics.roc_auc_macro) · FACTS_INDEX §1.1 */}
+
 # Glossary
 
 Terms are listed alphabetically. Click a term to see its full definition.
@@ -38,7 +42,7 @@ The 5th data release of the Large Sky Area Multi-Object fiber Spectroscopic Tele
 Monte Carlo Dropout — a Bayesian approximation technique for uncertainty quantification in neural networks. Used in AstroVision.
 
 **ROC-AUC**
-Area Under the Receiver Operating Characteristic curve. Measures discrimination ability; AstroSpectro achieves ~0.964 macro-average.
+Area Under the Receiver Operating Characteristic curve. Measures discrimination ability; the AstroSpectro reference run (v6, which includes four Gaia/photometric features — see the [Data Leakage Audit](../astrospectro/concepts/data-leakage-audit.mdx)) achieves <RunFact path="metrics.roc_auc_macro" format="num" /> macro-average.
 
 **SHAP (SHapley Additive exPlanations)**
 A game-theoretic method for explaining ML model predictions by attributing each feature's contribution to the output. Central validation tool in AstroSpectro.
