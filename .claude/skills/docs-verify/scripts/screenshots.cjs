@@ -11,6 +11,8 @@
  *   - les erreurs console / exceptions JS de la page ;
  *   - le débordement horizontal (scrollWidth > largeur de la fenêtre), surtout en mobile ;
  *   - les images non chargées (naturalWidth = 0).
+ *   - les admonitions non rendues (texte de `main` contenant une ligne commençant par `:::`, ex. `:::info Titre` au lieu de `:::info[Titre]`) ;
+ *   - les images chargées mais invisibles (opacity < 0.05, ex. vignettes FigureGallery) ;
  *   - les ressources locales non chargées (les ressources externes — polices, CDN — ne sont qu'un avertissement).
  * Code de sortie : 0 si aucun problème, 1 sinon, 2 si prérequis manquant.
  */
@@ -125,6 +127,10 @@ const THEMES = ['light', 'dark'];
               .slice(0, 5)
               .map((el) => `<${el.tagName.toLowerCase()}> « ${(el.textContent || el.getAttribute('src') || '').trim().slice(0, 40)} » (${Math.round(el.getBoundingClientRect().right)}px)`),
             brokenImgs: [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.getAttribute('src')),
+            invisibleImgs: [...document.images]
+              .filter((i) => i.complete && i.naturalWidth > 0 && parseFloat(getComputedStyle(i).opacity) < 0.05)
+              .map((i) => i.getAttribute('src')),
+            rawAdmonitions: (document.querySelector('main')?.innerText || '').split('\n').filter((l) => l.trim().startsWith(':::')).slice(0, 5),
           }), vw);
           const file = path.join(outDir, `${slug}.${v.name}.${theme}.png`);
           await page.screenshot({ path: file, fullPage: true });
@@ -133,6 +139,8 @@ const THEMES = ['light', 'dark'];
           if (info.theme !== theme) issues.push(`thème appliqué = ${info.theme}`);
           if (info.overflow > 1) issues.push(`débordement horizontal ${info.overflow}px${info.culprits.length ? ' — ' + info.culprits.join(' ; ') : ''}`);
           if (info.brokenImgs.length) issues.push(`images cassées : ${info.brokenImgs.join(', ')}`);
+          if (info.invisibleImgs.length) issues.push(`images invisibles (opacity 0) : ${info.invisibleImgs.join(', ')}`);
+          if (info.rawAdmonitions.length) issues.push(`admonition non rendue : ${info.rawAdmonitions.join(' | ')}`);
           issues.push(...errors);
           problems += issues.length;
           console.log(`${issues.length ? '✗' : '✓'} ${route} [${v.name}/${theme}] → ${path.relative(repo, file)}`);

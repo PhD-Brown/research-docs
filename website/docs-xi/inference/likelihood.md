@@ -17,12 +17,17 @@ This page defines the function that the sampler evaluates for each parameter vec
 
 ## Combined likelihood
 
-```text
-ln p(θ | data) = ln prior(θ) − ½ [ χ²_SN(θ) + χ²_BAO(θ) ]
+$$
+\ln p(\theta \mid \text{data}) = \ln \text{prior}(\theta) - \tfrac{1}{2}\left[\chi^2_{\mathrm{SN}}(\theta) + \chi^2_{\mathrm{BAO}}(\theta)\right]
+$$
 
-χ²_SN  = Δμᵀ C_SN⁻¹ Δμ ,      Δμ = μ_obs − μ_th(z; θ)
-χ²_BAO = ΔBᵀ C_BAO⁻¹ ΔB ,     ΔB = B_obs − B_th(z; θ)
-```
+$$
+\chi^2_{\mathrm{SN}} = \Delta\mu^{\mathsf T}\, C_{\mathrm{SN}}^{-1}\, \Delta\mu, \qquad \Delta\mu = \mu_{\mathrm{obs}} - \mu_{\mathrm{th}}(z;\theta)
+$$
+
+$$
+\chi^2_{\mathrm{BAO}} = \Delta B^{\mathsf T}\, C_{\mathrm{BAO}}^{-1}\, \Delta B, \qquad \Delta B = B_{\mathrm{obs}} - B_{\mathrm{th}}(z;\theta)
+$$
 
 - `ln prior` is **0 inside the bounds and −∞ outside** (top-hat priors; see [Prior Specification](./priors.mdx)).
 - The covariance matrices are fixed, so the determinant term of the Gaussian is a constant and is dropped.

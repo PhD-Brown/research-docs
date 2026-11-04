@@ -6,7 +6,7 @@ sidebar_position: 2
 
 import Fact from '@site/src/components/astrovision/Fact';
 import FactBars from '@site/src/components/astrovision/FactBars';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json dataset.* (data/master_synthesis.csv) · notebook 00 (complement, figures only) · figures/eda_*.png, galaxy10_samples.jpg */}

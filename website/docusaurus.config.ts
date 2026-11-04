@@ -99,6 +99,7 @@ const config: Config = {
         routeBasePath: "xi-dark-energy",
         sidebarPath: "./sidebars-xi.ts",
         remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex],
       },
     ],
   ],

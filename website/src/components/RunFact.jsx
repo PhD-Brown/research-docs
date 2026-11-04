@@ -11,6 +11,7 @@
 //   path    chemin pointé dans l'objet run (ex. 'metrics.roc_auc_macro', 'n.test', 'metrics.per_class.M.f1')
 //   format  'pct' | 'num' | 'signed' | 'int' | 'sci' | 'seconds' | 'raw' (défaut 'raw' ; 'int' si entier)
 //   digits  nombre de décimales (défaut du format)
+// Les tableaux (classes, features…) sont affichés séparés par « , » (virgule + espace).
 // Un chemin introuvable fait échouer le build (erreur explicite) plutôt que d'afficher une valeur fausse.
 
 import React from 'react';
@@ -23,6 +24,8 @@ export default function RunFact({ run = 'classifier', path, format, digits }) {
     throw new Error(`[RunFact] ${r.id} : chemin « ${path} » introuvable dans runs.json`);
   }
   const f = format || (Number.isInteger(value) ? 'int' : 'raw');
-  const text = f === 'raw' || !fmt[f] ? String(value) : digits !== undefined ? fmt[f](value, digits) : fmt[f](value);
+  // Les listes (ex. classes ['A','F','G','K','M']) s'affichent « A, F, G, K, M » (et non « A,F,G,K,M »).
+  const raw = Array.isArray(value) ? value.join(', ') : String(value);
+  const text = f === 'raw' || !fmt[f] ? raw : digits !== undefined ? fmt[f](value, digits) : fmt[f](value);
   return <span title={`${r.id} · ${path}`}>{text}</span>;
 }

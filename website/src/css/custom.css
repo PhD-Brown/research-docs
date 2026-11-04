@@ -449,3 +449,18 @@ body[data-docs-slug='/'] li {
   max-width: 100% !important;
   height: auto;
 }
+
+/* Mobile : un bouton Infima à libellé long (ex. « 🚀 Getting Started — Run the Pipeline ») ne passait pas à la ligne
+   (white-space: nowrap) et faisait déborder la page de 38 px à 390 px. */
+.markdown .button {
+  white-space: normal;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Équations en bloc : défilement horizontal plutôt que débordement de la page (mobile). */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}

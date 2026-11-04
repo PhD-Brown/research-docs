@@ -3,6 +3,10 @@ title: Citing AstroVision
 description: "How to cite the AstroVision project, documentation, code, and future manuscript."
 ---
 
+import Fact from '@site/src/components/astrovision/Fact';
+
+{/* facts: facts.json models.fusion.test.balanced_accuracy · FACTS_INDEX §4.1 */}
+
 # Citing AstroVision
 
 AstroVision is an active research and documentation project on machine learning for galaxy morphology classification, multimodal late-fusion models, uncertainty estimation, and physically interpretable computer vision.
@@ -76,7 +80,7 @@ Avoid wording that implies peer-reviewed publication until the manuscript has be
 ## Citation caveats
 
 :::warning
-Do not cite the current 86.3% balanced accuracy score without specifying the dataset, split, model version, and evaluation protocol. The score is meaningful only in the context of the documented benchmark setup.
+Do not cite the late-fusion balanced accuracy score (<Fact k="models.fusion.test.balanced_accuracy" format="pct" />) without specifying the dataset, split, model version, and evaluation protocol. The score is meaningful only in the context of the documented benchmark setup.
 :::
 
 The strongest citation-ready claims should eventually be registered in the transversal [Scientific Claims Register](/docs/atlas/claims-register).

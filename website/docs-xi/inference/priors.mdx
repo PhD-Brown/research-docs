@@ -5,13 +5,19 @@ description: "Prior distributions used in the ξ Dark Energy MCMC inference pipe
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import Fact from '@site/src/components/xi/Fact';
+import PriorTable from '@site/src/components/xi/PriorTable';
+
+{/* facts: facts.json config.priors.* — valeurs du code (PhD-Brown/xi-dark-energy-bao-mcmc @ 25ed86e, src/xi_protocol1b_bao_run.py · log_prior) · FACTS_INDEX ξ §2.10, §3 */}
 
 # 📊 Prior Specification
 
 This page documents the prior distributions used in the ξ Dark Energy inference pipeline. It exists because the posterior constraints, model comparison metrics, and physical interpretation are not reproducible unless the prior volume is explicitly stated.
 
-:::warning Current status
-The bounds below are written as a documentation scaffold for the current exploratory analysis. Before any public release, verify every bound against the actual MCMC configuration file or sampling script used for the final run.
+:::info[Where the bounds come from]
+
+Every bound on this page is read from the sampling code, not from a results file: `log_prior` in `src/xi_protocol1b_bao_run.py` of the [`xi-dark-energy-bao-mcmc`](https://github.com/PhD-Brown/xi-dark-energy-bao-mcmc) repository, commit `25ed86e` (the code used for the final Protocol 1b run). All priors are top-hat (uniform) on an open interval; a sample outside the interval has zero probability.
+
 :::
 
 ---
@@ -37,11 +43,12 @@ The prior specification is therefore part of the scientific result, not a techni
 
 The baseline model is used as the reference cosmology.
 
-| Parameter | Meaning | Suggested prior family | Notes |
+| Parameter | Meaning | Prior (uniform, from code) | Notes |
 |---|---|---|---|
-| `H0` | Hubble constant in km s⁻¹ Mpc⁻¹ | Uniform | Should comfortably bracket SH0ES-like and Planck-like values |
-| `Omega_m` | Matter density fraction | Uniform | Restricted to physical positive values |
-| `M` or offset | Supernova nuisance magnitude / intercept | Uniform or analytically marginalized | Depends on implementation |
+| `H0` | Hubble constant in km s⁻¹ Mpc⁻¹ | <Fact path="config.priors.H0.0" format="int" /> < x < <Fact path="config.priors.H0.1" format="int" /> | Brackets SH0ES-like and Planck-like values |
+| `Omega_m` | Matter density fraction | <Fact path="config.priors.Omega_m.0" digits={1} /> < x < <Fact path="config.priors.Omega_m.1" digits={1} /> | Restricted to physical positive values |
+
+The code has **no supernova nuisance parameter** (no absolute magnitude `M`, no offset): the SH0ES-calibrated distance moduli are used directly in the likelihood.
 
 The baseline model should remain intentionally conservative. It should not be given overly restrictive priors that make the extended models appear better by comparison.
 
@@ -50,17 +57,16 @@ The baseline model should remain intentionally conservative. It should not be gi
 
 The CPL model extends the dark-energy equation of state as:
 
-```text
-w(a) = w0 + wa(1 - a)
-```
+$$
+w(a) = w_0 + w_a\,(1 - a)
+$$
 
-| Parameter | Meaning | Suggested prior family | Notes |
+| Parameter | Meaning | Prior (uniform, from code) | Notes |
 |---|---|---|---|
-| `H0` | Hubble constant | Same as ΛCDM | Use the same prior as baseline |
-| `Omega_m` | Matter density fraction | Same as ΛCDM | Use the same prior as baseline |
-| `w0` | Present-day equation of state | Uniform | Should include `w0 = -1` |
-| `wa` | Evolution parameter | Uniform | Should allow both increasing and decreasing evolution |
-| `M` or offset | Supernova nuisance magnitude / intercept | Same as ΛCDM | Keep consistent |
+| `H0` | Hubble constant | Same as ΛCDM | Same prior as baseline |
+| `Omega_m` | Matter density fraction | Same as ΛCDM | Same prior as baseline |
+| `w0` | Present-day equation of state | <Fact path="config.priors.w0.0" digits={1} /> < x < <Fact path="config.priors.w0.1" digits={1} /> | Includes `w0 = -1` |
+| `wa` | Evolution parameter | <Fact path="config.priors.wa.0" digits={1} /> < x < <Fact path="config.priors.wa.1" digits={1} /> | Allows both increasing and decreasing evolution |
 
 CPL is useful as a conventional time-varying dark energy comparator. It should not be tuned to disadvantage or advantage the ξ model.
 
@@ -69,17 +75,19 @@ CPL is useful as a conventional time-varying dark energy comparator. It should n
 
 The exploratory ξ model introduces an oscillatory component in the dark-energy sector. In the current documentation, the parameterization is treated as phenomenological rather than as a confirmed physical theory.
 
-| Parameter | Meaning | Suggested prior family | Notes |
+| Parameter | Meaning | Prior (uniform, from code) | Notes |
 |---|---|---|---|
-| `H0` | Hubble constant | Same as ΛCDM | Keep common across models |
-| `Omega_m` | Matter density fraction | Same as ΛCDM | Keep common across models |
-| `w0_mean` | Mean dark-energy equation-of-state level | Uniform | Should include `-1` |
-| `epsilon` | Oscillation amplitude | Uniform or symmetric uniform | See caveat below |
-| `T` | Oscillation period / timescale | Log-uniform or broad uniform | Must avoid artificially selecting one timescale |
-| `phi0` | Phase | Uniform over a full phase interval | Should not privilege a phase |
+| `H0` | Hubble constant | Same as ΛCDM | Common across models |
+| `Omega_m` | Matter density fraction | Same as ΛCDM | Common across models |
+| `w0_mean` | Mean dark-energy equation-of-state level | <Fact path="config.priors.w0_mean.0" digits={1} /> < x < <Fact path="config.priors.w0_mean.1" digits={1} /> | Includes `-1` |
+| `eps` (ε) | Oscillation amplitude | <Fact path="config.priors.eps.0" digits={1} /> < x < <Fact path="config.priors.eps.1" digits={1} /> | One-sided: positive amplitudes only (see caveat below) |
+| `T_Gyr` (T) | Oscillation period in Gyr | <Fact path="config.priors.T_Gyr.0" format="int" /> < x < <Fact path="config.priors.T_Gyr.1" format="int" /> Gyr | Linear-uniform, not logarithmic |
+| `phi0` (φ₀) | Phase | −π < x < π | Full phase interval |
 
-:::caution Important v0.2 caveat
-The next version should test a **symmetric prior on `epsilon`** if the current implementation only allows positive amplitudes. A strictly positive amplitude can encode a phase convention or a physical asymmetry depending on the model definition. This must be stated explicitly.
+:::caution[Important v0.2 caveat]
+
+The implementation only allows positive amplitudes (0 < ε < <Fact path="config.priors.eps.1" digits={1} />). A strictly positive amplitude can encode a phase convention or a physical asymmetry depending on the model definition. The next version should test a **symmetric prior on `epsilon`**, and the sign convention must be stated explicitly in any result.
+
 :::
 
 </TabItem>
@@ -87,30 +95,17 @@ The next version should test a **symmetric prior on `epsilon`** if the current i
 
 ---
 
-## Current recommended prior table
+## Prior table (from the code)
 
-The following table is a clean reporting format to preserve in the documentation. Replace the placeholder bounds with the exact values from the final run configuration.
+Each parameter appears once, at the first model that uses it; H₀ and Ωₘ are shared by the three models.
 
-| Model | Parameter | Prior | Bounds / support | Unit | Rationale |
-|---|---|---|---|---|---|
-| ΛCDM | `H0` | Uniform | `[VERIFY_MIN, VERIFY_MAX]` | km s⁻¹ Mpc⁻¹ | Broad enough to include local and early-universe tensions |
-| ΛCDM | `Omega_m` | Uniform | `[VERIFY_MIN, VERIFY_MAX]` | dimensionless | Positive matter fraction, physically plausible range |
-| CPL | `w0` | Uniform | `[VERIFY_MIN, VERIFY_MAX]` | dimensionless | Includes cosmological constant value |
-| CPL | `wa` | Uniform | `[VERIFY_MIN, VERIFY_MAX]` | dimensionless | Allows evolving dark energy in both directions |
-| ξ | `w0_mean` | Uniform | `[VERIFY_MIN, VERIFY_MAX]` | dimensionless | Mean equation-of-state level |
-| ξ | `epsilon` | Uniform | `[VERIFY_MIN, VERIFY_MAX]` | dimensionless | Oscillation amplitude; must be checked for symmetry |
-| ξ | `T` | Uniform / log-uniform | `[VERIFY_MIN, VERIFY_MAX]` | Gyr or model unit | Oscillation timescale |
-| ξ | `phi0` | Uniform | `[−π, π]` or `[0, 2π]` | rad | Full phase coverage |
-
-:::tip
-Once the final MCMC config is stable, this table should be updated from code rather than manually edited. A small script can export the prior table from the sampler configuration to avoid documentation drift.
-:::
+<PriorTable />
 
 ---
 
 ## Prior implementation contract
 
-A sample is valid only if all parameters fall inside their prior support and all derived quantities required by the likelihood are finite.
+A sample is valid only if all parameters fall inside their prior support and all derived quantities required by the likelihood are finite. Schematically:
 
 ```python
 def log_prior(theta):
@@ -132,7 +127,7 @@ The prior should enforce basic physical sanity checks.
 | Constraint | Reason |
 |---|---|
 | `H0 > 0` | Expansion rate must be positive |
-| `0 < Omega_m < 1` | Matter density fraction must remain physical in the explored model |
+| `0 < Omega_m < 1` | Matter density fraction must remain physical in the explored model (the sampled prior is tighter: see the table above) |
 | Finite luminosity distance | Required for supernova likelihood |
 | Finite BAO distances | Required for DESI BAO likelihood |
 | Full phase coverage for `phi0` | Avoid phase selection bias |
@@ -152,7 +147,7 @@ The parameter `T` can be especially sensitive to prior choices. A broad linear p
 
 ### 3. Boundary effects
 
-If posterior mass accumulates near a prior boundary, the result should be treated as prior-limited rather than data-constrained.
+If posterior mass accumulates near a prior boundary, the result should be treated as prior-limited rather than data-constrained. This is the case here: the marginals of ε and T reach the upper edge of their priors (ε: upper 1σ edge <Fact path="eps.upper_1sigma" digits={3} /> against a bound of <Fact path="config.priors.eps.1" digits={1} />; T: multi-featured posterior up to <Fact path="config.priors.T_Gyr.1" format="int" /> Gyr). See [Oscillation Amplitude](../results/oscillation) and [Known Limitations](../results/caveats).
 
 ### 4. Model comparison caution
 
@@ -179,7 +174,7 @@ Before interpreting ξ as a physically meaningful oscillatory signal, run at lea
 Use this short block in result pages:
 
 ```md
-**Priors.** All models were sampled with broad uniform priors over physically allowed ranges. The ΛCDM, CPL, and ξ models share the same priors on common parameters (`H0`, `Omega_m`, and nuisance offsets). The ξ-specific parameters use broad priors on the mean equation-of-state level, oscillation amplitude, period, and phase. Prior sensitivity tests are planned for v0.2, especially for the amplitude and period parameters.
+**Priors.** All models were sampled with broad uniform priors over physically allowed ranges. The ΛCDM, CPL, and ξ models share the same priors on common parameters (`H0`, `Omega_m`); no nuisance parameter is sampled. The ξ-specific parameters use broad priors on the mean equation-of-state level, oscillation amplitude, period, and phase. Prior sensitivity tests are planned for v0.2, especially for the amplitude and period parameters.
 ```
 
 ---

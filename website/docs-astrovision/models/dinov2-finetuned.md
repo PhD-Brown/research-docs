@@ -8,7 +8,7 @@ import Fact from '@site/src/components/astrovision/Fact';
 import FactCards from '@site/src/components/astrovision/FactCards';
 import FactBars from '@site/src/components/astrovision/FactBars';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json models.dinov2_ft.* (notebook 04; per-class recall read from figures/dino_finetune_confusion.png) · FACTS_INDEX §1: fine-tune checkpoint retained over warm-up/probe */}

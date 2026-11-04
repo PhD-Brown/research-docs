@@ -7,7 +7,7 @@ sidebar_position: 3
 import Fact from '@site/src/components/astrovision/Fact';
 import FactCards from '@site/src/components/astrovision/FactCards';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json models.dinov2.*, models.dinov2_probe.* (notebooks 03 and 04, complement) · figures/dino_*.png */}

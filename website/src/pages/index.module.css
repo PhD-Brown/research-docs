@@ -263,6 +263,17 @@
   text-align: center;
 }
 
+.statsNote {
+  margin: 0;
+  padding: 10px 24px 14px;
+  text-align: center;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  background: var(--bg-mid);
+}
+.statsNote a { color: var(--accent-as); }
+
 /* ─────────────────────────────────────────────────────────────────────────────
    SHARED SECTION
    ───────────────────────────────────────────────────────────────────────────── */
@@ -407,6 +418,13 @@
   text-align: center;
 }
 
+.cardNote {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-2);
+  margin: 0 0 12px;
+}
+
 .cardFinding {
   display: flex;
   flex-direction: column;
@@ -491,6 +509,14 @@
   left: -20px;
   line-height: 1;
 }
+
+.spotlightCaveat {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-2);
+  margin: -12px 0 28px;
+}
+.spotlightCaveat a { color: var(--gold); }
 
 .spotlightLink {
   display: inline-block;
