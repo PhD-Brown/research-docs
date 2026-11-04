@@ -5,81 +5,49 @@ sidebar_label: Download
 description: "Download LAMOST DR5 spectra with the interactive SmartDownloader notebook: how it skips observation plans already downloaded in earlier sessions."
 ---
 
-{/* Complet for v1.0.0 release */}
+{/* facts: aucun chiffre de run */}
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload, faCogs, faTasks } from '@fortawesome/free-solid-svg-icons'
-import Admonition from '@theme/Admonition';
+# Guide: Data Download
 
-# <FontAwesomeIcon icon={faDownload} /> Guide: Data Download
+This guide shows how to use the pipeline's interactive interface to retrieve LAMOST DR5 spectra. The underlying logic is in the [`SpectraManager`](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/spectra_manager.py) and [`SmartDownloader`](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/dr5_downloader.py) modules.
 
-> This practical guide shows you how to use the pipeline's interactive interface to retrieve LAMOST DR5 spectra. The underlying logic is encapsulated in the [**`SpectraManager`**](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/spectra_manager.py) and [**`SmartDownloader`**](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/tools/dr5_downloader.py) modules.
+## How it works
 
-## <FontAwesomeIcon icon={faCogs} /> How It Works
+Downloading is orchestrated by the `notebooks/01_download_spectra.ipynb` notebook. Under the hood it uses the `SmartDownloader` class, which implements reproducible logic:
 
-Downloading is orchestrated by the **`notebooks/01_download_spectra.ipynb`** notebook. Under the hood, it uses the `SmartDownloader` class, which implements robust and "reproducible" logic:
+1. **State management:** it checks `data/catalog/downloaded_plans.csv` to skip observation plans that were already fully downloaded in previous sessions.
+2. **File scraping:** for each new plan, it scrapes the official LAMOST web page to list all available `.fits.gz` files.
+3. **Round-robin downloading:** to keep the dataset diverse, it alternates between plans (one spectrum from plan A, then one from plan B, and so on) instead of downloading them one after another.
+4. **Progress bar:** an interactive progress bar tracks the download.
+5. **State update:** once the session is complete, it updates the log with the plans that are now complete.
 
-<details>
-  <summary>Click to view the details of the <code>SmartDownloader</code> logic</summary>
-  <div>
-    <ol>
-      <li><strong>State Management:</strong> It checks <code>data/catalog/downloaded_plans.csv</code> to skip observation plans that were already fully downloaded in previous sessions.</li>
-      <li><strong>File Scraping:</strong> For each new plan to process, it scrapes the official LAMOST web page to list all available <code>.fits.gz</code> files.</li>
-      <li><strong>"Round-Robin" Downloading:</strong> To guarantee dataset diversity, it does not download plans one after another, but alternates between them (one spectrum from plan A, then one from plan B, etc.).</li>
-      <li><strong>Real-Time Progress Bar:</strong> An interactive progress bar is displayed to track download progress.</li>
-      <li><strong>State Update:</strong> Once the session is complete, it updates the log with the plans that are now complete.</li>
-    </ol>
-  </div>
-</details>
+## Practical use, step by step
 
-## <FontAwesomeIcon icon={faTasks} /> Practical Use: Step by Step
+The process is driven by an interactive interface.
 
-Thanks to the refactoring, the process is now entirely driven by an interactive interface.
+### 1. Open the management notebook
 
-<div className="card-demo">
-  {/* ETAPE 1 */}
-  <div className="card margin-bottom--lg">
-    <div className="card__header">
-      <span className="step-number">1</span>
-      <h4>Open the Management Notebook</h4>
-    </div>
-    <div className="card__body">
-      Make sure your virtual environment (<code>venv</code>) is activated, then open the file: <code>notebooks/01_download_spectra.ipynb</code>.
-    </div>
-  </div>
-  {/* ETAPE 2 */}
-  <div className="card margin-bottom--lg">
-    <div className="card__header">
-      <span className="step-number">2</span>
-      <h4>Configure and Launch</h4>
-    </div>
-    <div className="card__body">
-      <p>Run the first code cell. An interactive interface will appear:</p>
-      <ul>
-        <li><strong>Plans:</strong> Enter the number of new observation plans you want to process.</li>
-        <li><strong>Spectra:</strong> Enter the maximum total number of spectra to download during this session.</li>
-      </ul>
-      <p>Then click the <strong>"Start download"</strong> button.</p>
-    </div>
-  </div>
-  {/* ETAPE 3 */}
-  <div className="card">
-    <div className="card__header">
-      <span className="step-number">3</span>
-      <h4>Monitor and Verify</h4>
-    </div>
-    <div className="card__body">
-      <p>Track progress using the real-time progress bar. Once finished, check that:</p>
-      <ul>
-        <li>New subfolders and <code>.fits.gz</code> files have appeared in <strong><code>data/raw/</code></strong>.</li>
-        <li>The log file <strong><code>data/catalog/downloaded_plans.csv</code></strong> has been updated if some plans were fully completed.</li>
-        <li>A detailed session log file has been created in <strong><code>logs/</code></strong>.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-<br/>
+Make sure your virtual environment (`venv`) is activated, then open `notebooks/01_download_spectra.ipynb`.
 
-<Admonition type="info" title="Safe Cleanup Option">
-  <p>The notebook also provides an interactive cell to clean the <code>data/raw/</code> directory. To avoid accidental deletion, this operation requires textual confirmation and first creates a full backup in <code>data/raw_backup/</code>.</p>
-</Admonition>
+### 2. Configure and launch
+
+Run the first code cell. An interactive interface appears:
+
+- **Plans:** the number of new observation plans to process.
+- **Spectra:** the maximum total number of spectra to download during this session.
+
+Then click **Start download**.
+
+### 3. Monitor and verify
+
+Track progress with the progress bar. Once finished, check that:
+
+- new subfolders and `.fits.gz` files have appeared in `data/raw/`,
+- `data/catalog/downloaded_plans.csv` has been updated if some plans were fully completed,
+- a detailed session log file has been created in `logs/`.
+
+:::info[Safe cleanup option]
+
+The notebook also provides an interactive cell to clean the `data/raw/` directory. To avoid accidental deletion, this operation requires textual confirmation and first creates a full backup in `data/raw_backup/`.
+
+:::
