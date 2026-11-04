@@ -120,7 +120,7 @@ export const ctas = [
   {
     title: "Read the journal",
     description: "See how the ecosystem evolves over time through milestones, notes, and design decisions.",
-    to: "/journal",
+    to: "/Blog",
   },
   {
     title: "Follow a reading path",

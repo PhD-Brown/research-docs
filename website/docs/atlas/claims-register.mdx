@@ -63,24 +63,24 @@ This register exists to prevent overstating results — in conversations, in doc
 
 | Claim | Evidence | Figure | Page |
 |---|---|---|---|
-| Late-fusion multimodal model achieves **86.3% balanced accuracy** on Galaxy10 DECaLS | ✅ Solid | `results_final_comparison.png` | [Benchmarking](../astrovision/results/benchmarking) |
-| DINOv2 late-fusion outperforms DINOv2 fine-tuning alone on balanced accuracy | ✅ Solid | `results_final_comparison.png` | [Benchmarking](../astrovision/results/benchmarking) |
-| Disturbed class recall is capped at ~0.53 — a physically irreducible ceiling due to intra-class morphological heterogeneity | ✅ Solid | `results_metrics_by_class.png` | [Limitations](../astrovision/results/limitations) |
+| Late-fusion multimodal model achieves **86.3% balanced accuracy** on Galaxy10 DECaLS | ✅ Solid | `results_final_comparison.png` | [Benchmarking](/astrovision/results/benchmarking) |
+| DINOv2 late-fusion outperforms DINOv2 fine-tuning alone on balanced accuracy | ✅ Solid | `results_final_comparison.png` | [Benchmarking](/astrovision/results/benchmarking) |
+| Disturbed class recall is capped at ~0.53 — a physically irreducible ceiling due to intra-class morphological heterogeneity | ✅ Solid | `results_metrics_by_class.png` | [Limitations](/astrovision/results/limitations) |
 
 ### Calibration & uncertainty
 
 | Claim | Evidence | Figure | Page |
 |---|---|---|---|
-| Fusion model is natively well-calibrated (ECE = 0.049) | ✅ Solid | — | [Uncertainty](../astrovision/results/uncertainty) |
-| Temperature Scaling **degrades** rather than improves calibration for the fusion model | ✅ Solid | — | [Uncertainty](../astrovision/results/uncertainty) |
-| Conformal Prediction achieves 90% coverage with 91% singleton rate | ✅ Solid | — | [Uncertainty](../astrovision/results/uncertainty) |
+| Fusion model is natively well-calibrated (ECE = 0.049) | ✅ Solid | — | [Uncertainty](/astrovision/results/uncertainty) |
+| Temperature Scaling **degrades** rather than improves calibration for the fusion model | ✅ Solid | — | [Uncertainty](/astrovision/results/uncertainty) |
+| Conformal Prediction achieves 90% coverage with 91% singleton rate | ✅ Solid | — | [Uncertainty](/astrovision/results/uncertainty) |
 
 ### Physical interpretation
 
 | Claim | Evidence | Figure | Page |
 |---|---|---|---|
-| DINOv2 features encode galaxy colour information (R²=0.536 with SDSS photometry) | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](../astrovision/results/physical-interpretation) |
-| Morphometric features (CAS, Gini, M20) contribute more than SDSS photometry to fusion model because DINOv2 already encodes colour | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](../astrovision/results/physical-interpretation) |
+| DINOv2 features encode galaxy colour information (R²=0.536 with SDSS photometry) | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](/astrovision/results/physical-interpretation) |
+| Morphometric features (CAS, Gini, M20) contribute more than SDSS photometry to fusion model because DINOv2 already encodes colour | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](/astrovision/results/physical-interpretation) |
 
 ---
 
@@ -90,8 +90,8 @@ This register exists to prevent overstating results — in conversations, in doc
 
 | Claim | Evidence | Figure | Page |
 |---|---|---|---|
-| Ξosc model shows a **marginal preference** (~2.26σ) for non-zero oscillation amplitude ε | 🔶 Preliminary | Corner plots | [Known Limitations](../xi-dark-energy/results/caveats) |
-| ΛCDM and CPL posteriors are consistent with published Planck + DESI constraints | 🟡 Suggestive | Corner plots | [Parameter Constraints](../xi-dark-energy/results/parameter-constraints) |
+| Ξosc model shows a **marginal preference** (~2.26σ) for non-zero oscillation amplitude ε | 🔶 Preliminary | Corner plots | [Known Limitations](/xi-dark-energy/results/caveats) |
+| ΛCDM and CPL posteriors are consistent with published Planck + DESI constraints | 🟡 Suggestive | Corner plots | [Parameter Constraints](/xi-dark-energy/results/parameter-constraints) |
 
 ### Caveats (v0.1.0-exploratory)
 

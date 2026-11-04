@@ -3,6 +3,7 @@
 // "Where to find current results" section: callout + lookup table.
 
 import React from 'react';
+import Link from '@docusaurus/Link';
 
 const LOOKUP = [
   {
@@ -32,7 +33,7 @@ const LOOKUP = [
   },
   {
     query: 'Evidence levels for all findings',
-    href: './astrospectro/science/claims-register',
+    href: '/docs/atlas/claims-register',
     label: 'Scientific Claims Register',
   },
   {
@@ -165,7 +166,7 @@ export default function ResultsLocator() {
                 <tr key={row.href}>
                   <td style={tdBase}>{row.query}</td>
                   <td style={tdLink}>
-                    <a href={row.href} style={s.link}>{row.label}</a>
+                    <Link to={row.href} style={s.link}>{row.label}</Link>
                   </td>
                 </tr>
               );

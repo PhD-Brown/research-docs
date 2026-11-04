@@ -55,7 +55,7 @@ PCA on the 183 standardised features reveals **high intrinsic dimensionality**: 
 
 **Eigenspectra on raw flux (10,000 spectra, 3,921 channels):** Three components are sufficient to explain 91.3% of raw flux variance (vs 91 components for the 183 features). PC1_flux = colour slope (Teff) · PC2_flux = infrared rise cool stars · PC3_flux = blue/red instrumental cut.
 
-For the complete interpretation, see [Physical interpretation of PCA](./pca-physical-interpretation).
+For the complete interpretation, see [Physical interpretation of PCA](../dimred/pca.mdx).
 
 export const pcaFigures = [
   { src: '/img/dimred/pca_variance_explained.png',    title: 'Explained variance', desc: 'Individual + cumulative · 80/90/95/99% thresholds', tag: 'PCA' },
@@ -207,33 +207,33 @@ export const shapFigures = [
 
 <RelatedPages pages={[
   {
-    href: './pca-physical-interpretation',
+    href: '/docs/astrospectro/dimred/pca',
     title: 'Physical interpretation of PCA',
     desc: 'Variance, eigenspectra, Gaia DR3 correlations, HR diagram coloured by PC1',
     category: 'science',
     badge: 'ρ = +0.831',
   },
   {
-    href: './dimensionality-reduction',
+    href: '/docs/astrospectro/dimred',
     title: 'Dimensionality Reduction',
     desc: 'Methods, hyperparameters, sensitivity, Procrustes stability',
     category: 'science',
   },
   {
-    href: './xgboost-comparison',
+    href: '/docs/astrospectro/science/classification-performance',
     title: 'XGBoost — supervised comparison',
     desc: 'Complete 87% results · SHAP · UMAP coherence',
     category: 'science',
     badge: '87% BA',
   },
   {
-    href: './features-list-183',
+    href: '/docs/astrospectro/data/feature-dataset',
     title: 'Catalogue of 183 features',
     desc: 'PCA top loadings, spectral families, SHAP top-30 features',
     category: 'science',
   },
   {
-    href: '../user-guides/model-training',
+    href: '/docs/astrospectro/guides/model-training',
     title: 'Guide — Model training',
     desc: 'SpectralClassifier, GridSearchCV/Optuna tuning, W&B, artefacts',
     category: 'guides',

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from '@docusaurus/Link';
 
 const FAMILIES = [
   { name: 'Balmer lines', range: 'Hα – Hθ', count: '~35', indicator: 'Teff — thermal axis PC1', color: '#60A5FA', description: 'Hydrogen absorption series. Primary thermal indicator: maximum strength around 10,000 K (type A), weakens toward M and O.', lines: 'Hα 6563 Å · Hβ 4861 Å · Hγ 4341 Å · Hδ 4102 Å · Hθ 3798 Å', pcaRole: 'PC1 (Balmer: 31.5%)' },
@@ -42,7 +43,7 @@ export default function DescriptorFamilies() {
       </div>
       <div style={{ marginTop: '16px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.5, textAlign: 'center' }}>
         183 features · 6 spectroscopic families ·{' '}
-        <a href="/AstroSpectro/docs/science/features-list-183" style={{ color: 'inherit', textDecoration: 'underline dotted' }}>complete catalogue →</a>
+        <Link to="/docs/astrospectro/data/feature-dataset" style={{ color: 'inherit', textDecoration: 'underline dotted' }}>complete catalogue →</Link>
       </div>
     </div>
   );
