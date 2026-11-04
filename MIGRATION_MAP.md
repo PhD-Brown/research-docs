@@ -4,6 +4,12 @@
 > Cible : `PhD-Brown/research-docs` (`website/docs/`, **en anglais**, cf. `editorial-guide.mdx` §4.2).
 > Ce document ne modifie aucune page : il dit quoi récupérer, où, et ce qui bloque.
 
+> **Ancien site fermé le 2026-11-04.** `website/` et le workflow de déploiement ont été retirés d'AstroSpectro ;
+> `website/docs/_archive/` reste la seule copie de l'ancien contenu FR. Les anciennes URL
+> (`phd-brown.github.io/AstroSpectro/…`) redirigent vers les pages correspondantes d'ici, selon le tableau du §1,
+> depuis la branche `gh-pages` d'AstroSpectro (une page par ancienne route + `404.html` de repli). Si une page
+> cible change de route, mettre à jour cette branche.
+
 ## Légende
 
 | Statut | Signification |

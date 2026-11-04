@@ -11,15 +11,15 @@ leurs chiffres dans `website/src/data/astrospectro/runs.json` (généré) ; aucu
 chiffre de run en dur.
 
 ```text
-export_doc_facts.py (AstroSpectro/scripts) → commit _facts → registre → build_runs_data.py → docs-verify
+export_doc_facts.py (research-docs/scripts) → commit _facts → registre → build_runs_data.py → docs-verify
 ```
 
 ## 1. Exporter les faits (machine qui a `data/` et `logs/` d'AstroSpectro)
 
 ```bash
-cd AstroSpectro
-python scripts/export_doc_facts.py --target ../research-docs --dry-run   # voir ce qui sera copié
-python scripts/export_doc_facts.py --target ../research-docs             # régénère _facts/astrospectro/ + MANIFEST.md
+cd research-docs
+python scripts/export_doc_facts.py --project astrospectro --source ../AstroSpectro --dry-run   # voir ce qui sera copié
+python scripts/export_doc_facts.py --project astrospectro --source ../AstroSpectro             # régénère _facts/astrospectro/ + MANIFEST.md
 ```
 
 Dans une session cloud sans `data/`, ce pas est fait par l'auteur : partir d'un `_facts/` déjà à jour.

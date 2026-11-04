@@ -281,11 +281,11 @@ fichier. Les composants du site lisent leurs chiffres dans `website/src/data/ast
 `.claude/skills/docs-new-run/`.
 
 ```text
-export_doc_facts.py (AstroSpectro/scripts) → commit _facts → registre → build_runs_data.py → docs-verify
+export_doc_facts.py (research-docs/scripts) → commit _facts → registre → build_runs_data.py → docs-verify
 ```
 
 1. **Exporter** (machine qui a `data/` et `logs/` d'AstroSpectro) :
-   `cd AstroSpectro && python scripts/export_doc_facts.py --target ../research-docs` (`--dry-run` pour voir ; régénère
+   `cd research-docs && python scripts/export_doc_facts.py --project astrospectro --source ../AstroSpectro` (`--dry-run` pour voir ; régénère
    `_facts/astrospectro/` et `MANIFEST.md`).
 2. **Committer `_facts/`** sur une branche de research-docs (pas `main`) : `git add _facts && git commit`.
 3. **Mettre à jour le registre** (en tête de ce fichier) : remplacer l'identifiant dans la colonne « Run(s) » de la clé
