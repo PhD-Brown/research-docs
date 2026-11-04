@@ -51,7 +51,7 @@ By design. The modules in `src/` hold the logic: classes that can be tested, imp
 The feature table contains columns that do not come from the spectrum itself: coordinates, redshift, SNR, observation and instrument metadata, and Gaia photometry and astrometry. A model that uses them can score well without reading the spectrum. In `spectro_only` mode, `SpectralClassifier` and `DimRedDataLoader` drop those columns, so that the model has to rely on what is measured in the flux. See [Spectro-only mode](../concepts/spectro-only-mode.md).
 
 :::warning[The mode removes columns by name]
-The rule is a list of name prefixes. Columns derived from Gaia that do not match it stay in the candidate set.
+The original rule was a list of name prefixes, and columns derived from Gaia that did not match it stayed in the candidate set (this is how the reference run v6 kept four of them). Fixed in the code with an explicit list of Gaia/photometric columns (the 22 columns absent from v7). v7 was trained with this fix, but no complete spectro-only reference run exists yet.
 
 <GaiaLeakNote />
 

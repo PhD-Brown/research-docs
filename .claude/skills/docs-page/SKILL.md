@@ -1,6 +1,6 @@
 ---
 name: docs-page
-description: Rédiger, compléter ou réécrire une page du site research-docs (Docusaurus, website/docs*) — notamment remplacer un stub UnderConstruction ou migrer une page de l'ancien site AstroSpectro. Donne la procédure (sources, gabarit par type de page, composants, chiffres tirés de _facts/, navigation) et renvoie vers docs-component et docs-verify. À utiliser dès qu'une tâche demande d'écrire du contenu de documentation.
+description: Rédiger, compléter ou réécrire une page du site research-docs (Docusaurus, website/docs*) — nouvelle page, page partielle à compléter ou page existante à réviser. Donne la procédure (sources, gabarit par type de page, composants, chiffres tirés de _facts/, navigation) et renvoie vers docs-component et docs-verify. À utiliser dès qu'une tâche demande d'écrire du contenu de documentation.
 ---
 
 # docs-page
@@ -19,10 +19,10 @@ description: Rédiger, compléter ou réécrire une page du site research-docs (
 
 ## 1. Préparer
 
-1. **Situer la page** : `STUBS.md` (priorité, sources, pièges) et `MIGRATION_MAP.md` (contenu FR à récupérer dans `website/docs/_archive/`, dette de liens).
+1. **Situer la page** : la page existe-t-elle déjà (sidebar `website/sidebars*.ts`, `grep` dans `website/docs*`) ? Sinon, quel est son type et sa voisine canonique (editorial-guide §3.2) ? L'ancien site AstroSpectro est fermé et sa copie `_archive/` supprimée : tout contenu se rédige depuis `_facts/` et le code.
 2. **Type de page** → gabarit de `website/docs/atlas/page-style-guide.mdx` §3 : method/analysis · data · pipeline/concept · guide · result/science · API.
 3. **Faits** : ouvrir dans `FACTS_INDEX.md` la section utile, puis les fichiers eux-mêmes. Noter pour chaque chiffre : fichier, clé, run, génération (**G1** = 43 019 spectres PHY-3500 · **G2** = 350k / v6). Ne jamais mélanger G1 et G2 dans un même bloc.
-4. **Code** (pages pipeline/API/guides) : lire le module cité dans `STUBS.md` et vérifier chaque affirmation du stub (les puces « What this page covers » contiennent des chiffres et des fonctionnalités non vérifiés).
+4. **Code** (pages pipeline/API/guides) : lire le module du dépôt de code concerné et vérifier chaque affirmation de la page existante (les listes de fonctionnalités et les chiffres anciens ne sont pas des sources).
 5. **Page canonique** : vérifier qu'aucune autre page ne porte déjà ce contenu (editorial-guide §3.2) ; sinon résumer et lier.
 
 ## 2. Écrire
@@ -67,12 +67,12 @@ Règles qui reviennent le plus souvent :
 - Composants : choisir dans `.claude/skills/docs-component/catalog.md` ; un composant aux chiffres marqués ❌ n'est pas réutilisé tel quel.
 - Figures : chemins locaux `/img/...` (copier depuis `_facts/` vers `website/static/img/<projet>/` si besoin, en réutilisant les chemins déjà publiés listés dans `_facts/astrospectro/MANIFEST.md`).
 - Liens : en prose, liens Markdown vers le fichier (`[PCA](./pca.mdx)`) ; dans les props de composants, URL relatives à l'URL rendue (attention aux pages `index`).
-- Stub remplacé : supprimer l'import et la balise `<UnderConstruction />` **et** la liste « What this page covers ». Page encore partielle : `:::info Under construction` (editorial-guide §6.3).
+- Page encore partielle (il n'y a plus de stub `UnderConstruction`) : `:::info[Under construction]` (titre entre crochets, ligne vide après l'ouverture et avant la fermeture ; editorial-guide §6.3).
 - Nouvelle page : l'ajouter à la sidebar concernée (`website/sidebars*.ts`), sinon elle n'apparaît pas dans la navigation.
 
 ## 3. Vérifier
 
-Lancer le skill **docs-verify** (build, liens, captures clair/sombre × bureau/mobile, chiffres) et parcourir la checklist du style guide §7. Mettre à jour `STUBS.md` / `MIGRATION_MAP.md` si la page en sort.
+Lancer le skill **docs-verify** (build, liens, captures clair/sombre × bureau/mobile, chiffres) et parcourir la checklist du style guide §7.
 
 ## 4. Compte rendu
 

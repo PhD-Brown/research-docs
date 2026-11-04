@@ -52,7 +52,7 @@ These v5 figures belong to that article and to G1; they are not the metrics of t
 
 The reference run was trained with `spectro_only=True` in `SpectralClassifier`. The mode is meant to keep only flux-derived features; in addition to the columns that are always excluded (identifiers, `ra`/`dec`, `redshift`, `seeing`, SNR per band, GSP-Phot parameters, parallax, Gaia catalogue magnitudes), it removes every column whose name starts with a non-spectroscopic prefix (`parallax`, `phot_`, `bp_rp`, `teff`, `logg`, …).
 
-The exclusion is prefix-based, and the Gaia-derived columns `M_G`, `M_BP`, `M_RP` and `ag_gspphot` match none of the prefixes: they reached the selected features of the reference run (see the caution above and [Classification](../pipeline/classification.md#feature-columns-and-spectro_only)). The metrics below are therefore those of a mostly — not purely — spectroscopic model.
+The exclusion was prefix-based, and the Gaia-derived columns `M_G`, `M_BP`, `M_RP` and `ag_gspphot` match none of the prefixes: they reached the selected features of the reference run (see the caution above and [Classification](../pipeline/classification.md#feature-columns-and-spectro_only)). The metrics below are therefore those of a mostly — not purely — spectroscopic model. The code has since been fixed with an explicit list of Gaia/photometric columns, but no complete spectro-only reference run exists yet.
 
 ### Training data
 

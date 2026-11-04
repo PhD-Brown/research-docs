@@ -42,7 +42,7 @@ from src.pipeline.classifier import SpectralClassifier
 clf = SpectralClassifier(model_type="XGBoost", prediction_target="main_class")
 clf, feature_cols, X, y = clf.train_and_evaluate(
     features_df,
-    spectro_only=True,    # excludes ra, dec, redshift, Gaia — publication mode
+    spectro_only=True,    # excludes ra, dec, redshift and most Gaia columns (see §3)
 )
 
 # Save artifacts
@@ -70,7 +70,7 @@ clf.save_model("data/models/spectral_classifier_xgboost.pkl")
 `SpectralClassifier` automatically prepares the data before training:
 
 1. **Cleaning:** Spectra without a valid `subclass` and classes with < 10 samples are excluded.
-2. **Feature selection:** In `spectro_only=True` mode, all non-spectral columns are filtered out.
+2. **Feature selection:** In `spectro_only=True` mode, positional, observing-condition and most Gaia columns are filtered out (see §3 for the Gaia columns that remain).
 3. **Train/test split:** 80/20 stratified by class.
 
 ### Pipeline and W&B tracking
@@ -114,11 +114,11 @@ clf.train_and_evaluate(features_df, spectro_only=True)
 **Automatically excluded features:**
 - Angular coordinates: `ra`, `dec`
 - Observing conditions: `redshift`, `seeing`, `snr_*`, `jd`, `fiber_id`, `magnitude_*`
-- Gaia columns: `parallax`, `bp_rp`, `teff_gspphot`, `logg_gspphot`, `M_G`, `v_tan_kms`, etc.
+- Gaia columns: `parallax`, `bp_rp`, `teff_gspphot`, `logg_gspphot`, `v_tan_kms`, etc.
 
 `ra`, `dec` and `redshift` are excluded because they can correlate with spectral type through LAMOST observational biases (observation programs targeted by type) rather than through stellar physics. The exported run reports do not show a measurable accuracy gain from this exclusion: in the 100k runs, v3 (before `spectro_only`) and v4 (`spectro_only`) reach a balanced accuracy of <RunFact run="20260306T011253Z" path="metrics.balanced_accuracy" format="pct" /> and <RunFact run="20260306T013341Z" path="metrics.balanced_accuracy" format="pct" /> respectively, and v5 (`spectro_only` plus isotonic calibration) <RunFact run="20260306T020848Z" path="metrics.balanced_accuracy" format="pct" />.
 
-In practice, `spectro_only` does not remove every Gaia column: the reference run still selected four Gaia/photometric features.
+In practice, `spectro_only` does not remove every Gaia column: the reference run still selected <RunFact path="features.gaia_photometric.length" /> Gaia/photometric features, among them `M_G` (also `M_BP`, `M_RP` and `ag_gspphot`), so `M_G` is **not** excluded in that run.
 
 <GaiaLeakNote />
 

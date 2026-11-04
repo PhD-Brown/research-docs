@@ -74,7 +74,10 @@ non_spectro_prefixes = (
 ```
 
 :::caution[Why the reference run contains Gaia columns]
-The exclusion is prefix-based. Columns derived from Gaia after the cross-match — absolute magnitudes `M_G`, `M_BP`, `M_RP` (computed in `src/tools/gaia_crossmatcher.py`) and the extinction `ag_gspphot` — do not start with any of these prefixes, so they pass the `spectro_only` filter in this version of `classifier.py`.
+The prefix rule alone does not catch the columns derived from Gaia after the cross-match — absolute magnitudes `M_G`, `M_BP`, `M_RP` (computed in `src/tools/gaia_crossmatcher.py`) and the extinction `ag_gspphot` — because none of them starts with one of these prefixes. They therefore passed the `spectro_only` filter when v6 was trained.
+
+Fixed in the code with an explicit list of Gaia/photometric columns (the 22 columns absent from v7). v7 was trained with this fix, but no complete spectro-only reference run exists yet.
+
 
 Run v6 (`ST_350k_xgb_AFGKM_v6`) was trained with `spectro_only` enabled, but its <RunFact run="20260522T161236Z" path="features.selected" /> selected features include <RunFact run="20260522T161236Z" path="features.gaia_photometric.length" /> Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`). Its metrics are therefore not purely spectroscopic; see the [Data Leakage Audit](../concepts/data-leakage-audit.mdx).
 :::

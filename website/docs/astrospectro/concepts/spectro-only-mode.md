@@ -15,7 +15,9 @@ The `spectro_only=True` flag is the **canonical feature mode** for AstroSpectro.
 
 ## What it does
 
-When `spectro_only=True`, the pipeline includes **only physically interpretable spectroscopic features**:
+When `spectro_only=True`, the pipeline is meant to include **only physically interpretable spectroscopic features**. The reference run v6 did not fully meet that goal, because Gaia/photometric columns passed the old prefix-based filter (see the [Data Leakage Audit](./data-leakage-audit.mdx)). Fixed in the code with an explicit list of Gaia/photometric columns (the 22 columns absent from v7). v7 was trained with this fix, but no complete spectro-only reference run exists yet.
+
+The intended feature set:
 
 - ✅ Line prominence, equivalent width, FWHM for known spectral lines
 - ✅ Molecular band indices (TiO, CaH, MgH)
