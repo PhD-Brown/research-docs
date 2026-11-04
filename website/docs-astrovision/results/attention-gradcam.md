@@ -8,7 +8,7 @@ import Fact from '@site/src/components/astrovision/Fact';
 import FactTable from '@site/src/components/astrovision/FactTable';
 import ClassTable from '@site/src/components/astrovision/ClassTable';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/FigureGallery';
+import FigureGallery from '@site/src/components/astrovision/Gallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json attention.*, attention_morphometry.* (data/attn_morphometry_df.csv; notebook 10 complement) · code: src/astrovision/gradcam.py, attention_morphometry.py · FACTS_INDEX §4.9 */}

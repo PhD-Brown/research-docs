@@ -6,7 +6,7 @@ sidebar_position: 7
 
 import Fact from '@site/src/components/astrovision/Fact';
 import ClassTable from '@site/src/components/astrovision/ClassTable';
-import FigureGallery from '@site/src/components/FigureGallery';
+import FigureGallery from '@site/src/components/astrovision/Gallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json morphometry.* (data/morphometry_galaxy10.csv) · notebook 06 (complement: KS ranking not quoted) · code: src/astrovision/morphometry.py */}

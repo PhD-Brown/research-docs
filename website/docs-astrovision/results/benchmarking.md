@@ -9,7 +9,7 @@ import FactTable from '@site/src/components/astrovision/FactTable';
 import ClassTable from '@site/src/components/astrovision/ClassTable';
 import FactBars from '@site/src/components/astrovision/FactBars';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/FigureGallery';
+import FigureGallery from '@site/src/components/astrovision/Gallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json models.*.test.*, models.*.recall.*, split.*, ablation.* · notebooks 02, 03, 04, 08 (complement) · figures/results_*.png, dino_finetune_comparison.png */}

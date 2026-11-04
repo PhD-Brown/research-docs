@@ -8,7 +8,7 @@ import Fact from '@site/src/components/astrovision/Fact';
 import FactCards from '@site/src/components/astrovision/FactCards';
 import FactBars from '@site/src/components/astrovision/FactBars';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/FigureGallery';
+import FigureGallery from '@site/src/components/astrovision/Gallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json models.simplecnn.* (notebooks 01–02, complement) · code: src/astrovision/models.py, trainer.py */}
