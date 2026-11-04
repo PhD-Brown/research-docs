@@ -1,29 +1,23 @@
+// src/components/LoadingsBars.jsx
+// Top-5 loadings de PC1 et PC2 du run PCA de référence (runs.json : metrics.loadings), familles par
+// featureFamily().
+//
+// Usage :
+//   <LoadingsBars />                            // run PCA de référence (registre FACTS_INDEX.md)
+//   <LoadingsBars run="phy3500_pca_run_…" />
+
 import React from 'react';
+import { resolveRun, prettyFeature, featureFamily, FEATURE_FAMILIES, fmt } from '@site/src/data/astrospectro';
 
-const FAMILY_COLORS = {
-  balmer:    '#60A5FA',
-  caii:      '#C084FC',
-  mg:        '#34D399',
-  fe:        '#FB923C',
-  lick:      '#FBBF24',
-  continuum: '#F87171',
-};
+const FAMILY_COLORS = Object.fromEntries(FEATURE_FAMILIES.map((f) => [f.key, f.color]));
+const FAMILY_LABELS = Object.fromEntries(FEATURE_FAMILIES.map((f) => [f.key, f.label]));
 
-const PC1_LOADINGS = [
-  { rank: 1, descriptor: 'W(Hα)',               w: +0.173, family: 'balmer',    familyLabel: 'Balmer' },
-  { rank: 2, descriptor: 'Continuum asymmetry',  w: +0.172, family: 'continuum', familyLabel: 'Continuum' },
-  { rank: 3, descriptor: 'W(Mg b)',              w: -0.171, family: 'mg',        familyLabel: 'Magnesium' },
-  { rank: 4, descriptor: 'Synthetic B−V',        w: -0.163, family: 'continuum', familyLabel: 'Continuum' },
-  { rank: 5, descriptor: 'fblue / fred',          w: +0.161, family: 'continuum', familyLabel: 'Continuum' },
-];
-
-const PC2_LOADINGS = [
-  { rank: 1, descriptor: '[Fe/H]proxy',           w: +0.205, family: 'fe', familyLabel: 'Iron & metals' },
-  { rank: 2, descriptor: 'Combined metal idx',    w: +0.198, family: 'fe', familyLabel: 'Iron & metals' },
-  { rank: 3, descriptor: 'α index',               w: +0.194, family: 'fe', familyLabel: 'Iron & metals' },
-  { rank: 4, descriptor: 'Poor metal idx',        w: -0.193, family: 'fe', familyLabel: 'Iron & metals' },
-  { rank: 5, descriptor: 'W(Fe λ5270)',           w: +0.174, family: 'fe', familyLabel: 'Iron & metals' },
-];
+function top5(loadings) {
+  return loadings.slice(0, 5).map((l, i) => {
+    const family = featureFamily(l.feature);
+    return { rank: i + 1, descriptor: prettyFeature(l.feature), w: l.loading, family, familyLabel: FAMILY_LABELS[family] };
+  });
+}
 
 const MAX_W = 0.22;
 
@@ -76,11 +70,13 @@ function PCPanel({ title, sub, color, loadings, indicator }) {
   );
 }
 
-export default function LoadingsBars() {
+export default function LoadingsBars({ run: runProp }) {
+  const run = resolveRun(runProp, 'pca');
+  const m = run.metrics;
   return (
     <div style={{ margin: '28px 0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-      <PCPanel title="PC1" sub="thermal axis · 16.9% variance · ρ(Teff) = +0.831" color="#38BDF8" loadings={PC1_LOADINGS} indicator="Temperature T_eff" />
-      <PCPanel title="PC2" sub="metallicity axis · 12.0% variance" color="#F59E0B" loadings={PC2_LOADINGS} indicator="Metallicity [Fe/H]" />
+      <PCPanel title="PC1" sub={`thermal axis · ${fmt.pct(m.variance[0])} variance · ρ(Teff) = ${fmt.signed(m.gaia_spearman.PC1.teff_gspphot)}`} color="#38BDF8" loadings={top5(m.loadings.PC1)} indicator="Temperature T_eff" />
+      <PCPanel title="PC2" sub={`metallicity axis · ${fmt.pct(m.variance[1])} variance`} color="#F59E0B" loadings={top5(m.loadings.PC2)} indicator="Metallicity [Fe/H]" />
     </div>
   );
 }

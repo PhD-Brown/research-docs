@@ -1,4 +1,25 @@
+// src/components/MethodComparison.jsx
+// Tableau comparatif PCA / UMAP / t-SNE. Chiffres lus dans runs.json : MSE(K=2) et ρ(PC1) du run PCA de
+// référence, ρ(axe 1 UMAP) du tableau method_summary du run autoencodeur, Procrustes et temps du run
+// UMAP/t-SNE. Retirés faute de source (FACTS_INDEX §6 / _facts) : ρ(axe 1 t-SNE) « +0.623 », temps PCA
+// « < 1 s » et le matériel « Ryzen 9 5950X ».
+//
+// Usage : <MethodComparison />
+
 import React from 'react';
+import { getReferenceRun, fmt, mean } from '@site/src/data/astrospectro';
+
+const UM = getReferenceRun('umap_tsne');
+const seedsOf = (xs) => xs.filter((s) => s.seed !== 0);
+const UMAP_MEAN_ = mean(seedsOf(UM.metrics.procrustes_umap).map((s) => s.d));
+const TSNE_MEAN_ = mean(seedsOf(UM.metrics.procrustes_tsne).map((s) => s.d));
+const STABILITY_RATIO = Math.round(UMAP_MEAN_ / TSNE_MEAN_);
+const PCA = getReferenceRun('pca');
+const AE = getReferenceRun('autoencoder');
+const RHO_PCA = PCA.metrics.gaia_spearman.PC1.teff_gspphot;
+const RHO_UMAP = Number(AE.metrics.rho_axis1_teff.UMAP);
+const T_UMAP = UM.metrics.umap_fit_time_s;
+const T_TSNE = UM.metrics.tsne_fit_time_s;
 
 const METHODS = [
   { name: 'PCA',   sub: 'Linear',        color: '#38BDF8' },
@@ -7,10 +28,10 @@ const METHODS = [
 ];
 
 const ROWS = [
-  { criterion: 'Reconstruction MSE (K=2)', note: 'PCA only — Eckart-Young', values: ['0.696', '—', '—'], best: null },
-  { criterion: 'ρ(axis 1, Teff)', note: 'Spearman correlation with Gaia T_eff', type: 'bar', barValues: [0.831, 0.464, 0.623], rawLabels: ['+0.831', '+0.464', '+0.623'], best: 0, highlight: true },
-  { criterion: 'Stability dP (Procrustes)', note: 't-SNE ~60× more reproducible than UMAP', values: ['0 (exact)', '3.0 × 10⁻²', '5.0 × 10⁻⁴'], best: 0 },
-  { criterion: 'CPU time', note: 'Ryzen 9 5950X · 32 threads', type: 'bar', barValues: [0.5, 40.1, 80.2], rawLabels: ['< 1 s', '40.1 s', '80.2 s'], best: 0, inverted: true },
+  { criterion: 'Reconstruction MSE (K=2)', note: 'PCA only — Eckart-Young', values: [fmt.num(PCA.metrics.reconstruction_mse[1]), '—', '—'], best: null },
+  { criterion: 'ρ(axis 1, Teff)', note: 'Spearman correlation with Gaia T_eff (t-SNE: not exported)', type: 'bar', barValues: [RHO_PCA, RHO_UMAP, 0], rawLabels: [fmt.signed(RHO_PCA), fmt.signed(RHO_UMAP), '—'], best: 0, highlight: true },
+  { criterion: 'Stability dP (Procrustes)', note: `t-SNE ~${STABILITY_RATIO}× more reproducible than UMAP (mean, seeds 1–4)`, values: ['0 (exact)', fmt.sci(UMAP_MEAN_).replace('×', ' × '), fmt.sci(TSNE_MEAN_).replace('×', ' × ')], best: 0 },
+  { criterion: 'Fit time', note: 'Wall-clock time of the reference run (PCA: not recorded)', type: 'bar', barValues: [0, T_UMAP, T_TSNE], rawLabels: ['—', fmt.seconds(T_UMAP), fmt.seconds(T_TSNE)], best: 1, inverted: true },
   { criterion: 'Parametric', note: 'Can generalise out-of-sample', type: 'tristate', values: ['Yes', 'Partial', 'No'], best: 0 },
   { criterion: 'Non-linear', note: 'Captures non-linear structures', type: 'bool', values: [false, true, true], best: null },
   { criterion: 'Interpretable', note: 'Axes with direct physical meaning', type: 'bool', values: [true, false, false], best: 0 },
@@ -76,7 +97,7 @@ export default function MethodComparison() {
                       : row.type === 'tristate' ? <TristateChip value={row.values[mi]} color={m.color} />
                       : row.type === 'bar' ? (<>
                           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: '700', color: isBest ? m.color : 'var(--ifm-font-color-base)', opacity: isBest ? 1 : 0.75 }}>{row.rawLabels[mi]}</div>
-                          <MicroBar value={row.barValues[mi]} max={Math.max(...row.barValues)} color={m.color} inverted={row.inverted} />
+                          {row.rawLabels[mi] !== '—' && <MicroBar value={row.barValues[mi]} max={Math.max(...row.barValues)} color={m.color} inverted={row.inverted} />}
                         </>)
                       : (<div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: isBest ? '700' : '400', color: isBest ? m.color : 'var(--ifm-font-color-base)', opacity: isBest ? 1 : 0.72 }}>{row.values[mi]}</div>)}
                   </div>

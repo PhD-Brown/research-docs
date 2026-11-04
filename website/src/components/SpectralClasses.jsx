@@ -1,4 +1,15 @@
+// src/components/SpectralClasses.jsx
+// Cartes des classes A–M. Les plages Teff sont la classification de Harvard (manuel) ; la part de chaque
+// classe et son F1 viennent du test set du run de référence 'classifier' (runs.json). Les anciennes
+// fractions « ~2 % … ~40 % » n'avaient pas de source (catalogue des composants §3.1).
+//
+// Usage :
+//   <SpectralClasses />                          // run de référence
+//   <SpectralClasses run="20260306T020848Z" />
+
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, fmt, generationLabel } from '@site/src/data/astrospectro';
 
 // Approximate blackbody colors for stellar spectral types
 const CLASSES = [
@@ -14,7 +25,6 @@ const CLASSES = [
     perfColor: '#FBBF24',
     perfNote: 'Rare in the sample',
     features: 'Very strong Balmer lines',
-    fraction: '~2%',
   },
   {
     letter: 'F',
@@ -28,7 +38,6 @@ const CLASSES = [
     perfColor: '#FBBF24',
     perfNote: 'Delicate F/G boundary',
     features: 'Moderate Balmer lines, weak Ca II',
-    fraction: '~8%',
   },
   {
     letter: 'G',
@@ -42,7 +51,6 @@ const CLASSES = [
     perfColor: '#FBBF24',
     perfNote: 'Pivot class — F and K boundary',
     features: 'Moderate Ca II, weak Balmer lines',
-    fraction: '~15%',
   },
   {
     letter: 'K',
@@ -56,7 +64,6 @@ const CLASSES = [
     perfColor: '#34D399',
     perfNote: 'Large population — well represented',
     features: 'Strong Ca II, visible Mg b',
-    fraction: '~35%',
   },
   {
     letter: 'M',
@@ -70,7 +77,6 @@ const CLASSES = [
     perfColor: '#34D399',
     perfNote: 'Highly distinctive TiO/VO/CaH bands',
     features: 'TiO, VO, CaH molecular bands',
-    fraction: '~40%',
   },
 ];
 
@@ -127,7 +133,7 @@ function ClassCard({ letter, name, examples, teff, color, bgColor, performance, 
             color: perfColor,
           }}>{performance}</div>
           <div style={{ fontSize: '10px', opacity: 0.4, marginTop: '3px', color: 'var(--ifm-font-color-base)' }}>
-            {fraction} of dataset
+            {fraction} of test set
           </div>
         </div>
       </div>
@@ -225,12 +231,17 @@ function HarvardBar() {
   );
 }
 
-export default function SpectralClasses() {
+export default function SpectralClasses({ run: runProp }) {
+  const run = resolveRun(runProp, 'classifier');
+  const pc = run.metrics.per_class;
+  const CLASSES_ = CLASSES.map((c) => (pc[c.letter]
+    ? { ...c, performance: `F1 = ${fmt.num(pc[c.letter].f1)}`, fraction: fmt.pct(pc[c.letter].support / run.n.test) }
+    : { ...c, performance: '—', fraction: '—' }));
   return (
     <div style={{ margin: '28px 0' }}>
       <HarvardBar />
       <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-        {CLASSES.map((c) => <ClassCard key={c.letter} {...c} />)}
+        {CLASSES_.map((c) => <ClassCard key={c.letter} {...c} />)}
       </div>
       <div style={{
         marginTop: '12px',
@@ -242,8 +253,12 @@ export default function SpectralClasses() {
         color: 'var(--ifm-font-color-base)',
         opacity: 0.8,
       }}>
-        <strong style={{ color: '#DC2626' }}>Class M — Excellent</strong>: TiO, VO, and CaH molecular bands are absent from all hot types — class M is spectrally unmistakable. Hover over the cards for performance notes.
+        <strong style={{ color: '#DC2626' }}>Class M — {pc.M ? `F1 = ${fmt.num(pc.M.f1)}` : 'n/a'}</strong>: TiO, VO, and CaH molecular bands are absent from all hot types — class M is spectrally unmistakable. Hover over the cards for performance notes.
       </div>
+      <div style={{ marginTop: '8px', fontSize: '11px', fontFamily: 'var(--ifm-font-family-monospace)', color: 'var(--ifm-font-color-base)', opacity: 0.6 }}>
+        F1 and class share: test set of {run.label} (run {run.id} · {generationLabel(run)} · test N = {fmt.int(run.n.test)})
+      </div>
+      <GaiaLeakNote run={run} style={{ marginTop: '4px' }} />
     </div>
   );
 }

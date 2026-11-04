@@ -1,48 +1,33 @@
+// src/components/HDBSCANClusters.jsx
+// Clusters HDBSCAN du run UMAP/t-SNE de référence (runs.json : metrics.hdbscan). Les identifiants et
+// tailles viennent du run ; les étiquettes de population (« G-K main sequence »…) sont une lecture
+// qualitative du run G1. Les plages Teff / log g par cluster n'ont pas de source dans _facts : retirées.
+//
+// Usage : <HDBSCANClusters />
+
 import React from 'react';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
 
-const CLUSTERS = [
-  { id: 'C11', n: 16716, pop: 'G-K main sequence',    teff: '5000–6000', logg: '4.0–4.5', color: '#F59E0B' },
-  { id: 'C13', n: 10373, pop: 'Cool K dwarfs',        teff: '4500–5000', logg: '≈ 4.5',   color: '#FB923C' },
-  { id: 'C5',  n:  5083, pop: null,                   teff: null,        logg: null,       color: '#FBBF24' },
-  { id: 'C3',  n:   818, pop: null,                   teff: null,        logg: null,       color: '#A3E635' },
-  { id: 'C2',  n:   915, pop: null,                   teff: null,        logg: null,       color: '#34D399' },
-  { id: 'C19', n:   900, pop: 'Subgiants / RGB base', teff: '5000–5500', logg: '3.0–3.5', color: '#38BDF8' },
-  { id: 'C12', n:   851, pop: 'Subgiants / RGB base', teff: '5000–5500', logg: '3.0–3.5', color: '#60A5FA' },
-  { id: 'C1',  n:   654, pop: 'Subgiants / RGB base', teff: '5000–5500', logg: '3.0–3.5', color: '#818CF8' },
-  { id: 'C16', n:   620, pop: null,                   teff: null,        logg: null,       color: '#A78BFA' },
-  { id: 'C17', n:   615, pop: null,                   teff: null,        logg: null,       color: '#C084FC' },
-  { id: 'C9',  n:   576, pop: null,                   teff: null,        logg: null,       color: '#E879F9' },
-  { id: 'C7',  n:   474, pop: null,                   teff: null,        logg: null,       color: '#FB7185' },
-];
+const UM = getReferenceRun('umap_tsne');
+const HD = UM.metrics.hdbscan;
+const COLORS = ['#F59E0B', '#FB923C', '#FBBF24', '#A3E635', '#34D399', '#38BDF8', '#60A5FA', '#818CF8', '#A78BFA', '#C084FC', '#E879F9', '#FB7185'];
+// Lecture qualitative (run G1) : identifiants de cluster → population. Sans effet si l'identifiant est absent.
+const POPULATIONS = { 11: 'G-K main sequence', 13: 'Cool K dwarfs', 19: 'Subgiants / RGB base', 12: 'Subgiants / RGB base', 1: 'Subgiants / RGB base' };
 
-const MAX_N = 16716;
+const CLUSTERS = Object.entries(HD.largest_clusters)
+  .map(([id, n]) => ({ id: `C${id}`, n, pop: POPULATIONS[id] || null }))
+  .sort((a, b) => b.n - a.n)
+  .map((c, i) => ({ ...c, color: COLORS[i % COLORS.length] }));
+
+const MAX_N = CLUSTERS[0].n;
 
 const HR_GROUPS = [
-  {
-    clusters: 'C19, C1, C12',
-    pop: 'Subgiants / RGB base',
-    teff: '5000–5500 K',
-    logg: '≈ 3.0–3.5',
-    color: '#38BDF8',
-    note: 'Strengthened Ca II · weakened Balmer → lower surface radiation pressure',
-  },
-  {
-    clusters: 'C13',
-    pop: 'Cool K dwarfs',
-    teff: '4500–5000 K',
-    logg: '≈ 4.5',
-    color: '#FB923C',
-    note: 'Most populated cluster with clear physical identity',
-  },
-  {
-    clusters: 'C11',
-    pop: 'G-K main sequence',
-    teff: '5000–6000 K',
-    logg: '≈ 4.0–4.5',
-    color: '#F59E0B',
-    note: 'Dominant cluster — reference population of the main sequence',
-  },
-];
+  { ids: [19, 1, 12], pop: 'Subgiants / RGB base', color: '#38BDF8', note: 'Strengthened Ca II · weakened Balmer → lower surface radiation pressure' },
+  { ids: [13],        pop: 'Cool K dwarfs',        color: '#FB923C', note: 'Most populated cluster with clear physical identity' },
+  { ids: [11],        pop: 'G-K main sequence',    color: '#F59E0B', note: 'Dominant cluster — reference population of the main sequence' },
+]
+  .filter((g) => g.ids.every((id) => String(id) in HD.largest_clusters))
+  .map((g) => ({ ...g, clusters: g.ids.map((id) => `C${id}`).join(', '), }));
 
 function ClusterBar({ cluster, maxN }) {
   const [hov, setHov] = React.useState(false);
@@ -67,10 +52,10 @@ export default function HDBSCANClusters() {
     <div style={{ margin: '24px 0' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '10px', marginBottom: '20px' }}>
         {[
-          { label: 'Clusters',   value: '20',    color: '#F59E0B' },
-          { label: 'Noise',      value: '2,643', sub: '6.14%',  color: '#F87171' },
-          { label: 'Cluster C11',value: '16,716',sub: 'stars',  color: '#F59E0B' },
-          { label: 'Cluster C13',value: '10,373',sub: 'stars',  color: '#FB923C' },
+          { label: 'Clusters',   value: String(HD.n_clusters), color: '#F59E0B' },
+          { label: 'Noise',      value: fmt.int(HD.n_noise), sub: fmt.pctRaw(HD.pct_noise, 2), color: '#F87171' },
+          { label: `Cluster ${CLUSTERS[0].id}`, value: fmt.int(CLUSTERS[0].n), sub: 'stars', color: CLUSTERS[0].color },
+          { label: `Cluster ${CLUSTERS[1].id}`, value: fmt.int(CLUSTERS[1].n), sub: 'stars', color: CLUSTERS[1].color },
         ].map((s) => (
           <div key={s.label} style={{ background: 'var(--ifm-card-background-color)', border: `1px solid ${s.color}28`, borderLeft: `3px solid ${s.color}`, borderRadius: '7px', padding: '10px 14px' }}>
             <div style={{ fontFamily: 'monospace', fontSize: '18px', fontWeight: '800', color: s.color, lineHeight: 1.1 }}>{s.value}</div>
@@ -81,11 +66,11 @@ export default function HDBSCANClusters() {
 
       <div style={{ background: 'var(--ifm-card-background-color)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '18px 20px', marginBottom: '20px' }}>
         <div style={{ fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.5, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
-          Top 12 clusters — population (stars)
+          Top {CLUSTERS.length} clusters — population (stars)
         </div>
         {CLUSTERS.map((c) => (<ClusterBar key={c.id} cluster={c} maxN={MAX_N} />))}
         <div style={{ marginTop: '12px', fontSize: '11px', opacity: 0.35, fontFamily: 'monospace', color: 'var(--ifm-font-color-base)' }}>
-          min_cluster_size=75 · min_samples=20 · noise excluded from this chart
+          min_cluster_size={HD.params.min_cluster_size} · min_samples={HD.params.min_samples} · noise excluded from this chart
         </div>
       </div>
 
@@ -95,19 +80,11 @@ export default function HDBSCANClusters() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {HR_GROUPS.map((g) => (
-            <div key={g.clusters} style={{ display: 'grid', gridTemplateColumns: '90px 1fr auto auto', gap: '12px', alignItems: 'center', padding: '10px 12px', background: `${g.color}0c`, border: `1px solid ${g.color}25`, borderRadius: '7px' }}>
+            <div key={g.clusters} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: '12px', alignItems: 'center', padding: '10px 12px', background: `${g.color}0c`, border: `1px solid ${g.color}25`, borderRadius: '7px' }}>
               <div style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: '800', color: g.color }}>{g.clusters}</div>
               <div>
                 <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--ifm-font-color-base)', marginBottom: '2px' }}>{g.pop}</div>
                 <div style={{ fontSize: '11px', opacity: 0.5, fontStyle: 'italic', color: 'var(--ifm-font-color-base)' }}>{g.note}</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '10px', opacity: 0.45, marginBottom: '1px' }}>Teff</div>
-                <div style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: '600', color: g.color }}>{g.teff}</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '10px', opacity: 0.45, marginBottom: '1px' }}>log g</div>
-                <div style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: '600', color: g.color }}>{g.logg}</div>
               </div>
             </div>
           ))}

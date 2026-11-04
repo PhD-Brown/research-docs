@@ -1,13 +1,32 @@
-import React from 'react';
+// src/components/PCAVarianceMilestones.jsx
+// Jalons k → variance cumulée et MSE de reconstruction, lus dans le run PCA de référence (runs.json).
+// Le pack n'exporte la MSE que pour k ≤ 50 et la variance cumulée que pour k ≤ 10 : au-delà, la variance
+// affichée est le seuil (80/95/99 %) et la MSE « n/a » (l'ancienne version donnait « ~0.050 », « <0.010 »
+// sans source, FACTS_INDEX §6).
+//
+// Usage :
+//   <PCAVarianceMilestones />                            // run PCA de référence (registre FACTS_INDEX.md)
+//   <PCAVarianceMilestones run="phy3500_pca_run_…" />
 
-export default function PCAVarianceMilestones() {
-  const milestones = [
-    { k: 2,   variance: 28.8, mse: '0.696',   desc: 'PC1 + PC2 only — basic 2D visualisation.',                                          color: '#64748B', highlight: false },
-    { k: 10,  variance: 50.6, mse: '0.494',   desc: 'Captures half of the physical information.',                                        color: '#8B5CF6', highlight: false },
-    { k: 51,  variance: 80.0, mse: '0.196',   desc: 'Fast analysis threshold — good speed/accuracy trade-off.',                         color: '#F59E0B', highlight: false },
-    { k: 91,  variance: 95.0, mse: '~0.050',  desc: 'RETAINED THRESHOLD FOR UMAP/t-SNE — Captures the essential variance.',             color: '#38BDF8', highlight: true  },
-    { k: 100, variance: 99.0, mse: '<0.010',  desc: 'Near-total variance (includes residual noise).',                                    color: '#10B981', highlight: false },
+import React from 'react';
+import { resolveRun } from '@site/src/data/astrospectro';
+
+function milestonesOf(run) {
+  const m = run.metrics;
+  const nc = m.n_components_for_variance;
+  const mse = (k) => (k <= m.reconstruction_mse.length ? m.reconstruction_mse[k - 1].toFixed(3) : 'n/a');
+  const cum = (k) => Number((m.cumulative[k - 1] * 100).toFixed(1));
+  return [
+    { k: 2,             variance: cum(2),  mse: mse(2),             desc: 'PC1 + PC2 only — basic 2D visualisation.',                              color: '#64748B', highlight: false },
+    { k: 10,            variance: cum(10), mse: mse(10),            desc: 'Captures about half of the variance.',                                  color: '#8B5CF6', highlight: false },
+    { k: nc['80pct'],   variance: 80.0,    mse: mse(nc['80pct']),   desc: 'Fast analysis threshold — good speed/accuracy trade-off.',              color: '#F59E0B', highlight: false },
+    { k: nc['95pct'],   variance: 95.0,    mse: mse(nc['95pct']),   desc: 'RETAINED THRESHOLD FOR UMAP/t-SNE — Captures the essential variance.', color: '#38BDF8', highlight: true  },
+    { k: nc['99pct'],   variance: 99.0,    mse: mse(nc['99pct']),   desc: 'Near-total variance (includes residual noise).',                        color: '#10B981', highlight: false },
   ];
+}
+
+export default function PCAVarianceMilestones({ run }) {
+  const milestones = milestonesOf(resolveRun(run, 'pca'));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '24px 0' }}>
@@ -22,7 +41,7 @@ export default function PCAVarianceMilestones() {
 
           <div style={{ flex: '1 1 200px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: 'bold' }}>
-              <span>Variance: {item.variance}%</span>
+              <span>Variance: {item.k > 10 ? '≥ ' : ''}{item.variance}%</span>
               <span style={{ opacity: 0.7, fontWeight: 'normal', fontFamily: 'monospace' }}>MSE: {item.mse}</span>
             </div>
             <div style={{ width: '100%', height: '8px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '4px', overflow: 'hidden' }}>

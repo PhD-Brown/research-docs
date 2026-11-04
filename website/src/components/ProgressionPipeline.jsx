@@ -1,41 +1,40 @@
-import React from 'react';
+// src/components/ProgressionPipeline.jsx
+// Frise de progression du classifieur : chaque étape est un run enregistré de runs.json (balanced accuracy
+// du test set). Remplace l'ancienne frise 32 % → 75–84 % → 87 % dont seul le dernier palier avait une
+// source (FACTS_INDEX §6). Étapes par défaut : historique FACTS_INDEX §1.3 (v3, v5) puis le run de référence.
+//
+// Usage :
+//   <ProgressionPipeline />
+//   <ProgressionPipeline runs={['20260306T011253Z', '20260306T020848Z', 'classifier']} />
 
-const STEPS = [
-  {
-    step: 1,
-    label: 'Baseline',
-    accuracy: 32,
-    model: 'Random Forest',
-    mode: '4 binary features',
-    modeColor: '#94A3B8',
-    color: '#94A3B8',
-    note: 'Initial proof of concept',
-    current: false,
-  },
-  {
-    step: 2,
-    label: 'Features V1 + metadata',
-    accuracy: '75–84',
-    model: 'RF / XGBoost',
-    mode: 'With ra, dec, Gaia',
-    modeColor: '#F59E0B',
-    color: '#F59E0B',
-    note: 'Improvement but data leakage',
-    current: false,
-    warning: true,
-  },
-  {
-    step: 3,
-    label: 'Features V2',
-    accuracy: 87,
-    model: 'XGBoost',
-    mode: 'spectro_only=True',
-    modeColor: '#34D399',
-    color: '#34D399',
-    note: 'Intrinsic physics only',
-    current: true,
-  },
-];
+import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, getReferenceRun, fmt, shortName, generationLabel } from '@site/src/data/astrospectro';
+
+export const DEFAULT_PROGRESSION = ['20260306T011253Z', '20260306T020848Z', 'classifier'];
+const COLORS = ['#94A3B8', '#F59E0B', '#34D399', '#38BDF8'];
+
+function stepsOf(ids) {
+  const ref = getReferenceRun('classifier');
+  return ids.map((id, i) => {
+    const run = resolveRun(id, 'classifier');
+    const gaia = run.features.gaia_photometric.length;
+    const current = run.id === ref.id;
+    return {
+      step: i + 1,
+      label: `${shortName(run)} · ${generationLabel(run)}`,
+      accuracy: Number((run.metrics.balanced_accuracy * 100).toFixed(1)),
+      model: run.model_type,
+      mode: `${run.features.used} features${gaia ? ` · ${gaia} Gaia/phot.` : ''}`,
+      modeColor: gaia ? '#F59E0B' : '#34D399',
+      color: current ? '#34D399' : COLORS[i % COLORS.length],
+      note: `run ${run.id}`,
+      current,
+      warning: gaia > 0,
+      run,
+    };
+  });
+}
 
 function Step({ step, label, accuracy, model, mode, modeColor, color, note, current, warning }) {
   const [hov, setHov] = React.useState(false);
@@ -174,13 +173,15 @@ function Arrow() {
   );
 }
 
-export default function ProgressionPipeline() {
+export default function ProgressionPipeline({ runs = DEFAULT_PROGRESSION }) {
+  const STEPS = stepsOf(runs);
+  const current = STEPS.find((s) => s.current) || STEPS[STEPS.length - 1];
   return (
     <div style={{ margin: '28px 0' }}>
       <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
         {STEPS.map((s, i) => (
           <React.Fragment key={s.step}>
-            <Step {...s} />
+            <Step {...s} run={undefined} />
             {i < STEPS.length - 1 && <Arrow />}
           </React.Fragment>
         ))}
@@ -197,8 +198,9 @@ export default function ProgressionPipeline() {
         opacity: 0.85,
         lineHeight: 1.6,
       }}>
-        <strong style={{ color: '#34D399' }}>Counter-intuitive:</strong> going from 84% to 87% by <em>removing</em> features — <code>ra</code>, <code>dec</code>, <code>redshift</code> provided a correlated signal via LAMOST observational biases (observation programs targeted by spectral type), not via real physics. Removing them forces the model to learn true physical indicators → better generalisation.
+        <strong style={{ color: '#34D399' }}>Reading this timeline:</strong> each step is a recorded run; the value is the <em>balanced accuracy</em> on its own test set (A, F, G, K, M). Runs differ in sample size and feature set, so the steps are not a controlled ablation. ⚠ marks runs whose selected features include Gaia/photometric columns.
       </div>
+      <GaiaLeakNote run={current.run} style={{ marginTop: '8px' }} />
     </div>
   );
 }

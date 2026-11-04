@@ -1,10 +1,23 @@
-import React from 'react';
+// src/components/ClassifierMetrics.jsx
+// 3 cartes de métriques d'un run classifieur, lues dans runs.json (scripts/build_runs_data.py).
+//
+// Usage :
+//   <ClassifierMetrics />                          // run de référence 'classifier' (registre FACTS_INDEX.md)
+//   <ClassifierMetrics run="20260306T020848Z" />   // autre run (identifiant ou clé de registre)
 
-const METRICS = [
-  { value: '87%',    label: 'Balanced accuracy',  sub: 'balanced accuracy · 5 classes',     color: '#34D399', symbol: 'BA',  detail: 'On types A, F, G, K, M' },
-  { value: '96.3%',  label: 'Median confidence',  sub: 'predictions in UMAP space',          color: '#38BDF8', symbol: 'P',   detail: 'Probability of predicted class' },
-  { value: '~0.964', label: 'ROC-AUC macro',      sub: 'global discriminability',            color: '#A78BFA', symbol: 'AUC', detail: 'Near-perfect · 1.000 = perfect' },
-];
+import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, fmt, generationLabel } from '@site/src/data/astrospectro';
+
+function metricsOf(run) {
+  const m = run.metrics;
+  const classes = (run.classes || []).join(', ');
+  return [
+    { value: fmt.pct(m.balanced_accuracy), label: 'Balanced accuracy', sub: `balanced accuracy · ${run.classes.length} classes`, color: '#34D399', symbol: 'BA',  detail: `On types ${classes}` },
+    { value: fmt.num(m.f1_macro),          label: 'Macro F1',          sub: `test set · N = ${fmt.int(run.n.test)}`,               color: '#38BDF8', symbol: 'F1',  detail: `Accuracy ${fmt.pct(m.accuracy)}` },
+    { value: fmt.num(m.roc_auc_macro),     label: 'ROC-AUC macro',     sub: 'global discriminability',                             color: '#A78BFA', symbol: 'AUC', detail: '1.000 = perfect' },
+  ];
+}
 
 function MetricCard({ value, label, sub, color, symbol, detail }) {
   const [hov, setHov] = React.useState(false);
@@ -20,10 +33,17 @@ function MetricCard({ value, label, sub, color, symbol, detail }) {
   );
 }
 
-export default function ClassifierMetrics() {
+export default function ClassifierMetrics({ run: runProp }) {
+  const run = resolveRun(runProp, 'classifier');
   return (
-    <div style={{ display: 'flex', gap: '14px', margin: '28px 0', flexWrap: 'wrap' }}>
-      {METRICS.map((m) => <MetricCard key={m.label} {...m} />)}
+    <div style={{ margin: '28px 0' }}>
+      <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+        {metricsOf(run).map((m) => <MetricCard key={m.label} {...m} />)}
+      </div>
+      <div style={{ marginTop: '10px', fontSize: '11px', fontFamily: 'var(--ifm-font-family-monospace)', color: 'var(--ifm-font-color-base)', opacity: 0.6 }}>
+        {run.label} · run {run.id} · {generationLabel(run)}
+      </div>
+      <GaiaLeakNote run={run} style={{ marginTop: '4px' }} />
     </div>
   );
 }

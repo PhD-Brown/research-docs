@@ -1,35 +1,64 @@
+// src/components/PhysicsVsBlackBox.jsx
+// Onglets « approche physique vs boîte noire » + progression du classifieur. Les chiffres viennent de
+// runs.json : run de référence 'classifier' pour la carte retenue, historique FACTS_INDEX §1.3 pour la
+// progression. Retirés faute de source (FACTS_INDEX §6) : paliers 32 % / 50 % / 75 % / 84 %, « ~5 min ».
+//
+// Usage :
+//   <PhysicsVsBlackBox />
+//   <PhysicsVsBlackBox runs={['20260306T011253Z', '20260306T013341Z', '20260306T020848Z', 'classifier']} />
+
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, getReferenceRun, fmt, shortName, generationLabel } from '@site/src/data/astrospectro';
 
-const APPROACHES = [
-  {
-    name: 'Black Box (raw Deep Learning)',
-    subtitle: 'Not retained for AstroSpectro',
-    color: '#F87171',
-    icon: '◻',
-    adopted: false,
-    pros: ['No prior knowledge required', 'Can capture unknown patterns'],
-    cons: ['Millions of parameters to train', 'Requires ~10⁵–10⁶ annotated spectra', 'Results hard to validate physically', 'Sensitive to unmodelled instrumental noise', '"Why this type A?" — no answer'],
-    example: 'CNN on the 3,921 raw flux channels',
-  },
-  {
-    name: 'Physics-Informed + classical ML',
-    subtitle: 'Retained approach — AstroSpectro V2',
-    color: '#34D399',
-    icon: '◆',
-    adopted: true,
-    pros: ['183 interpretable physical features', 'SHAP validates decisions physically', '43,019 spectra suffice — no need for millions', 'Robust to noise (local features, not pixels)', 'Every decision explained in astrophysical terms', "87% balanced accuracy in ~5 min training"],
-    cons: ['Astrophysical expertise required to define lines', 'May miss unknown patterns'],
-    example: 'XGBoost on 183 features (W(Hα), Ca II prominence…)',
-  },
-];
+export const DEFAULT_EVOLUTION = ['20260306T011253Z', '20260306T013341Z', '20260306T020848Z', 'classifier'];
 
-const EVOLUTION = [
-  { step: 1, label: 'Baseline',          acc: 32, features: '4 binary features',          model: 'Random Forest', color: '#94A3B8', note: 'Proof of concept' },
-  { step: 2, label: 'V1 — Lines',        acc: 50, features: '~20 physical features',       model: 'Random Forest', color: '#F59E0B', note: 'Prominences + FWHM' },
-  { step: 3, label: 'V1 + Metadata',     acc: 75, features: '~25 features + metadata',     model: 'Random Forest', color: '#F59E0B', note: 'ra, dec, redshift added' },
-  { step: 4, label: 'V1 + XGBoost',     acc: 84, features: '~25 features + metadata',     model: 'XGBoost',       color: '#F59E0B', note: 'GridSearchCV tuning', warning: '⚠ data leakage' },
-  { step: 5, label: 'V2 spectro_only',  acc: 87, features: '183 pure spectral features',  model: 'XGBoost',       color: '#34D399', note: 'Intrinsic physics only', current: true },
-];
+function approachesOf(ref) {
+  const f = ref.features;
+  return [
+    {
+      name: 'Black Box (raw Deep Learning)',
+      subtitle: 'Not retained for AstroSpectro',
+      color: '#F87171',
+      icon: '◻',
+      adopted: false,
+      pros: ['No prior knowledge required', 'Can capture unknown patterns'],
+      cons: ['Millions of parameters to train', 'Requires ~10⁵–10⁶ annotated spectra', 'Results hard to validate physically', 'Sensitive to unmodelled instrumental noise', '"Why this type A?" — no answer'],
+      example: 'CNN on the 3,921 raw flux channels',
+    },
+    {
+      name: 'Physics-Informed + classical ML',
+      subtitle: 'Retained approach — AstroSpectro V2',
+      color: '#34D399',
+      icon: '◆',
+      adopted: true,
+      pros: [`${f.used} interpretable features selected from ${f.candidates}`, 'SHAP validates decisions physically', `${fmt.int(ref.n.processed)} spectra — no need for millions`, 'Robust to noise (local features, not pixels)', 'Every decision explained in astrophysical terms', `${fmt.pct(ref.metrics.balanced_accuracy)} balanced accuracy (${shortName(ref)})`],
+      cons: ['Astrophysical expertise required to define lines', 'May miss unknown patterns'],
+      example: `XGBoost on ${f.used} selected features (W(Hα), Ca II prominence…)`,
+    },
+  ];
+}
+
+function evolutionOf(ids) {
+  const ref = getReferenceRun('classifier');
+  return ids.map((id, i) => {
+    const run = resolveRun(id, 'classifier');
+    const gaia = run.features.gaia_photometric.length;
+    const current = run.id === ref.id;
+    return {
+      step: i + 1,
+      label: `${shortName(run)} · ${fmt.int(run.n.processed)}`,
+      acc: (run.metrics.balanced_accuracy * 100).toFixed(1),
+      features: `${run.features.used} features${gaia ? ` · ${gaia} Gaia/phot.` : ''}`,
+      model: run.model_type,
+      color: current ? '#34D399' : '#F59E0B',
+      note: `run ${run.id}`,
+      warning: gaia ? '⚠ Gaia/photometric features' : null,
+      current,
+      run,
+    };
+  });
+}
 
 function ApproachCard({ name, subtitle, color, icon, adopted, pros, cons, example }) {
   return (
@@ -74,14 +103,17 @@ function EvolutionStep({ step, label, acc, features, model, color, note, warning
   );
 }
 
-export default function PhysicsVsBlackBox() {
+export default function PhysicsVsBlackBox({ runs = DEFAULT_EVOLUTION }) {
   const [tab, setTab] = React.useState('approach');
+  const ref = getReferenceRun('classifier');
+  const APPROACHES = approachesOf(ref);
+  const EVOLUTION = evolutionOf(runs);
   return (
     <div style={{ margin: '28px 0' }}>
       <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid rgba(255,255,255,0.07)', marginBottom: '0' }}>
         {[
           { id: 'approach',  label: 'Physics-Informed philosophy',  color: '#34D399' },
-          { id: 'evolution', label: 'Progression 32% → 87%',        color: '#F59E0B' },
+          { id: 'evolution', label: `Progression ${EVOLUTION[0].acc}% → ${EVOLUTION[EVOLUTION.length - 1].acc}%`, color: '#F59E0B' },
         ].map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{ background: tab === t.id ? `${t.color}12` : 'transparent', border: 'none', borderBottom: `2px solid ${tab === t.id ? t.color : 'transparent'}`, padding: '9px 16px', cursor: 'pointer', fontSize: '12px', fontWeight: tab === t.id ? '700' : '400', color: tab === t.id ? t.color : 'var(--ifm-font-color-base)', opacity: tab === t.id ? 1 : 0.5, borderRadius: '5px 5px 0 0', marginBottom: '-1px', transition: 'all 0.13s' }}>{t.label}</button>
         ))}
@@ -89,15 +121,16 @@ export default function PhysicsVsBlackBox() {
 
       <div style={{ background: 'var(--ifm-card-background-color)', border: '1px solid rgba(255,255,255,0.07)', borderTop: 'none', borderRadius: '0 0 10px 10px', padding: '20px' }}>
         {tab === 'approach' && (<div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>{APPROACHES.map((a) => <ApproachCard key={a.name} {...a} />)}</div>)}
+        <GaiaLeakNote run={ref} style={{ marginTop: '12px' }} />
         {tab === 'evolution' && (
           <>
             <div style={{ fontSize: '11px', opacity: 0.4, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>Hover each step · ★ = current reference version</div>
             <div style={{ display: 'grid', gridTemplateColumns: '32px 140px 60px 1fr 120px', gap: '12px', padding: '4px 14px 8px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
               {['#', 'Step', 'BA', 'Features', 'Model'].map((h) => (<div key={h} style={{ fontSize: '9.5px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.35, color: 'var(--ifm-font-color-base)' }}>{h}</div>))}
             </div>
-            {EVOLUTION.map((e) => <EvolutionStep key={e.step} {...e} />)}
+            {EVOLUTION.map((e) => <EvolutionStep key={e.step} {...e} run={undefined} />)}
             <div style={{ marginTop: '12px', padding: '10px 14px', background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
-              <strong style={{ color: '#F87171' }}>Counter-intuitive:</strong> the 84% → 87% improvement is achieved by <em>removing</em> features. <code>ra</code>, <code>dec</code>, <code>redshift</code> encoded LAMOST observational biases, not stellar physics.
+              <strong style={{ color: '#F87171' }}>Reading this table:</strong> balanced accuracy on each run's own test set ({generationLabel(ref)} for the reference run). Runs differ in sample size and feature set — not a controlled ablation.
             </div>
           </>
         )}

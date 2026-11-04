@@ -1,5 +1,19 @@
+// src/components/UMAPPredictions.jsx
+// Images UMAP colorées par prédiction XGBoost (figures G1). La confiance médiane et le modèle projeté
+// viennent du run UMAP/t-SNE de référence (runs.json : metrics.xgboost_projection).
+//
+// Usage : <UMAPPredictions />
+
 import React from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import GaiaLeakNote from './GaiaLeakNote';
+import { getReferenceRuns, getRun, fmt, shortName } from '@site/src/data/astrospectro';
+
+// La projection XGBoost peut n'être complète que dans un des runs UMAP/t-SNE du registre.
+const PROJ_RUN = getReferenceRuns('umap_tsne').find((r) => r.metrics.xgboost_projection && r.metrics.xgboost_projection.model_run)
+  || getReferenceRuns('umap_tsne')[0];
+const PROJ = PROJ_RUN.metrics.xgboost_projection;
+const PROJ_MODEL = PROJ && PROJ.model_run && getRun(PROJ.model_run);
 
 // Class positions in UMAP (approximate, for the annotation overlay)
 const CLASS_POSITIONS = [
@@ -290,9 +304,10 @@ export default function UMAPPredictions() {
             opacity: 0.8,
             lineHeight: 1.5,
           }}>
-            <strong style={{ color: '#34D399' }}>Median confidence 96.3%</strong><br/>
-            The XGBoost geography in UMAP is consistent with the unsupervised structure: supervised and unsupervised methods capture the <em>same physics</em>.
+            <strong style={{ color: '#34D399' }}>Median confidence {fmt.pct(PROJ.median_confidence)}</strong><br/>
+            {fmt.int(PROJ.n_predictions)} predictions{PROJ_MODEL ? <> of {PROJ_MODEL.label} ({shortName(PROJ_MODEL)})</> : null} projected on the PHY-3500 · G1 UMAP. The XGBoost geography in UMAP is consistent with the unsupervised structure: supervised and unsupervised methods capture the <em>same physics</em>.
           </div>
+          {PROJ_MODEL && <GaiaLeakNote run={PROJ_MODEL} />}
         </div>
       </div>
     </div>

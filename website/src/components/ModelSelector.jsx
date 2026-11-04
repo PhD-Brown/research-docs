@@ -1,7 +1,18 @@
+// src/components/ModelSelector.jsx
+// Grille des modèles de SpectralClassifier. Le badge du champion (XGBoost) affiche la balanced accuracy du
+// run de référence 'classifier' (runs.json) au lieu d'un « 87% BA » codé en dur.
+//
+// Usage : <ModelSelector />
+
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { getReferenceRun, fmt, shortName } from '@site/src/data/astrospectro';
+
+const REF = getReferenceRun('classifier');
+const CHAMPION_BADGE = `${fmt.pct(REF.metrics.balanced_accuracy)} BA · ${shortName(REF)}`;
 
 const MODELS = [
-  { key: '"XGBoost"',           algo: 'XGBClassifier',              desc: 'Tree gradient boosting — AstroSpectro pipeline champion',                               color: '#34D399', badge: '87% BA', champion: true,  tag: 'Champion' },
+  { key: '"XGBoost"',           algo: 'XGBClassifier',              desc: 'Tree gradient boosting — AstroSpectro pipeline champion',                               color: '#34D399', badge: CHAMPION_BADGE, champion: true,  tag: 'Champion' },
   { key: '"LightGBM"',          algo: 'LGBMClassifier',             desc: 'Leaf-wise gradient boosting — very fast on large datasets',                             color: '#38BDF8', badge: null,     tag: 'Fast' },
   { key: '"CatBoost"',          algo: 'CatBoostClassifier',         desc: 'Ordered gradient boosting — native handling of missing and categorical values',         color: '#F59E0B', badge: null,     tag: 'Robust' },
   { key: '"ExtraTrees"',        algo: 'ExtraTreesClassifier',        desc: 'Extremely randomised trees — very fast, good diversification',                         color: '#FBBF24', badge: null,     tag: 'Fast' },
@@ -41,6 +52,7 @@ export default function ModelSelector() {
         <strong style={{ color: '#34D399' }}>Switching models is trivial:</strong>
         {' '}<code>SpectralClassifier(model_type="LightGBM")</code> — the pipeline, tuning and W&B logging adapt automatically.
       </div>
+      <GaiaLeakNote run={REF} style={{ marginTop: '8px' }} />
     </div>
   );
 }

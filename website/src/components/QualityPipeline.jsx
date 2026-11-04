@@ -1,4 +1,13 @@
+// src/components/QualityPipeline.jsx
+// Étapes de filtrage qualité. Le N final vient du run PCA de référence (runs.json) ; « ~250k candidates »
+// n'a pas de source dans _facts (les comptes par étape de filtre n'y sont pas, FACTS_INDEX §5) : retiré.
+//
+// Usage : <QualityPipeline />
+
 import React from 'react';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+const PCA = getReferenceRun('pca');
 
 const PIPELINE = [
   {
@@ -49,14 +58,13 @@ export default function QualityPipeline() {
     <div style={{ margin: '24px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', padding: '12px 18px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '8px', marginBottom: '20px', fontFamily: "'JetBrains Mono', monospace", fontSize: '13px' }}>
         <span style={{ color: '#94A3B8' }}>Input:</span>
-        <span style={{ color: '#F59E0B', fontWeight: '700' }}>~250k</span>
         <span style={{ color: '#94A3B8', opacity: 0.5 }}>LAMOST DR5 candidates</span>
         <span style={{ margin: '0 6px', color: '#475569' }}>→→</span>
         <span style={{ color: '#94A3B8' }}>SNR</span>
         <span style={{ margin: '0 6px', color: '#475569' }}>→</span>
         <span style={{ color: '#94A3B8' }}>RUWE</span>
         <span style={{ margin: '0 6px', color: '#475569' }}>→→</span>
-        <span style={{ color: '#34D399', fontWeight: '700' }}>43,019</span>
+        <span style={{ color: '#34D399', fontWeight: '700' }}>{fmt.int(PCA.n)}</span>
         <span style={{ color: '#94A3B8', opacity: 0.5 }}>retained</span>
       </div>
 
@@ -73,9 +81,9 @@ export default function QualityPipeline() {
         <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#34D399', boxShadow: '0 0 0 3px rgba(52,211,153,0.25)', flexShrink: 0 }} />
         <div style={{ fontSize: '13px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
           Final dataset:{' '}
-          <strong style={{ color: '#34D399', fontFamily: 'monospace' }}>N = 43,019</strong>
-          {' '}spectra · <strong style={{ fontFamily: 'monospace' }}>p = 183</strong> features ·{' '}
-          matrix <strong style={{ fontFamily: 'monospace' }}>X ∈ ℝ^(43019 × 183)</strong>
+          <strong style={{ color: '#34D399', fontFamily: 'monospace' }}>N = {fmt.int(PCA.n)}</strong>
+          {' '}spectra · <strong style={{ fontFamily: 'monospace' }}>p = {PCA.p}</strong> features ·{' '}
+          matrix <strong style={{ fontFamily: 'monospace' }}>X ∈ ℝ^({PCA.n} × {PCA.p})</strong>
         </div>
       </div>
     </div>
