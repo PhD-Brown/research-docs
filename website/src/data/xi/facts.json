@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "registry": {
+    "protocol1b": {
+      "role": "**Protocole 1b — Pantheon+SH0ES + DESI DR2 BAO, run long final** (100 000 pas · 96 walkers)",
+      "dir": "results/protocol1b_pantheon_desi",
+      "status": "**Référence, mis en avant.** Toujours accompagné de la mention « exploratoire » et des limites (`results/caveats`)"
+    },
+    "protocol1": {
+      "role": "Protocole 1 — Pantheon+SH0ES seul",
+      "dir": null,
+      "status": "En comparaison, **figures seulement** (`figures/protocol1_pantheon_only/`) ; aucun chiffre publiable"
+    }
+  },
+  "protocols": {
+    "protocol1b": {
+      "dir": "results/protocol1b_pantheon_desi",
+      "label": "Protocol 1b — Pantheon+SH0ES + DESI DR2 BAO",
+      "data": {
+        "n_sne": 1590,
+        "n_sne_before_cut": 1701,
+        "z_min": 0.01016,
+        "z_max": 2.26137,
+        "n_bao": 13,
+        "n_total": 1603,
+        "rd_mpc": 147.09
+      },
+      "run": {
+        "nsteps": 100000,
+        "burn_in": 20000,
+        "nwalkers": 96,
+        "samples_kept": 7680000,
+        "command": "--nsteps 100000 --burn-in 20000 --nwalkers 96"
+      },
+      "models": {
+        "LCDM": {
+          "k": 2,
+          "params": {
+            "H0": {
+              "median": 73.861155,
+              "plus": 0.143825,
+              "minus": 0.145104,
+              "unit": "km/s/Mpc"
+            },
+            "Omega_m": {
+              "median": 0.236525,
+              "plus": 0.003536,
+              "minus": 0.003484,
+              "unit": ""
+            }
+          },
+          "chi2": 1554.165,
+          "aic": 1558.165,
+          "bic": 1568.924,
+          "delta_aic": 18.341,
+          "acceptance": 0.7154,
+          "chain_mb": 122.9
+        },
+        "CPL": {
+          "k": 4,
+          "params": {
+            "H0": {
+              "median": 73.880168,
+              "plus": 0.324075,
+              "minus": 0.314316,
+              "unit": "km/s/Mpc"
+            },
+            "Omega_m": {
+              "median": 0.271616,
+              "plus": 0.007255,
+              "minus": 0.008031,
+              "unit": ""
+            },
+            "w0": {
+              "median": -0.952521,
+              "plus": 0.07301,
+              "minus": 0.073049,
+              "unit": ""
+            },
+            "wa": {
+              "median": -1.182916,
+              "plus": 0.454179,
+              "minus": 0.456997,
+              "unit": ""
+            }
+          },
+          "chi2": 1531.824,
+          "aic": 1539.824,
+          "bic": 1561.343,
+          "delta_aic": 0.0,
+          "acceptance": 0.5937,
+          "chain_mb": 245.8
+        },
+        "Xi_osc": {
+          "k": 6,
+          "params": {
+            "H0": {
+              "median": 74.168826,
+              "plus": 0.350088,
+              "minus": 0.345396,
+              "unit": "km/s/Mpc"
+            },
+            "Omega_m": {
+              "median": 0.255881,
+              "plus": 0.006375,
+              "minus": 0.006123,
+              "unit": ""
+            },
+            "w0_mean": {
+              "median": -1.142355,
+              "plus": 0.044467,
+              "minus": 0.046118,
+              "unit": ""
+            },
+            "eps": {
+              "median": 0.184711,
+              "plus": 0.076844,
+              "minus": 0.086663,
+              "unit": ""
+            },
+            "T_Gyr": {
+              "median": 5.473208,
+              "plus": 3.595961,
+              "minus": 2.222862,
+              "unit": "Gyr"
+            },
+            "phi0": {
+              "median": -0.090217,
+              "plus": 2.459786,
+              "minus": 2.382394,
+              "unit": ""
+            }
+          },
+          "chi2": 1529.763,
+          "aic": 1541.763,
+          "bic": 1574.041,
+          "delta_aic": 1.939,
+          "acceptance": 0.1803,
+          "tau": {
+            "H0": 508.03340255,
+            "Omega_m": 513.55481915,
+            "w0_mean": 508.75242554,
+            "eps": 489.13313448,
+            "T_Gyr": 1503.75868987,
+            "phi0": 1250.12203409
+          },
+          "tau_max": 1503.75868987,
+          "tau_max_param": "T_Gyr",
+          "chain_mb": 368.6
+        }
+      },
+      "ranking": {
+        "best_aic": "CPL",
+        "lowest_chi2": "Xi_osc",
+        "best_bic": "CPL"
+      },
+      "eps": {
+        "median": 0.184711,
+        "plus": 0.076844,
+        "minus": 0.086663,
+        "sigma_sym": 0.0817535,
+        "significance": 2.2593650424752454,
+        "prior_max": 0.3,
+        "upper_1sigma": 0.261555
+      },
+      "convergence": {
+        "n_over_50": 2000.0,
+        "tau_max": 1503.75868987,
+        "margin": 1.330000626744774,
+        "criterion_met": true
+      }
+    }
+  },
+  "config": {
+    "source": {
+      "repo": "PhD-Brown/xi-dark-energy-bao-mcmc",
+      "commit": "25ed86e",
+      "file": "src/xi_protocol1b_bao_run.py"
+    },
+    "z_cut": 0.01,
+    "c_light_km_s": 299792.458,
+    "ngrid": 3000,
+    "priors": {
+      "H0": [
+        50.0,
+        100.0
+      ],
+      "Omega_m": [
+        0.1,
+        0.5
+      ],
+      "w0": [
+        -2.0,
+        0.0
+      ],
+      "wa": [
+        -3.0,
+        2.0
+      ],
+      "w0_mean": [
+        -1.5,
+        -0.5
+      ],
+      "eps": [
+        0.0,
+        0.3
+      ],
+      "T_Gyr": [
+        1.0,
+        10.0
+      ],
+      "phi0": [
+        "-pi",
+        "pi"
+      ]
+    },
+    "init_center": {
+      "LCDM": {
+        "H0": 70.0,
+        "Omega_m": 0.3
+      },
+      "CPL": {
+        "H0": 70.0,
+        "Omega_m": 0.3,
+        "w0": -1.0,
+        "wa": 0.0
+      },
+      "Xi_osc": {
+        "H0": 70.0,
+        "Omega_m": 0.3,
+        "w0_mean": -1.0,
+        "eps": 0.1,
+        "T_Gyr": 2.8,
+        "phi0": 0.0
+      }
+    },
+    "init_spread_fraction": 0.01,
+    "quick": {
+      "nsteps": 500,
+      "burn_in": 100,
+      "nwalkers": 32
+    },
+    "default": {
+      "nsteps": 5000,
+      "burn_in": 1000,
+      "nwalkers": 32
+    },
+    "xi_time_reference": {
+      "H0": 70.0,
+      "Omega_m": 0.3,
+      "T_cmb_K": 2.725
+    },
+    "convergence_factor": 50
+  },
+  "provenance": {
+    "results_dir": "results/protocol1b_pantheon_desi",
+    "log": "run_100000_96.tail.log",
+    "note": "facts.json est généré — ne pas éditer ; voir _facts/xi/FACTS_INDEX.md"
+  }
+}
