@@ -7,19 +7,14 @@ description: "The complete AstroSpectro workflow, from raw LAMOST spectra to cla
 
 {/* Complete for v1.0.0 release once graph is completed */}
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-
-# <FontAwesomeIcon icon={faProjectDiagram} /> Pipeline Overview
+# Pipeline Overview
 
 This page presents the complete workflow of the **AstroSpectro** project, from raw data acquisition to the generation of classification results. The pipeline is designed as a sequence of modular steps.
 
-### Workflow Diagram
+## Workflow diagram
 
 > The diagram below illustrates the main phases of the pipeline. Each phase is implemented by one or more specific modules in the source code.
 
-
-<div style={{textAlign: 'center', backgroundColor: 'var(--ifm-background-color-secondary)', padding: '1rem', borderRadius: 'var(--ifm-card-border-radius)'}}>
 
 ```mermaid
 ---
@@ -107,33 +102,21 @@ flowchart TD
 
 ```
 
-</div>
 
-### Phase Description
+## Phase description
 
-<div className="card-demo">
-<div className="card margin-bottom--md">
-<div className="card__header"><h4>1. Acquisition (Optional)</h4></div>
-<div className="card__body">
-The starting point. The ``SmartDownloader`` retrieves raw spectra from the **LAMOST** servers and stores them locally. It logs completed observation plans in ``downloaded_plans.csv`` to avoid redundant downloads.
-</div>
-</div>
-<div className="card margin-bottom--md">
-<div className="card__header"><h4>2. Session Preparation</h4></div>
-<div className="card__body">
-At each run, the ``DatasetBuilder`` selects a new batch of "fresh" spectra by consulting the ``trained_spectra.csv`` log. Then, a **local catalog** is generated from the **FITS** headers of this batch to ensure that the analysis is based on precise and up-to-date metadata.
-</div>
-</div>
-<div className="card margin-bottom--md">
-<div className="card__header"><h4>3. Processing and Modeling</h4></div>
-<div className="card__body">
-This is the core of the analysis. The ``ProcessingPipeline`` takes the batch of spectra and its local catalog, then executes the processing chain: preprocessing, line detection, and **extraction of a rich feature vector**. This feature dataset is then passed to the ``SpectralClassifier``, which handles **hyperparameter tuning** and **training** of the best model (``RandomForest`` or ``XGBoost``).
-</div>
-</div>
-<div className="card margin-bottom--md">
-<div className="card__header"><h4>4. Finalization</h4></div>
-<div className="card__body">
-Once the model has been trained, the pipeline concludes the session: the ``DatasetBuilder`` updates the ``trained_spectra.csv`` log with the spectra that have just been used. At the same time, the session **artifacts** (the ``.pkl`` model and a detailed *JSON* report) are saved in the ``data/models/`` and ``data/reports/`` folders for perfect traceability and reproducibility.
-</div>
-</div>
-</div>
+### 1. Acquisition (optional)
+
+The starting point. `SmartDownloader` retrieves raw spectra from the **LAMOST** servers and stores them locally. It logs completed observation plans in `downloaded_plans.csv` to avoid redundant downloads.
+
+### 2. Session preparation
+
+At each run, `DatasetBuilder` selects a new batch of unused spectra by consulting the `trained_spectra.csv` log. A **local catalogue** is then generated from the **FITS** headers of this batch, so the analysis relies on precise, up-to-date metadata.
+
+### 3. Processing and modelling
+
+`ProcessingPipeline` takes the batch and its local catalogue and runs the processing chain: preprocessing, line detection and extraction of the feature vector. The resulting feature table goes to `SpectralClassifier`, which handles hyperparameter tuning and training (the reference model is XGBoost; see [Model Card](../science/model-card.mdx)).
+
+### 4. Finalisation
+
+Once the model is trained, `DatasetBuilder` updates `trained_spectra.csv` with the spectra just used. The session artefacts (the `.pkl` model and a detailed JSON report) are saved in `data/models/` and `data/reports/` for traceability and reproducibility.
