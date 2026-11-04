@@ -74,11 +74,13 @@ is applied to the UMAP embedding with `min_cluster_size=75`, `min_samples=20`.
 | C13 | 4500–5000 K | ≈ 4.5 | Cool K dwarfs — clearest physical identity |
 | C11 | 5000–6000 K | ≈ 4.0–4.5 | G-K main sequence — dominant population |
 
-:::info Original astrophysical result
+:::info[Original astrophysical result]
+
 Without any label or log g information, UMAP organises spectra such that HDBSCAN
 **recovers the dwarf/subgiant distinction at fixed T_eff**. Clusters C19, C1, and C12
 are spectrally distinguished by strengthened Ca II lines and weakened Balmer lines —
 the signature of lower surface radiation pressure in giant atmospheres.
+
 :::
 
 | ![HDBSCAN clusters](/img/dimred/umap_hdbscan_clusters.png) | ![Clusters on HR diagram](/img/dimred/umap_hdbscan_hr.png) |

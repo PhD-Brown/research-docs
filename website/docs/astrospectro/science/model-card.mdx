@@ -8,8 +8,10 @@ import TabItem from '@theme/TabItem';
 
 # 🃏 Model Card — XGBoost Spectral Classifier
 
-:::info Run context
+:::info[Run context]
+
 **Experiment:** `ST_350k_xgb_AFGKM_v6` · **Saved:** `20260522T161236Z` · **Mode:** `spectro_only` + isotonic calibration
+
 :::
 
 This model card follows the format introduced by [Mitchell et al. (2019)](https://arxiv.org/abs/1810.03993). It documents the AstroSpectro XGBoost classifier for transparency, reproducibility, and to prevent misuse or overstatement of results.
@@ -74,6 +76,7 @@ This model card follows the format introduced by [Mitchell et al. (2019)](https:
 
 :::note
 F and G are the hardest classes — their spectral sequences overlap near the solar temperature (5500–6200 K), making the F↔G boundary physically ambiguous. This is not a model failure; see [F/G Confusion Analysis](./fg-confusion).
+
 :::
 
 ### Confusion matrix (normalized, test set)
@@ -99,8 +102,10 @@ F and G are the hardest classes — their spectral sequences overlap near the so
 | Purely spectroscopic contribution (SHAP) | 96.8% |
 | Top global feature | `feature_Mg_b_eq_width` (mean |SHAP| = 0.42) |
 
-:::warning spectro_only clarification
+:::warning[spectro_only clarification]
+
 Despite the flag `spectro_only=True` in this run, **6 Gaia photometric/astrometric features** were retained in the selected feature set. These account for 3.2% of total SHAP importance. The model is **predominantly** spectroscopic but not purely so. This distinction must be stated explicitly in any manuscript. See [spectro_only=True Mode](../concepts/spectro-only-mode) for the definition and [Data Leakage Audit](../concepts/data-leakage-audit) for the full feature audit.
+
 :::
 
 ---
@@ -129,8 +134,10 @@ Despite the flag `spectro_only=True` in this run, **6 Gaia photometric/astrometr
 - **Class distribution (test set):** A=3,738 · F=12,803 · G=21,902 · K=13,642 · M=8,862
 - **Train/test split:** 80/20 stratified
 
-:::caution Class imbalance
+:::caution[Class imbalance]
+
 The dataset is imbalanced (G class dominates at ~36%). The model uses balanced accuracy as the primary metric. Class-weighted evaluation is applied throughout.
+
 :::
 
 ---

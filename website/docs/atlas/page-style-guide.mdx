@@ -13,6 +13,7 @@ This guide defines **how a page is built and how it looks**. The [Editorial Guid
 
 :::info[Status]
 Version 2 (2026-11). Replaces `_internal/page-style-guide.v1.mdx`. The page templates and writing rules of v1 are kept; the visual layer is rewritten from the pages that actually ship today. v1 prescribed `<div className="stats-row">` and `<div className="summary-cards">` blocks: **no stylesheet defines these classes**, so they render as plain text. Do not use them.
+
 :::
 
 ---
@@ -343,7 +344,7 @@ The site defaults to dark mode but must read in light mode too.
 |---|---|
 | `<div className="stats-row">`, `summary-cards`, `summary-card accent-*` | No CSS defines them |
 | Raw Infima card grids (`card`, `card__header`, `col col--6`…) with FontAwesome icons | Inherited from the old French site; use a component instead |
-| `<UnderConstruction />` on a page with content | Use the `:::info Under construction` admonition (Editorial Guide §6.3) |
+| `<UnderConstruction />` on a page with content | Use the `:::info[Under construction]` admonition (Editorial Guide §6.3) |
 | Hard-coded numbers inside new components | Unverifiable; pass them as props from the page |
 | Images hot-linked from `phd-brown.github.io/AstroSpectro` | Breaks when the old site moves |
 | Wide Markdown tables (many columns, long cells or code) left bare | `src/css/custom.css` forces `.markdown table { display: table }`, which disables Infima's horizontal scrolling: on a phone the whole page overflows. Until that rule is fixed, keep tables short or wrap them in `<div style={{ overflowX: 'auto' }}>` (blank line after the opening tag and before `</div>`), as this page does |

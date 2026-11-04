@@ -14,10 +14,12 @@ from each preprocessed LAMOST spectrum. All features correspond to physically
 interpretable spectral properties — no positional, instrumental, or metadata features
 are included in `spectro_only=True` mode.
 
-:::info Design philosophy
+:::info[Design philosophy]
+
 Every feature in AstroSpectro can be computed by a spectroscopist working with only
 the stellar spectrum. No positional information, survey metadata, or Gaia-derived
 parameters are used in `spectro_only=True` mode.
+
 :::
 
 ---
@@ -119,6 +121,7 @@ match_CaIIK_prom, match_CaIIH_prom, match_Hbeta_EW, ...
 These `match_*` columns are the difference between the 174-feature FeatureEngineer output
 and the **canonical 183-feature** total. Always use `spectro_only=True` mode to ensure
 all 183 features are properly computed.
+
 :::
 
 ---
