@@ -22,7 +22,7 @@ t-SNE is applied to the same 91 PCA components with `perplexity=30`, `init='pca'
 - t-SNE excels at **sharp separation of discrete sub-populations**
 - UMAP better preserves **continuous gradients** (T_eff, [Fe/H])
 
-| ![t-SNE grid](https://phd-brown.github.io/AstroSpectro/img/dimred/tsne_grid.png) |
+| ![t-SNE grid](/img/dimred/tsne_grid.png) |
 |--|
 | *t-SNE projection coloured by spectral type, T_eff, log g, [Fe/H]* |
 
@@ -47,7 +47,7 @@ Both methods use stochastic gradient descent (SGD), making this result surprisin
 - `init='pca'` fixes an identical starting position across seeds
 - KL penalty only penalises close neighbours — less sensitive to distant structure
 
-| ![UMAP stability (4 seeds)](https://phd-brown.github.io/AstroSpectro/img/dimred/stability_umap.png) | ![t-SNE stability (4 seeds)](https://phd-brown.github.io/AstroSpectro/img/dimred/stability_tsne.png) |
+| ![UMAP stability (4 seeds)](/img/dimred/stability_umap.png) | ![t-SNE stability (4 seeds)](/img/dimred/stability_tsne.png) |
 |--|--|
 | *UMAP: dP ~ 0.030 — significant run-to-run variability* | *t-SNE: dP ~ 5×10⁻⁴ — 60× more stable* |
 
@@ -59,7 +59,7 @@ Above perplexity = 50, local structure blurs toward a UMAP-like gradient.
 
 **Recommended setting:** `perplexity=30` — optimal for N ≈ 43,000 spectra.
 
-![Perplexity sensitivity](https://phd-brown.github.io/AstroSpectro/img/dimred/tsne_sensitivity_perplexity.png)
+![Perplexity sensitivity](/img/dimred/tsne_sensitivity_perplexity.png)
 
 *t-SNE robustness across perplexity ∈ [15, 50]*
 
@@ -70,7 +70,7 @@ Above perplexity = 50, local structure blurs toward a UMAP-like gradient.
 ρ(t-SNE axis 1, T_eff) = **+0.623** — intermediate between PCA (0.831) and UMAP (0.464).
 The thermal gradient is visible on the HR diagram but with more local structure than PCA.
 
-![HR diagram t-SNE axis 1](https://phd-brown.github.io/AstroSpectro/img/dimred/hr_diagram_tsne_ax1.png)
+![HR diagram t-SNE axis 1](/img/dimred/hr_diagram_tsne_ax1.png)
 
 *HR diagram coloured by t-SNE axis 1 — thermal correlation in t-SNE space*
 
@@ -78,7 +78,7 @@ The thermal gradient is visible on the HR diagram but with more local structure 
 
 ## UMAP vs t-SNE side-by-side
 
-| | ![UMAP vs t-SNE](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_all_classes_pair.png) |
+| | ![UMAP vs t-SNE](/img/dimred/umap_all_classes_pair.png) |
 |--|--|
 | | *Continuous continent (UMAP) vs compact archipelago (t-SNE)* |
 

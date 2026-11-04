@@ -84,7 +84,7 @@ For each line, three measurements are extracted:
 Features: Ha_ew, Ha_prom, Ha_fwhm, Hb_ew, Hb_prom, Hb_fwhm, ...
 ```
 
-![Hα FWHM vs T_eff](https://phd-brown.github.io/AstroSpectro/img/dimred/ha_fwhm_vs_teff.png)
+![Hα FWHM vs T_eff](/img/dimred/ha_fwhm_vs_teff.png)
 
 *Hα FWHM vs Gaia DR3 T_eff — strong correlation confirming physical grounding*
 
@@ -99,7 +99,7 @@ They serve simultaneously as:
 
 These are the top SHAP-ranked features in the canonical model.
 
-![Ca II K vs metallicity](https://phd-brown.github.io/AstroSpectro/img/dimred/caIIK_prom_vs_mh.png)
+![Ca II K vs metallicity](/img/dimred/caIIK_prom_vs_mh.png)
 
 *Ca II K prominence vs Gaia DR3 [Fe/H] — physical correlation between top SHAP feature and metallicity*
 
@@ -120,7 +120,7 @@ For T_eff < ~4,000 K, molecular absorption bands become the dominant spectral fe
 
 ### SNR quality check
 
-![SNR quality check](https://phd-brown.github.io/AstroSpectro/img/dimred/snr_quality_check.png)
+![SNR quality check](/img/dimred/snr_quality_check.png)
 
 *SNR distribution across the 43,019-spectrum dataset — quality filtering at SNR_g > threshold*
 
@@ -128,7 +128,7 @@ For T_eff < ~4,000 K, molecular absorption bands become the dominant spectral fe
 
 ### Colour indices
 
-![Colour indices](https://phd-brown.github.io/AstroSpectro/img/dimred/color_indices.png)
+![Colour indices](/img/dimred/color_indices.png)
 
 *Synthetic colour indices (B−V, V−I, etc.) derived from the spectroscopic continuum*
 

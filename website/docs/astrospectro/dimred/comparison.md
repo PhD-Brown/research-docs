@@ -31,7 +31,7 @@ tags: [pca, umap, tsne, autoencoder, comparison]
 
 ## Synthesis figure
 
-![PCA/UMAP/AE synthesis](https://phd-brown.github.io/AstroSpectro/img/dimred/synthesis_pca_umap_ae.png)
+![PCA/UMAP/AE synthesis](/img/dimred/synthesis_pca_umap_ae.png)
 
 *Synthesis: three latent spaces side by side — same data, different geometries*
 

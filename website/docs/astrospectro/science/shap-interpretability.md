@@ -40,7 +40,7 @@ These results are **not contradictory** — they answer different questions.
 Temperature (Balmer) drives the most variance in spectral space.
 Metallicity (Ca II) is more discriminative for class boundary decisions.
 
-| ![SHAP comparison PCA vs XGBoost](https://phd-brown.github.io/AstroSpectro/img/dimred/class_feature_heatmap.png) |
+| ![SHAP comparison PCA vs XGBoost](/img/dimred/class_feature_heatmap.png) |
 |--|
 | *SHAP importance heatmap by feature × class — Ca II dominates A/F/G/K* |
 
@@ -64,7 +64,7 @@ Metallicity (Ca II) is more discriminative for class boundary decisions.
 **97.9 % of the top-30 features are physically interpretable spectroscopic features.**
 No positional, instrumental, or Gaia-derived feature appears in the top-30.
 
-| ![Top features SHAP](https://phd-brown.github.io/AstroSpectro/img/dimred/class_specific_importance.png) |
+| ![Top features SHAP](/img/dimred/class_specific_importance.png) |
 |--|
 | *Class-specific SHAP importance — top discriminating features per spectral type* |
 
@@ -87,7 +87,7 @@ No positional, instrumental, or Gaia-derived feature appears in the top-30.
 The correlation between Ca II K prominence (top SHAP feature) and Gaia DR3 [Fe/H]
 provides independent physical validation of the finding.
 
-![Ca II K vs metallicity](https://phd-brown.github.io/AstroSpectro/img/dimred/caIIK_prom_vs_mh.png)
+![Ca II K vs metallicity](/img/dimred/caIIK_prom_vs_mh.png)
 
 *Ca II K prominence vs Gaia DR3 [Fe/H] — physical correlation validates the SHAP finding*
 

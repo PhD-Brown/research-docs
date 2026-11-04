@@ -20,7 +20,7 @@ sequence (M → K → G → F → A) unfolds without supervision along the main 
 - The luminosity class (dwarfs vs giants) induces a visible topological bifurcation
   when coloured by log g
 
-![UMAP coloured by spectral type](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_classes.png)
+![UMAP coloured by spectral type](/img/dimred/umap_classes.png)
 
 *UMAP projection coloured by LAMOST spectral type — Harvard sequence emerges without supervision*
 
@@ -29,7 +29,7 @@ sequence (M → K → G → F → A) unfolds without supervision along the main 
 UMAP applied to data with randomly permuted columns → compact homogeneous cloud with
 no structure. The observed structure is of **physical origin**, not an algorithmic artefact.
 
-![Negative control](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_negative_control.png)
+![Negative control](/img/dimred/umap_negative_control.png)
 
 *Permuted features → no structure. Physical origin confirmed.*
 
@@ -81,11 +81,11 @@ are spectrally distinguished by strengthened Ca II lines and weakened Balmer lin
 the signature of lower surface radiation pressure in giant atmospheres.
 :::
 
-| ![HDBSCAN clusters](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_hdbscan_clusters.png) | ![Clusters on HR diagram](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_hdbscan_hr.png) |
+| ![HDBSCAN clusters](/img/dimred/umap_hdbscan_clusters.png) | ![Clusters on HR diagram](/img/dimred/umap_hdbscan_hr.png) |
 |--|--|
 | *20 HDBSCAN clusters · 6.14 % noise · C11 = 16,716 stars* | *Clusters on HR diagram: C19/C1/C12 = subgiants · C13 = K dwarfs* |
 
-| ![Feature heatmap per cluster](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_hdbscan_feature_heatmap.png) | ![Feature profiles](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_hdbscan_feature_profiles.png) |
+| ![Feature heatmap per cluster](/img/dimred/umap_hdbscan_feature_heatmap.png) | ![Feature profiles](/img/dimred/umap_hdbscan_feature_profiles.png) |
 |--|--|
 | *SHAP-weighted feature heatmap by cluster* | *Spectral feature profiles for each cluster* |
 
@@ -101,7 +101,7 @@ Hyperparameter sensitivity was assessed over: `n_neighbors` ∈ {5, 10, 15, 30, 
 - The dwarf/giant bifurcation appears consistently for `n_neighbors` ≥ 10
 - `min_dist = 0.1` offers the best balance between local and global structure
 
-![UMAP sensitivity n_neighbors](https://phd-brown.github.io/AstroSpectro/img/dimred/umap_sensitivity_n_neighbors.png)
+![UMAP sensitivity n_neighbors](/img/dimred/umap_sensitivity_n_neighbors.png)
 
 *UMAP sensitivity to n_neighbors parameter*
 
