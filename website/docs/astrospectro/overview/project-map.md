@@ -95,7 +95,7 @@ The package reads the feature CSV and the Gaia catalogue produced by the pipelin
 | `notebooks/04_shap_interpretability.ipynb` | SHAP analysis |
 | `notebooks/dimred/phy3500_01_pca.ipynb`, `…02_umap_tsne.ipynb`, `…03_autoencoder.ipynb` | PHY-3500 dimensionality-reduction analyses |
 | `app.py` | Imports `AstroVisualizer` and `setup_project_env` |
-| `scripts/` | Environment setup and clean-up scripts, and `export_doc_facts.py` (export of the facts pack used by this documentation) |
+| `scripts/` | Environment setup and clean-up scripts |
 
 ---
 
