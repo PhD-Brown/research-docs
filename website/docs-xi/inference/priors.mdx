@@ -10,8 +10,10 @@ import TabItem from '@theme/TabItem';
 
 This page documents the prior distributions used in the ξ Dark Energy inference pipeline. It exists because the posterior constraints, model comparison metrics, and physical interpretation are not reproducible unless the prior volume is explicitly stated.
 
-:::warning Current status
+:::warning[Current status]
+
 The bounds below are written as a documentation scaffold for the current exploratory analysis. Before any public release, verify every bound against the actual MCMC configuration file or sampling script used for the final run.
+
 :::
 
 ---
@@ -78,8 +80,10 @@ The exploratory ξ model introduces an oscillatory component in the dark-energy 
 | `T` | Oscillation period / timescale | Log-uniform or broad uniform | Must avoid artificially selecting one timescale |
 | `phi0` | Phase | Uniform over a full phase interval | Should not privilege a phase |
 
-:::caution Important v0.2 caveat
+:::caution[Important v0.2 caveat]
+
 The next version should test a **symmetric prior on `epsilon`** if the current implementation only allows positive amplitudes. A strictly positive amplitude can encode a phase convention or a physical asymmetry depending on the model definition. This must be stated explicitly.
+
 :::
 
 </TabItem>
@@ -103,7 +107,9 @@ The following table is a clean reporting format to preserve in the documentation
 | ξ | `phi0` | Uniform | `[−π, π]` or `[0, 2π]` | rad | Full phase coverage |
 
 :::tip
+
 Once the final MCMC config is stable, this table should be updated from code rather than manually edited. A small script can export the prior table from the sampler configuration to avoid documentation drift.
+
 :::
 
 ---

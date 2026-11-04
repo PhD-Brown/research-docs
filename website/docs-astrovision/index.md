@@ -25,8 +25,10 @@ sidebar_position: 1
 
 ## Key result
 
-:::info Central finding
+:::info[Central finding]
+
 DINOv2 visual representations encode physically meaningful galaxy structure —
 principal components of the DINOv2 feature space correlate with non-parametric
 morphometrics such as Gini coefficient and with photometric colour (R²=0.536 with g-r).
+
 :::

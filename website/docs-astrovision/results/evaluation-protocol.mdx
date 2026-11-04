@@ -7,8 +7,10 @@ description: "Evaluation protocol for AstroVision classification, uncertainty, c
 
 This page defines how AstroVision results should be evaluated, compared, and reported. Its role is to make the project reproducible and to prevent inconsistent comparisons between baseline CNNs, EfficientNet, DINOv2, and the late-fusion multimodal model.
 
-:::info Scope
+:::info[Scope]
+
 The protocol applies to all reported AstroVision classification results, including the current late-fusion benchmark, uncertainty analysis, Grad-CAM interpretation, segmentation-assisted morphometry, and future ablation studies.
+
 :::
 
 ---
@@ -39,8 +41,10 @@ Without this page, a reader can see the final score, but cannot easily know whet
 | Current headline result | **86.3% balanced accuracy** |
 | Key known weakness | Disturbed galaxies remain difficult, with approximately **0.53** class-level performance in the current analysis |
 
-:::warning Verification note
+:::warning[Verification note]
+
 Before a manuscript or public release, verify the exact split seed, class counts, and final metric values directly from the training logs and exported reports. This page is intended as the stable evaluation contract, not as a replacement for raw experiment artifacts.
+
 :::
 
 ---
@@ -90,8 +94,10 @@ This makes the score less dominated by common classes and more honest about weak
 | Confusion matrix | Required for every final benchmark. |
 | ROC-AUC / PR-AUC | Optional; useful for one-vs-rest analysis if probabilities are stable. |
 
-:::tip Reporting rule
+:::tip[Reporting rule]
+
 The landing page can show the single headline score, but the Results section should always show the confusion matrix and per-class scores next to the global metric.
+
 :::
 
 ---
@@ -131,8 +137,10 @@ AstroVision does not only need accurate predictions; it also needs reliable conf
 | Temperature Scaling | Post-hoc probability calibration |
 | Conformal prediction | Coverage-controlled prediction sets |
 
-:::warning Calibration finding
+:::warning[Calibration finding]
+
 The current documentation should explicitly preserve the counter-intuitive result that Temperature Scaling did not improve the late-fusion model in the current run. This should be treated as a result to report and investigate, not hidden as a failed technical detail.
+
 :::
 
 ### Recommended uncertainty figure set
@@ -171,7 +179,9 @@ Grad-CAM examples should include:
 - one sentence explaining whether the highlighted region is physically meaningful.
 
 :::caution
+
 A visually convincing Grad-CAM is not sufficient evidence that the model learned the correct physical concept. Use it as supporting evidence alongside quantitative metrics and failure cases.
+
 :::
 
 ---
