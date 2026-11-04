@@ -4,6 +4,11 @@ description: Writing and structure rules for Alex Baker · Research Documentatio
 sidebar_position: 4
 ---
 
+import RunFact from '@site/src/components/RunFact';
+
+{/* facts: examples of §5.1 and §14 read runs.json `classifier` (20260522T161236Z, v6, G2) — label, metrics.balanced_accuracy, n.test, classes, features.*.
+   Former text "87% … 43,019-spectrum" mixed G1 (dimred dataset) and a classifier metric: removed. */}
+
 # Editorial Guide
 
 > This page defines the permanent writing, structure, and maintenance rules for **Alex Baker · Research Documentation**.
@@ -168,10 +173,12 @@ Whenever possible, structure sections in this order:
 A metric must always be tied to its context.
 
 Bad:
-> 87% balanced accuracy
+> <RunFact path="metrics.balanced_accuracy" format="pct" /> balanced accuracy
 
 Better:
-> 87% balanced accuracy with XGBoost in `spectro_only=True` mode on the current 43,019-spectrum five-class AstroSpectro configuration.
+> <RunFact path="metrics.balanced_accuracy" format="pct" /> balanced accuracy with XGBoost (run <RunFact path="label" format="raw" />, `spectro_only=True`, five classes <RunFact path="classes" format="raw" />) on a test set of <RunFact path="n.test" /> spectra from the 350k-spectrum generation (G2). The run's <RunFact path="features.selected" /> selected features include Gaia/photometric columns — see the [Data Leakage Audit](./astrospectro/concepts/data-leakage-audit.mdx).
+
+Never attach a classifier metric to the 43,019-spectrum PHY-3500 dataset (G1): the classifier was not evaluated on it. Values of runs are written with `<RunFact />`, never typed (see the [page style guide](./atlas/page-style-guide.mdx) §5.2).
 
 ### Required context whenever relevant
 
@@ -500,13 +507,14 @@ Therefore:
 
 ## Example A — good results sentence
 
-> In the current AstroSpectro configuration, XGBoost reaches 87% balanced accuracy in `spectro_only=True` mode on the working five-class dataset.
+> In the reference AstroSpectro run (<RunFact path="label" format="raw" />, 350k-spectrum generation), XGBoost reaches <RunFact path="metrics.balanced_accuracy" format="pct" /> balanced accuracy on five classes in `spectro_only=True` mode; its features include <RunFact path="features.gaia_photometric.length" /> Gaia/photometric columns (see the Data Leakage Audit).
 
 Why this is good:
 - model named
 - metric named
 - mode named
-- scope implied
+- run and dataset named
+- known caveat stated
 
 ---
 

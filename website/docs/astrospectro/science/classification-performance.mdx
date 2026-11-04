@@ -1,9 +1,9 @@
 ---
 id: classification-performance
-title: XGBoost — comparison on the same 183 features
+title: XGBoost — Classification Performance
 sidebar_label: XGBoost — supervised comparison
 sidebar_position: 5
-description: "Results of the XGBoost classifier trained in spectro_only=True mode on the 183 LAMOST DR5 features. 87% balanced accuracy on 5 classes, median confidence 96.3%, geographic coherence in UMAP space."
+description: "Results of the reference XGBoost classifier (run v6, 350k-spectrum generation G2, five types A–M): balanced accuracy, macro F1 and ROC-AUC from runs.json, per-class performance, SHAP attribution — with the Gaia/photometric features it contains — and its qualitative link with the PHY-3500 UMAP study (G1)."
 tags: [xgboost, classification, supervised, umap, spectro-only, lamost, accuracy]
 ---
 
@@ -15,24 +15,34 @@ import PCAvsXGBoost from '@site/src/components/PCAvsXGBoost';
 import TrainingConfig from '@site/src/components/TrainingConfig';
 import UMAPPredictions from '@site/src/components/UMAPPredictions';
 import RelatedPages from '@site/src/components/RelatedPages';
+import RunFact from '@site/src/components/RunFact';
 
-# XGBoost — comparison on the same 183 features
+{/* facts:
+  G2 · runs.json `classifier` (20260522T161236Z, v6): label, n.*, features.*, metrics.*, md5, trained_on_file, id — session_report_xgboost_20260522T161236Z.json + _meta.json
+  G1 · runs.json `20260306T020848Z` (v5: metrics.balanced_accuracy, n.processed) and `umap_tsne` (xgboost_projection: v5 projected on G1) — PHY-3500 article context
+  Removed (no source / wrong context): "N = 43,019" attached to XGBoost, model 20260213T225019Z, "59 selected features", features_20251217T160120Z.csv, F/G range 5,500–6,200 K. */}
 
-This page documents the results of the supervised XGBoost classifier trained on the **same 183 spectroscopic features** used for PCA/UMAP/t-SNE dimensionality reduction. It establishes the link between the unsupervised approach (emergent structure in UMAP) and the supervised approach (classification with labels), demonstrating that both converge toward the same physical structure.
+# XGBoost — Classification Performance
+
+This page documents the results of the reference XGBoost classifier, run <RunFact path="label" format="raw" />, trained on the 350k-spectrum generation (**G2**: <RunFact path="n.processed" /> spectra processed, <RunFact path="features.selected" /> selected features, five types <RunFact path="classes" format="raw" />). It also describes how classifier predictions relate to the unsupervised UMAP structure of the PHY-3500 study — a qualitative comparison made on a different dataset (G1) with an earlier model.
 
 ## Key results
 
 <ClassifierMetrics />
 
+:::caution[Gaia leak in run v6]
+Run v6 (`ST_350k_xgb_AFGKM_v6`) was trained with `spectro_only` enabled, but its <RunFact run="20260522T161236Z" path="features.selected" /> selected features include <RunFact run="20260522T161236Z" path="features.gaia_photometric.length" /> Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`). Its metrics are therefore not purely spectroscopic; see the [Data Leakage Audit](../concepts/data-leakage-audit.mdx).
+:::
+
 ---
 
 ## Context and motivation
 
-The conclusion of the PHY-3500 article (Baker, Caillat & Jean, 28 April 2026) opens with this perspective:
+The conclusion of the PHY-3500 article (Baker, Caillat & Jean, 28 April 2026) uses an **earlier** classifier, run v5 (`ST_100k_xgb_AFGKM_v5`, <RunFact run="20260306T020848Z" path="n.processed" /> spectra processed), whose balanced accuracy on its own test set is <RunFact run="20260306T020848Z" path="metrics.balanced_accuracy" format="pct" />.
 
-> "An XGBoost classifier trained on the same 183 features achieves a balanced accuracy of 87% on five spectral types (A, F, G, K, M), with a median confidence of 96.3% for its predictions projected in UMAP space. The geographic coherence of XGBoost predictions in the projection confirms that the supervised classifier and unsupervised dimensionality reduction methods capture the same physical structure: projections are not only visualisation tools, but also qualitative validation spaces for supervised models."
+The article then projects the predictions of this model onto a different dataset. Its predictions, projected onto the UMAP embedding of the PHY-3500 dataset (**PHY-3500 · G1 · 43,019 spectra**), have a median confidence of <RunFact run="umap_tsne" path="metrics.xgboost_projection.median_confidence" format="pct" /> and follow the geography of the embedding. The article concludes that supervised and unsupervised methods capture the same physical structure, and that projections can serve as qualitative validation spaces for supervised models.
 
-This result is central to AstroSpectro: it demonstrates that the 183 *pure* spectral features (without Gaia, without `ra`/`dec`/`redshift`) are sufficient for high-performance classification.
+These v5 figures belong to that article and to G1; they are not the metrics of the reference run reported in *Key results*. Run v5 also includes a Gaia-derived column (`M_G`).
 
 ---
 
@@ -40,14 +50,9 @@ This result is central to AstroSpectro: it demonstrates that the 183 *pure* spec
 
 ### `spectro_only=True` mode
 
-This result is obtained in **`spectro_only=True`** mode of `SpectralClassifier` — i.e., using *only* spectral features, without any observational metadata or Gaia features.
+The reference run was trained with `spectro_only=True` in `SpectralClassifier`. The mode is meant to keep only flux-derived features; in addition to the columns that are always excluded (identifiers, `ra`/`dec`, `redshift`, `seeing`, SNR per band, GSP-Phot parameters, parallax, Gaia catalogue magnitudes), it removes every column whose name starts with a non-spectroscopic prefix (`parallax`, `phot_`, `bp_rp`, `teff`, `logg`, …).
 
-Variables excluded compared to the full model:
-- `ra`, `dec` (angular coordinates)
-- `redshift`, `seeing` (LAMOST observation conditions)
-- `parallax`, `bp_rp`, `teff_gspphot`, `logg_gspphot` and other Gaia columns
-
-This restriction guarantees that the model learns to classify stars from their **intrinsic physics** alone — the condition required for rigorous scientific publication and for application to data without Gaia cross-match.
+The exclusion is prefix-based, and the Gaia-derived columns `M_G`, `M_BP`, `M_RP` and `ag_gspphot` match none of the prefixes: they reached the selected features of the reference run (see the caution above and [Classification](../pipeline/classification.md#feature-columns-and-spectro_only)). The metrics below are therefore those of a mostly — not purely — spectroscopic model.
 
 ### Training data
 
@@ -73,9 +78,7 @@ clf.train_and_evaluate(features_df, spectro_only=True)
 
 ### F/G confusion — the trickiest boundary
 
-The main confusion of the model concentrates at the **F-G boundary** (5,500–6,200 K). These stars share similar Balmer and Ca II line widths, and the distinction relies on fine features (continuum asymmetry, Lick Mg b indices, Hβ). This ambiguity is visible in UMAP space: erroneous F/G predictions concentrate in the transition zone between the two populations — this is not a classifier error, but a reflection of **real physical continuity** in the spectral sequence.
-
-**Figure reference:** `umap_xgboost_FG_confusion.png`
+The main confusion of the reference run is between **F and G**: true F predicted G (<RunFact path="metrics.confusion_matrix.1.2" /> test spectra) and true G predicted F (<RunFact path="metrics.confusion_matrix.2.1" />), and these two classes have the lowest F1 scores (F <RunFact path="metrics.per_class.F.f1" format="num" />, G <RunFact path="metrics.per_class.G.f1" format="num" />). The two types are adjacent in temperature and differ by gradual changes in line strengths; on the PHY-3500 UMAP (G1, model v5), the disputed spectra lie in the transition zone between the two populations. Full analysis: [F/G Confusion Analysis](./fg-confusion.md).
 
 ---
 
@@ -83,7 +86,7 @@ The main confusion of the model concentrates at the **F-G boundary** (5,500–6,
 
 ### Principle of supervised/unsupervised cross-validation
 
-The UMAP projection of XGBoost predictions allows **qualitative validation** of the model: if the supervised classifier has learned the same physical structure as UMAP (unsupervised), predictions should follow the geography of the projection.
+This section uses the PHY-3500 dataset (**PHY-3500 · G1 · 43,019 spectra**) and the predictions of run v5, not the reference run. The UMAP projection of XGBoost predictions allows **qualitative validation** of a model: if the supervised classifier has learned the same physical structure as UMAP (unsupervised), predictions should follow the geography of the projection.
 
 ### Results
 
@@ -95,7 +98,7 @@ This direct correspondence between the emergent structure of UMAP (without label
 
 ## SHAP interpretability — which features decide?
 
-SHAP (*SHapley Additive exPlanations*) analysis on the `spectro_only=True` model reveals the actual importance of features in classifier decisions.
+SHAP (*SHapley Additive exPlanations*) analysis of the reference run shows which features drive its decisions: <RunFact run="shap" path="metrics.physical_share" format="pct" /> of the total mean \|SHAP\| goes to spectroscopic features and <RunFact run="shap" path="metrics.gaia_photometric_share" format="pct" /> to Gaia/photometric columns (share of total importance, not of the top-30).
 
 <SHAPTop10 />
 
@@ -103,7 +106,7 @@ SHAP (*SHapley Additive exPlanations*) analysis on the `spectro_only=True` model
 
 ## PCA vs XGBoost — two questions, two answers
 
-These two approaches seem contradictory (PCA finds temperature, XGBoost finds Ca II/metallicity) but are in fact complementary:
+PCA ranks features by the variance they carry, XGBoost by how much they help separate the classes; the two rankings answer different questions. The comparison below uses the PHY-3500 PCA (G1) and the SHAP run of the same generation (model v5):
 
 <PCAvsXGBoost />
 
@@ -124,9 +127,9 @@ This result is part of a coherent progression of the AstroSpectro project:
 ```python
 from src.pipeline.classifier import SpectralClassifier
 
-# Load the reference model
+# Load a saved model (<ts> = run identifier)
 clf = SpectralClassifier.load_model(
-    "data/models/spectral_classifier_xgboost_20260213T225019Z.pkl"
+    "data/models/spectral_classifier_xgboost_<ts>.pkl"
 )
 
 # Predict on new spectra (same feature format)
@@ -136,14 +139,16 @@ probabilities = clf.model_pipeline.predict_proba(X_new)
 
 ### Reference run metadata
 
-The reference run is documented in:
+Each run is documented by:
 ```
-data/reports/20260213T225019Z/
-├── spectral_classifier_xgboost_20260213T225019Z_meta.json
-└── spectral_classifier_xgboost_20260213T225019Z.pkl
+data/models/
+├── spectral_classifier_xgboost_<ts>.pkl
+└── spectral_classifier_xgboost_<ts>_meta.json
+data/reports/<ts>/
+└── session_report_xgboost_<ts>.json
 ```
 
-The meta JSON contains the final hyperparameters, the list of 59 selected features, class labels, and the training source file (`features_20251217T160120Z.csv`).
+For the reference run, `<ts>` = <RunFact path="id" format="raw" />. Its meta JSON contains the final hyperparameters, the <RunFact path="features.selected" /> selected features (out of <RunFact path="features.candidates" /> candidates), the class labels and the training file (<RunFact path="trained_on_file" format="raw" />); the session report records the model MD5 hash (<RunFact path="md5" format="raw" />). See [Reproducibility](../concepts/reproducibility.md).
 
 ---
 
@@ -164,9 +169,9 @@ The meta JSON contains the final hyperparameters, the list of 59 selected featur
   {
     href: '/docs/astrospectro/dimred/data-loader',
     title: 'PHY-3500 Dataset',
-    desc: 'The same N = 43,019 dataset · quality filters · standardisation',
+    desc: 'G1 dataset of the dimensionality-reduction study (not the classifier training set)',
     category: 'science',
-    badge: '43,019 spectra',
+    badge: 'G1',
   },
   {
     href: '/docs/astrospectro/guides/model-training',
@@ -175,7 +180,7 @@ The meta JSON contains the final hyperparameters, the list of 59 selected featur
     category: 'guides',
   },
   {
-    href: '../api/classifier',
+    href: '/docs/astrospectro/api/classifier',
     title: 'API — SpectralClassifier',
     desc: 'Complete class reference — methods, parameters, attributes',
     category: 'api',
