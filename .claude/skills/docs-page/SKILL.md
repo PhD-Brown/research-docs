@@ -9,6 +9,11 @@ description: Rédiger, compléter ou réécrire une page du site research-docs (
 
 - Pages du site **en anglais** (`editorial-guide.mdx` §4.2) ; documents internes du dépôt (racine, `.claude/`) en français.
 - **Tout chiffre vient de `_facts/`** via `FACTS_INDEX.md`. Pas de chiffre de mémoire, ni recopié d'une autre page ou d'un composant sans l'avoir retrouvé dans `_facts/`.
+- **Aucun chiffre de run codé en dur dans une page** (décision n° 4) : les métriques d'un run passent par un composant
+  qui lit `runs.json` (catalogue `docs-component`) ou, dans la prose, par `<RunFact run="classifier" path="metrics.balanced_accuracy" format="pct" />`
+  (`import RunFact from '@site/src/components/RunFact';`). Ainsi un nouveau run (skill `docs-new-run`) met la page à
+  jour sans la réécrire. Exceptions : constantes instrumentales/physiques, et tableaux historiques explicitement datés
+  (citer le run dans la ligne).
 - Ne pas modifier d'autres pages ni des composants que la tâche ne vise pas. Si une correction ailleurs est nécessaire (lien, chiffre), la signaler dans le compte rendu.
 - Le code source vit dans `PhD-Brown/AstroSpectro` (lecture seule) ; `AstroVision` et `xi-dark-energy-bao-mcmc` pour les autres projets.
 
@@ -57,7 +62,7 @@ Règles qui reviennent le plus souvent :
 
 - Le commentaire MDX `{/* facts: … */}` (invisible) liste les fichiers de `_facts/` utilisés : il sert à la relecture et à la mise à jour.
 - Chaque métrique avec son contexte : modèle, mode (`spectro_only`), N, classes, run (editorial-guide §5.1). Préciser *accuracy* vs *balanced accuracy*.
-- Décisions éditoriales (`CLAUDE.md`) : v6 toujours cité avec la mention de fuite Gaia (formulation : `FACTS_INDEX.md` §1.1) ; v7 jamais mis en avant ; pages dimred étiquetées « PHY-3500 · G1 · 43,019 spectra » ; courriel `albak1@ulaval.ca`.
+- Décisions éditoriales (`CLAUDE.md`) : v6 toujours cité avec la mention de fuite Gaia (formulation : `FACTS_INDEX.md` §1.1 ; composant `<GaiaLeakNote />`) ; v7 jamais mis en avant ; pages dimred étiquetées « PHY-3500 · G1 · 43,019 spectra » ; courriel `albak1@ulaval.ca`.
 - Résultat → interprétation → réserve (editorial-guide §5.2) ; « suggests » / « confirms » selon le [Claims Register](../../../website/docs/atlas/claims-register.mdx).
 - Composants : choisir dans `.claude/skills/docs-component/catalog.md` ; un composant aux chiffres marqués ❌ n'est pas réutilisé tel quel.
 - Figures : chemins locaux `/img/...` (copier depuis `_facts/` vers `website/static/img/<projet>/` si besoin, en réutilisant les chemins déjà publiés listés dans `_facts/astrospectro/MANIFEST.md`).

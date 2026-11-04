@@ -100,7 +100,7 @@ Chemins cible relatifs à `website/docs/`. « Dette » = liens hérités de l'an
 
 1. **API** : fusionner `docs/api/*.mdx` (FR) → `astrospectro/api/*.md` (EN), puis supprimer le doublon `docs/api/` (publié, non référencé, en français, 1 lien cassé, 1 avertissement HTML).
 2. **Community** : contributing + FAQ (contenu complet disponible), puis roadmap et acknowledgements.
-3. **Liens hérités** : 59 occurrences (page × lien) sur les pages `astrospectro/*` pointent vers des routes inexistantes, la plupart héritées de l'ancien site (`science/*`, `user-guides/*`) ; ils sont invisibles pour `docusaurus build` car rendus par `RelatedPages` / `<a href>`. Corriger page par page avec `check-links.mjs`.
+3. **Liens hérités** : 59 occurrences (page × lien) sur les pages `astrospectro/*` pointent vers des routes inexistantes, la plupart héritées de l'ancien site (`science/*`, `user-guides/*`) ; ils sont invisibles pour `docusaurus build` car rendus par `RelatedPages` / `<a href>`. Corriger page par page avec `check-links.mjs`. **Corrigés le 2026-11-04** (PR « fondations ») : routes absolues `/docs/astrospectro/…` dans les props, liens de fichier dans la prose ; `check-links.mjs` : 0.
 
 ---
 

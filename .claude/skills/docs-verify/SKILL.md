@@ -5,7 +5,7 @@ description: Vérifie une modification du site research-docs avant commit ou PR 
 
 # docs-verify
 
-Quatre contrôles, dans cet ordre. Une page n'est « prête » que si les quatre passent (ou si chaque écart est justifié dans le rapport).
+Quatre contrôles, dans cet ordre (plus `python3 scripts/build_runs_data.py --check` si `_facts/`, le registre de `FACTS_INDEX.md` ou `runs.json` ont changé). Une page n'est « prête » que si les quatre passent (ou si chaque écart est justifié dans le rapport).
 
 Prérequis : Node ≥ 18, dépendances installées (`cd website && npm ci`), Python 3, Playwright + Chromium
 (`require('playwright')` ; sinon `npm i -D playwright && npx playwright install chromium`).
@@ -23,16 +23,19 @@ node .claude/skills/docs-verify/scripts/check-links.mjs /tmp/rd-main/website/bui
 git worktree remove --force /tmp/rd-main
 ```
 
-État connu de `main` au 2026-11-03 (`npm run build` **passe**, `[SUCCESS]`) :
+État connu de `main` après la PR « fondations » (2026-11-04 ; `npm run build` **passe**, `[SUCCESS]`) :
 
-| Avertissement | Détail |
+| Avertissement / contrôle | Détail |
 |---|---|
 | Browserslist | `caniuse-lite` vieux de 7 mois (informatif) |
 | Critical dependency | `vscode-languageserver-types/lib/umd/main.js` (dépendance de Mermaid) |
-| SSG — minifieur HTML (6 pages) | `/docs/api/classifier`, `/docs/astrospectro/guides/{downloading-data, feature-extraction, quick-start ×2, visualization}` : `</p>` orphelin ; `/docs/astrospectro/concepts` : titre dans un titre + `</h1>` orphelin |
-| Liens cassés globaux (toutes les pages) | `/research-docs/blog` (navbar `to: "/blog"` alors que `routeBasePath: "Blog"`) et `/research-docs/journal` (footer) |
-| Liens cassés propres à une page (12) | `atlas/claims-register` ×6 (`../astrovision/…`, `../xi-dark-energy/…`), `astrovision/community/citing` (`../../atlas/claims-register`), `astrospectro/concepts` (`../docs/api`), `astrospectro/dimred` et `science/results-analysis` (`./pca-physical-interpretation`), `dimred/data-loader` (`../user-guides/downloading-data`), `astrospectro/guides` (`/docs/concepts`) |
-| `check-links.mjs` | 59 liens cassés uniques (dont les 2 globaux) — la plupart dans des `<a href>` de composants que Docusaurus ne voit pas |
+| SSG — minifieur HTML | aucun (les 6 pages en erreur ont été corrigées) |
+| Liens cassés (Docusaurus) | aucun |
+| `check-links.mjs` | 0 lien interne cassé (≈ 9 170 vérifiés) |
+| Captures (`screenshots.cjs`) | problèmes préexistants : débordements mobiles de grilles de composants (`science/classification-performance` 36 px, `science/results-analysis` 144 px, `dimred` 144 px, `dimred/pca` 63 px, `guides/model-training` 119 px, `data/feature-dataset` 593 px) et images de `guides/quick-start` (916 px) ; erreur React #418 (hydratation) sur `docs/astrospectro/dimred` |
+
+Avant cette PR (référence historique, 2026-11-03) : 6 pages SSG en erreur, liens globaux `/research-docs/blog` et
+`/research-docs/journal` cassés, 59 liens cassés uniques selon `check-links.mjs`.
 
 ## 1. Build
 
@@ -67,7 +70,8 @@ node .claude/skills/docs-verify/scripts/screenshots.cjs docs/astrospectro/dimred
 - 4 captures pleine page par route dans `.screenshots/` (ignoré par git) : `<route>.{desktop,mobile}.{light,dark}.png`.
 - Le script signale : thème non appliqué, erreurs console/exceptions JS, ressources locales manquantes, images cassées, débordement horizontal (avec l'élément fautif).
 - **Regarder les images** (outil Read) : au minimum le haut de page et chaque composant, en clair **et** en sombre. Points de contrôle : bordures `rgba(255,255,255,…)` invisibles en clair, fonds sombres codés en dur, texte illisible (ex. ligne `featured` de `CrossReferences` en sombre), cartes qui débordent en mobile.
-- Connu et non bloquant : les tableaux Markdown larges débordent en mobile sur **toutes** les pages (`custom.css` force `.markdown table { display: table }`) ; les ressources externes (Google Fonts, CDN KaTeX) peuvent échouer hors ligne → simple avertissement.
+- Tableaux Markdown larges : en dessous de 997 px ils défilent dans leur propre bloc (`custom.css`) ; un débordement de page signalé en mobile vient donc d'un composant ou d'une image. Les ressources externes (Google Fonts, CDN KaTeX) peuvent échouer hors ligne → simple avertissement.
+- Composants à données (`grep -l "src/data/astrospectro" website/src/components/*.jsx`) : après une régénération de `runs.json`, capturer leurs pages d'exemple (skill `docs-new-run`).
 
 ## 4. Chiffres contre `_facts/`
 
