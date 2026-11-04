@@ -22,6 +22,12 @@ export const baLabel = `${fmt.pct(getReferenceRun('classifier').metrics.balanced
 
 # Dimensionality Reduction — PCA, UMAP, t-SNE
 
+:::note[Dataset]
+
+**PHY-3500 · G1 · 43,019 spectra** — All dimensionality-reduction results in this section (PCA, UMAP, t-SNE, HDBSCAN, autoencoder) come from the PHY-3500 runs on this dataset; the G2 runs are not published here.
+
+:::
+
 This page documents the comparison of three dimensionality reduction methods applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra. It covers the algorithmic foundations of each method, their hyperparameters, quantitative results and stability comparison across independent runs.
 
 :::info[Central question]

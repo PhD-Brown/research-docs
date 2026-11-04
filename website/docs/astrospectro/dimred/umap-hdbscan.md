@@ -7,6 +7,12 @@ tags: [umap, hdbscan, clustering, lamost, spectroscopy]
 
 # UMAP & HDBSCAN Clustering
 
+:::note[Dataset]
+
+**PHY-3500 · G1 · 43,019 spectra** — UMAP / HDBSCAN results: run `phy3500_umap_tsne_run_20260405T214233Z` (timings, seeds) and its summary `phy3500_umap_tsne_run_20260430T215407Z` (HDBSCAN). Nothing on this page comes from the G2 runs.
+
+:::
+
 ## UMAP projection
 
 UMAP is applied to the first **91 PCA components** (95 % variance threshold) with:

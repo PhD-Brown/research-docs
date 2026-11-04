@@ -7,6 +7,12 @@ tags: [pca, umap, tsne, autoencoder, comparison]
 
 # PCA vs UMAP vs t-SNE vs AE — Comparison
 
+:::note[Dataset]
+
+**PHY-3500 · G1 · 43,019 spectra** — PCA run `phy3500_pca_run_20260408T012751Z`, UMAP / t-SNE run `phy3500_umap_tsne_run_20260405T214233Z`, autoencoder run `phy3500_autoencoder_run_20260405T220839Z`. Nothing on this page comes from the G2 runs.
+
+:::
+
 ## Quantitative comparison
 
 | Metric | PCA | UMAP | t-SNE | Autoencoder |
