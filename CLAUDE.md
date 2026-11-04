@@ -29,7 +29,6 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 | `website/` | Projet Docusaurus (toutes les commandes npm se lancent ici) |
 | `website/docs/` | Instance principale : accueil, `astrospectro/`, `atlas/`, `editorial-guide.mdx` |
 | `website/docs-astrovision/`, `website/docs-xi/` | Instances `astrovision` (route `/astrovision`) et `xi-dark-energy` (route `/xi-dark-energy`) |
-| `website/docs/_archive/` | Copie FR de l'ancien site AstroSpectro — exclue du build (préfixe `_`), source pour la migration |
 | `website/src/components/` | Composants MDX : racine (AstroSpectro et transverses), `astrovision/` (`Fact`, `FactTable`, `FactBars`, `FactCards`, `ClassTable`…), `xi/` (`Fact`, `KeyMetrics`, `ParameterTable`, `PriorTable`…) → catalogue : `.claude/skills/docs-component/catalog.md` |
 | `website/src/data/astrospectro/` | `runs.json` (**généré**, ne pas éditer) + `index.js` (accès : `getReferenceRun`, `fmt`…) — source des chiffres de run des composants |
 | `website/src/data/astrovision/`, `website/src/data/xi/` | `facts.json` (**généré**, ne pas éditer) + `index.js` — source des composants `<Fact k="…" />` des instances AstroVision et ξ |
@@ -48,8 +47,6 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 | Fichier | Contenu |
 |---|---|
 | `FACTS_INDEX.md` | AstroSpectro : runs de référence et fichier/clé exacts pour chaque chiffre clé ; chiffres du site sans source. AstroVision et ξ : `_facts/astrovision/FACTS_INDEX.md`, `_facts/xi/FACTS_INDEX.md` |
-| `STUBS.md` | État final : plus aucune page `UnderConstruction` ; rappel de la syntaxe de l'admonition pour une page partielle |
-| `MIGRATION_MAP.md` | Migration de l'ancien site AstroSpectro **terminée** (ancien site fermé, redirections en place) ; conservé comme table de correspondance ancienne route → page actuelle |
 | `website/docs/atlas/page-style-guide.mdx` | Gabarits par type de page + couche visuelle (composants, admonitions, galeries, thème) |
 | `website/docs/editorial-guide.mdx` | Règles d'écriture, pages canoniques, contexte des métriques |
 
@@ -57,7 +54,7 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 
 | Skill | Quand |
 |---|---|
-| `docs-page` | Écrire / réécrire / migrer une page (dont remplacer un stub) |
+| `docs-page` | Écrire / compléter / réécrire une page |
 | `docs-component` | Choisir ou créer un composant ; catalogue complet dans `catalog.md` |
 | `docs-verify` | Avant tout commit : build, liens (`check-links.mjs`), captures Playwright (`screenshots.cjs`), chiffres (`check_facts.py`) |
 | `docs-new-run` | Nouveau run AstroSpectro : export `_facts` → registre → `build_runs_data.py` → docs-verify |

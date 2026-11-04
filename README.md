@@ -93,7 +93,6 @@ research-docs/
 │   ├── export_doc_facts.py        # Export a facts pack from a local project checkout
 │   └── build_*_data.py            # Build the data layers from _facts/
 ├── FACTS_INDEX.md                 # Registry: which file/key every published number comes from
-├── STUBS.md · MIGRATION_MAP.md    # Documentation status and migration record
 ├── CLAUDE.md · .claude/skills/    # Conventions and procedures for AI-assisted editing
 └── .github/workflows/deploy.yml
 ```
