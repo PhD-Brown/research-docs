@@ -27,7 +27,11 @@ Rows are sorted by AIC; the first row has the lowest AIC. ΔAIC is relative to i
 ## Definitions
 
 $$
-\mathrm{AIC} = \chi^2 + 2k, \qquad \mathrm{BIC} = \chi^2 + k\ln N, \qquad N = N_{\mathrm{SNe}} + N_{\mathrm{BAO}}
+\mathrm{AIC} = \chi^2 + 2k
+$$
+
+$$
+\mathrm{BIC} = \chi^2 + k\ln N, \qquad N = N_{\mathrm{SNe}} + N_{\mathrm{BAO}}
 $$
 
 k is the number of free parameters (<Fact path="models.LCDM.k" /> for ΛCDM, <Fact path="models.CPL.k" /> for CPL, <Fact path="models.Xi_osc.k" /> for Ξosc).

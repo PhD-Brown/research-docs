@@ -457,3 +457,10 @@ body[data-docs-slug='/'] li {
   max-width: 100%;
   height: auto;
 }
+
+/* Équations en bloc : défilement horizontal plutôt que débordement de la page (mobile). */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
