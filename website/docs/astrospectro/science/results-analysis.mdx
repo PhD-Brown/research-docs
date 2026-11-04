@@ -3,7 +3,7 @@ id: results-analysis
 title: Results Analysis
 sidebar_label: Results Analysis
 sidebar_position: 3
-description: "Complete AstroSpectro results: dimensionality reduction (PCA, UMAP, t-SNE, HDBSCAN), supervised XGBoost classification (87% balanced accuracy, ROC-AUC ~0.964) and SHAP validation (97.9% physical features in top-30)."
+description: "AstroSpectro results in two separate studies: unsupervised dimensionality reduction (PCA, UMAP, t-SNE, HDBSCAN) on the PHY-3500 dataset (G1, 43,019 spectra), and the reference XGBoost classifier with its SHAP attribution on the 350k-spectrum generation (G2, run v6, which includes Gaia/photometric features)."
 tags: [results, pca, umap, tsne, hdbscan, xgboost, shap, lamost]
 ---
 
@@ -18,16 +18,26 @@ import ClassifierMetrics from '@site/src/components/ClassifierMetrics';
 import ProgressionPipeline from '@site/src/components/ProgressionPipeline';
 import PCAvsXGBoost from '@site/src/components/PCAvsXGBoost';
 import PCAVarianceMilestones from '@site/src/components/PCAVarianceMilestones';
+import RunFact from '@site/src/components/RunFact';
+
+{/* facts:
+  G2 · runs.json `classifier` (20260522T161236Z, v6): label, n.processed, features.* — session_report_xgboost_20260522T161236Z.json
+  G2 · runs.json `shap` (logs/shap/features_20260522T153123Z/01_data_leak): physical_share, gaia_photometric_share, top30_physical
+  G1 · runs.json `shap/features_20260305T174836Z` (v5): physical_share — origin of the former "97.9 %"
+  Axis 1 (dimred, G1) numbers are unchanged by this revision and still typed in the prose: to convert to RunFact in a later pass.
+  Removed: "87% balanced accuracy", "ROC-AUC ~0.964" (no source), "97.9% of the 30 most important features" (wrong definition), XGBoost "on the same 183 spectral features". */}
 
 # Results Analysis
 
-This page presents the results obtained by the AstroSpectro pipeline on N = 43,019 LAMOST DR5 × Gaia DR3 spectra described by p = 183 spectroscopic features. Results cover two complementary axes: unsupervised analysis through dimensionality reduction (PCA, UMAP, t-SNE, HDBSCAN) and supervised classification (XGBoost with SHAP validation).
+This page presents the results of the AstroSpectro pipeline along two complementary axes that use **different datasets**. The unsupervised analysis (PCA, UMAP, t-SNE, HDBSCAN) runs on the PHY-3500 dataset: N = 43,019 LAMOST DR5 × Gaia DR3 spectra described by p = 183 spectroscopic features (**PHY-3500 · G1 · 43,019 spectra**). The supervised classification (XGBoost with SHAP attribution) is the reference run <RunFact path="label" format="raw" /> on the 350k-spectrum generation (**G2**, <RunFact path="n.processed" /> spectra processed).
 
 <ResultsHero />
 
 ---
 
 ## Axis 1 — Unsupervised dimensionality reduction
+
+*PHY-3500 · G1 · 43,019 spectra.*
 
 ### PCA — The linear baseline
 
@@ -136,11 +146,17 @@ export const tsneFigures = [
 
 ## Axis 2 — Supervised XGBoost classification
 
+*G2 · reference run <RunFact path="label" format="raw" />.*
+
 ### Global performance (`spectro_only=True` mode)
 
-The XGBoost classifier trained on the **same 183 spectral features** (without Gaia, without `ra`/`dec`/`redshift`) achieves:
+The reference classifier is trained on the 350k-spectrum generation, not on the PHY-3500 dataset: <RunFact path="features.candidates" /> candidate columns, <RunFact path="features.selected" /> selected features, five types <RunFact path="classes" format="raw" />. On its test set it achieves:
 
 <ClassifierMetrics />
+
+:::caution[Gaia leak in run v6]
+Run v6 (`ST_350k_xgb_AFGKM_v6`) was trained with `spectro_only` enabled, but its <RunFact run="20260522T161236Z" path="features.selected" /> selected features include <RunFact run="20260522T161236Z" path="features.gaia_photometric.length" /> Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`). Its metrics are therefore not purely spectroscopic; see the [Data Leakage Audit](../concepts/data-leakage-audit.mdx).
+:::
 
 ### Historical pipeline progression
 
@@ -148,7 +164,7 @@ The XGBoost classifier trained on the **same 183 spectral features** (without Ga
 
 ### Supervised / unsupervised coherence
 
-The geographic distribution of XGBoost predictions in UMAP space is coherent with the emergent unsupervised structure: A-type stars in a hot "peninsula", G at the centre, K at the cool periphery. Both approaches capture the **same physical structure** — the UMAP projection is a qualitative validation space for the classifier.
+This comparison uses the PHY-3500 UMAP (G1) and the predictions of an earlier model (run v5), not the reference run. The geographic distribution of XGBoost predictions in UMAP space is coherent with the emergent unsupervised structure: A-type stars in a hot "peninsula", G at the centre, K at the cool periphery. Both approaches capture the **same physical structure** — the UMAP projection is a qualitative validation space for the classifier.
 
 export const xgbFigures = [
   { src: '/img/dimred/umap_xgboost_predictions.png',   title: 'XGBoost predictions in UMAP', desc: 'Geographic coherence supervised/unsupervised', tag: 'XGBoost' },
@@ -163,28 +179,33 @@ export const xgbFigures = [
 
 ### Central result
 
-SHAP (*SHapley Additive exPlanations*) analysis on the `spectro_only=True` model reveals that **97.9% of the 30 most important features are physical spectral features**. This is the **central scientific validation** of the AstroSpectro pipeline: the model has learned to classify stars using exactly the same spectroscopic information that astrophysicists use manually.
+*G2 · SHAP of the reference run.*
+
+SHAP (*SHapley Additive exPlanations*) analysis of the reference run attributes <RunFact run="shap" path="metrics.physical_share" format="pct" /> of the total mean \|SHAP\| to spectroscopic features and <RunFact run="shap" path="metrics.gaia_photometric_share" format="pct" /> to Gaia/photometric columns; <RunFact run="shap" path="metrics.top30_physical" /> of the 30 most important features are spectroscopic. This suggests that the model classifies stars mainly from the same spectroscopic information that astrophysicists use, with a small but non-zero contribution of the leaked Gaia columns. (The figure of <RunFact run="shap/features_20260305T174836Z" path="metrics.physical_share" format="pct" /> quoted on older pages is the same share of total importance for run v5, G1.) Details: [Scientific Validation](./validation.md) and [SHAP Interpretability](./shap-interpretability.md).
 
 <SHAPTop10 />
 
 ### PCA vs XGBoost — two complementary questions
 
+PCA ranks features by the variance they carry, SHAP by how much they help separate the classes. To keep both sides on the same data, this comparison uses the PHY-3500 PCA and the SHAP run of the same generation (**G1**, model v5), not the reference run:
+
 <PCAvsXGBoost />
 
 ### Top SHAP features per class
 
-| Class | Dominant features | Physical interpretation |
+Leading features per class in the reference run (read from the per-class SHAP figure of `logs/shap/features_20260522T153123Z/01_data_leak/`, G2):
+
+| Class | Leading features (mean \|SHAP\| per class) | Physical interpretation |
 |:---:|:---|:---|
-| **A** | Hα EW weak, Hβ FWHM broad | Very broad Balmer lines — hot stars |
-| **F** | Intermediate Hα EW, moderate Ca II K | Balmer → Ca II transition |
-| **G** | Strong Ca II K + H, Mg b | Metallicity + solar temperature |
-| **K** | Very strong Ca II K, nascent TiO | Cool metal-rich stars |
-| **M** | TiO/VO/CaH bands, weak Balmer | Molecular band signatures |
+| **A** | Ca II K EW, G4300 index, CN index, Hβ index | Weak metal lines and strong Balmer lines of hot stars |
+| **F** | Mg b EW, Na D EW, continuum curvature | Onset of metal lines as temperature decreases |
+| **G** | Mg I 5184 EW, CNO index, Hα/Hβ EW ratio | Gradual metal-line growth, weakening Balmer lines |
+| **K** | Mg b EW, Hα EW, deep-red continuum slope | Strong metal lines, red continuum |
+| **M** | CaH2 index, deep-red slope, continuum RMS, TiO5 | Molecular band signatures |
 
 export const shapFigures = [
-  { src: '/img/dimred/class_feature_heatmap.png',       title: 'Feature heatmap per class', desc: 'Relative SHAP importance — Ca II dominates A/F/G/K', tag: 'SHAP' },
-  { src: '/img/dimred/class_specific_importance.png',   title: 'Class-specific importance', desc: 'Top discriminating features for each spectral type', tag: 'SHAP' },
-  { src: '/img/dimred/caIIK_prom_vs_mh.png',            title: 'Ca II K prominence vs [Fe/H]', desc: 'Correlation of Ca II K with Gaia DR3 metallicity', tag: 'SHAP' },
+  { src: '/img/astrospectro/shap_20260522T153123Z_01_data_leak_class_specific_importance.png', title: 'Class-specific importance', desc: 'G2 · SHAP of the reference run v6 — top features per spectral type', tag: 'SHAP · G2' },
+  { src: '/img/astrospectro/shap_20260522T153123Z_01_data_leak_beeswarm_per_class.png', title: 'Beeswarm per class', desc: 'G2 · SHAP of the reference run v6 — direction of each feature effect', tag: 'SHAP · G2' },
 ];
 
 <FigureGallery figures={shapFigures} columns={3} />
@@ -193,13 +214,15 @@ export const shapFigures = [
 
 ## Limitations and next steps
 
-**Class imbalance:** Galaxies (56) and QSOs (7) are too rare for HDBSCAN analysis and are not included in the 5-class classification.
+**Class imbalance:** in the PHY-3500 dataset (G1), galaxies (<RunFact run="pca" path="class_counts.GALAXY" />) and QSOs (<RunFact run="pca" path="class_counts.QSO" />) are too rare for HDBSCAN analysis. The classifier (G2) works on the stellar types <RunFact path="classes" format="raw" /> only.
+
+**Gaia leak:** the reference classifier includes Gaia/photometric features; a fully spectroscopic reference run is still to be completed (see [Current Status](../overview/current-status.md)).
 
 **Intrinsic dimensionality:** The 91 components needed for 95% variance indicate that spectral diversity is genuinely high-dimensional. The 2D projection is an extreme compression (183 → 2), and the emergence of the Harvard sequence in these two dimensions is a non-trivial result.
 
 **Next steps:**
 - Characterisation of the 20 HDBSCAN clusters by cross-matching with rare object catalogues (variable stars, RGB giants, spectroscopic binaries)
-- Large-scale Optuna optimisation on the ~139k available FITS files
+- Systematic hyperparameter optimisation (Optuna) on the full generation
 - Anomaly analysis: intersection of HDBSCAN noise ∩ top 1% MSE autoencoder
 - Extension to LAMOST DR10 (~10⁷ spectra) or SDSS
 
@@ -222,9 +245,9 @@ export const shapFigures = [
   {
     href: '/docs/astrospectro/science/classification-performance',
     title: 'XGBoost — supervised comparison',
-    desc: 'Complete 87% results · SHAP · UMAP coherence',
+    desc: 'Reference run metrics · SHAP · UMAP coherence',
     category: 'science',
-    badge: '87% BA',
+    badge: 'G2',
   },
   {
     href: '/docs/astrospectro/data/feature-dataset',
