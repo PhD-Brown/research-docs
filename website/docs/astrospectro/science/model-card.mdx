@@ -5,6 +5,9 @@ description: Standardized model card for the AstroSpectro XGBoost stellar classi
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import RunFact from '@site/src/components/RunFact';
+
+{/* facts: runs.json classifier (features.selected, features.candidates, features.gaia_photometric), shap (metrics.gaia_photometric_share, metrics.physical_share, metrics.top) · FACTS_INDEX §1.1, §3 */}
 
 # 🃏 Model Card — XGBoost Spectral Classifier
 
@@ -24,7 +27,7 @@ This model card follows the format introduced by [Mitchell et al. (2019)](https:
 |---|---|
 | **Model type** | XGBoost (`XGBClassifier`) wrapped in `CalibratedClassifierCV` (isotonic) |
 | **Task** | 5-class stellar spectral classification: A / F / G / K / M |
-| **Input** | 99 selected spectroscopic + Gaia features (from 207 candidates) |
+| **Input** | <RunFact path="features.selected" /> selected spectroscopic + Gaia/photometric features (from <RunFact path="features.candidates" /> candidates) |
 | **Output** | Calibrated class probabilities + predicted class label |
 | **Training set** | 229,274 spectra |
 | **Test set** | 60,947 spectra |
@@ -48,7 +51,7 @@ This model card follows the format introduced by [Mitchell et al. (2019)](https:
 | `tree_method` | `hist` |
 | `random_state` | 42 |
 | Calibration | Isotonic regression (`CalibratedClassifierCV`) |
-| Feature selection | Variance + correlation filtering; 207 → 99 features |
+| Feature selection | Variance + correlation filtering; <RunFact path="features.candidates" /> → <RunFact path="features.selected" /> features |
 
 ---
 
@@ -95,16 +98,16 @@ F and G are the hardest classes — their spectral sequences overlap near the so
 
 | Property | Value |
 |---|---|
-| Candidate features engineered | 207 |
-| Features selected (after filtering) | 99 |
+| Candidate features engineered | <RunFact path="features.candidates" /> |
+| Features selected (after filtering) | <RunFact path="features.selected" /> |
 | Primary family | Spectroscopic line descriptors |
-| Gaia / photometric features included | Yes — M_BP, M_G, M_RP, ag_gspphot, bp-g, g-rp (≈ 3.2% of SHAP importance) |
-| Purely spectroscopic contribution (SHAP) | 96.8% |
-| Top global feature | `feature_Mg_b_eq_width` (mean |SHAP| = 0.42) |
+| Gaia / photometric features included | Yes — <RunFact path="features.gaia_photometric.length" /> columns grouped as "Gaia / Photometric" by SHAP (M_BP, M_G, M_RP, ag_gspphot; <RunFact run="shap" path="metrics.gaia_photometric_share" format="pct" /> of SHAP importance), plus two broadband-colour columns (`feature_bp_g`, `feature_g_rp`) filed under "Colour" |
+| Purely spectroscopic contribution (SHAP) | <RunFact run="shap" path="metrics.physical_share" format="pct" /> |
+| Top global feature | `feature_Mg_b_eq_width` (mean \|SHAP\| = <RunFact run="shap" path="metrics.top.0.mean_abs_shap" format="num" digits={2} />) |
 
 :::warning[spectro_only clarification]
 
-Despite the flag `spectro_only=True` in this run, **6 Gaia photometric/astrometric features** were retained in the selected feature set. These account for 3.2% of total SHAP importance. The model is **predominantly** spectroscopic but not purely so. This distinction must be stated explicitly in any manuscript. See [spectro_only=True Mode](../concepts/spectro-only-mode) for the definition and [Data Leakage Audit](../concepts/data-leakage-audit) for the full feature audit.
+Despite the flag `spectro_only=True` in this run, **<RunFact path="features.gaia_photometric.length" /> Gaia photometric/astrometric columns** (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`) were retained in the selected feature set. They account for <RunFact run="shap" path="metrics.gaia_photometric_share" format="pct" /> of total SHAP importance. Two further broadband-colour columns, `feature_bp_g` and `feature_g_rp`, are also selected; SHAP files them under "Colour" (spectroscopic), so they are outside that share, but they are non-spectroscopic in origin. The model is **predominantly** spectroscopic but not purely so. This distinction must be stated explicitly in any manuscript. See [spectro_only=True Mode](../concepts/spectro-only-mode) for the definition and [Data Leakage Audit](../concepts/data-leakage-audit) for the full feature audit.
 
 :::
 
@@ -153,7 +156,7 @@ The test set is held out from all training, calibration, and feature selection s
 1. **Survey-specific features:** The model was trained on LAMOST R~1800 spectra. Transfer to higher-resolution surveys (APOGEE, GALAH) requires retraining.
 2. **No subtype resolution:** The model classifies into 5 main MK types only.
 3. **SHAP replication:** The Mg b dominance finding has not been replicated on an independent dataset.
-4. **Gaia dependency:** 6 Gaia features are used — this requires a Gaia cross-match for any new spectra.
+4. **Gaia dependency:** <RunFact path="features.gaia_photometric.length" /> Gaia/photometric columns (plus two broadband colours) are used — this requires a Gaia cross-match for any new spectra.
 5. **Rare classes excluded:** B, C (carbon), D (white dwarf), S, W (Wolf-Rayet) stars are not classified.
 
 ---
