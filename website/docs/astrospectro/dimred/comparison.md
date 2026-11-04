@@ -5,6 +5,10 @@ sidebar_position: 8
 tags: [pca, umap, tsne, autoencoder, comparison]
 ---
 
+import RunFact from '@site/src/components/RunFact';
+
+{/* facts: runs.json pca (metrics.reconstruction_mse), umap_tsne (metrics.umap_fit_time_s, tsne_fit_time_s), autoencoder (metrics.mse, metrics.fit_time_s) · FACTS_INDEX §0 */}
+
 # PCA vs UMAP vs t-SNE vs AE — Comparison
 
 :::note[Dataset]
@@ -17,10 +21,10 @@ tags: [pca, umap, tsne, autoencoder, comparison]
 
 | Metric | PCA | UMAP | t-SNE | Autoencoder |
 |--------|-----|------|-------|-------------|
-| **Reconstruction MSE (K=2)** | 0.696 | — | — | ~0.55 |
+| **Reconstruction MSE (K=2)** | <RunFact run="autoencoder" path="metrics.pca_mse_2" format="num" digits={3} /> | — | — | <RunFact run="autoencoder" path="metrics.mse" format="num" digits={3} /> |
 | **ρ(axis 1, T_eff)** | **+0.831** | +0.464 | +0.623 | N/A |
 | **Procrustes stability dP** | 0 (exact) | 3.0 × 10⁻² | **5.0 × 10⁻⁴** | — |
-| **CPU time (Ryzen 9 5950X)** | < 1 s | 40.1 s | 80.2 s | ~5 min |
+| **CPU time (Ryzen 9 5950X)** | < 1 s | <RunFact run="umap_tsne" path="metrics.umap_fit_time_s" format="seconds" /> | <RunFact run="umap_tsne" path="metrics.tsne_fit_time_s" format="seconds" /> | <RunFact run="autoencoder" path="metrics.fit_time_s" format="seconds" /> |
 | **Parametric** | ✓ | Partial | ✗ | ✓ |
 | **Non-linear** | ✗ | ✓ | ✓ | ✓ |
 | **Interpretable axes** | ✓ | ✗ | ✗ | ✗ |
