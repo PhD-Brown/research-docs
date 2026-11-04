@@ -22,7 +22,7 @@ import RunFact from '@site/src/components/RunFact';
 | Metric | PCA | UMAP | t-SNE | Autoencoder |
 |--------|-----|------|-------|-------------|
 | **Reconstruction MSE (K=2)** | <RunFact run="autoencoder" path="metrics.pca_mse_2" format="num" digits={3} /> | — | — | <RunFact run="autoencoder" path="metrics.mse" format="num" digits={3} /> |
-| **ρ(axis 1, T_eff)** | **+0.831** | +0.464 | +0.623 | N/A |
+| **ρ(axis 1, T_eff)** | **+0.831** | +0.464 | — | <RunFact run="autoencoder" path="metrics.latent_spearman.teff_gspphot.0" format="signed" digits={3} /> |
 | **Procrustes stability dP** | 0 (exact) | 3.0 × 10⁻² | **5.0 × 10⁻⁴** | — |
 | **CPU time (Ryzen 9 5950X)** | < 1 s | <RunFact run="umap_tsne" path="metrics.umap_fit_time_s" format="seconds" /> | <RunFact run="umap_tsne" path="metrics.tsne_fit_time_s" format="seconds" /> | <RunFact run="autoencoder" path="metrics.fit_time_s" format="seconds" /> |
 | **Parametric** | ✓ | Partial | ✗ | ✓ |
