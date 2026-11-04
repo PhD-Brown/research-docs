@@ -71,6 +71,12 @@ These <RunFact path="features.gaia_photometric.length" format="int" /> features 
 
 Two further broadband-colour columns, `feature_bp_g` (BP−G) and `feature_g_rp` (G−RP), are also among the selected features. The SHAP table files them under the "Colour" family as spectroscopic, so they are **not** included in the share above; they correlate strongly with T<sub>eff</sub> and are non-spectroscopic in origin. Both are absent from the partial validation run v7.
 
+:::info[Status of the fix]
+
+Fixed in the code with an explicit list of Gaia/photometric columns (the 22 columns absent from v7). v7 was trained with this fix, but no complete spectro-only reference run exists yet. The v6 figures on this page therefore describe the reference run as it was trained, not the current code.
+
+:::
+
 ### Are these leakage?
 
 Strictly speaking, no — they do not encode the label directly. However:
@@ -102,5 +108,5 @@ To verify the exclusion was effective:
 
 - [ ] Clarify the definition of `spectro_only=True` in the manuscript methods section
 - [ ] Explicitly state that M_BP, M_G, M_RP and ag_gspphot are retained (3.2% SHAP), together with the broadband colours bp_g and g_rp
-- [ ] Decide whether to run a fully spectroscopic-only ablation (remove all Gaia/photometric features, including bp_g and g_rp) for a clean comparison
+- [ ] Run a complete spectro-only reference run with the fixed code (v7 was trained with the fix but is partial) for a clean comparison with v6
 - [ ] Update `spectro-only-mode.mdx` to reflect the v6 definition

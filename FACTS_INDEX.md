@@ -105,6 +105,13 @@ Le pack contient **deux générations de features** ; le site actuel mélange le
 > contient ni statistiques de cross-match ni journal SHAP rattaché explicitement à v7). Ses métriques peuvent figurer
 > dans une page de limitations ou dans l'audit de fuite, à titre de comparaison avec v6, jamais dans un bloc
 > *Key results*, un hero ou un résumé.
+>
+> **Statut du correctif** (information de l'auteur, 2026-11-04) : corrigé dans le code (`src/pipeline/classifier.py`) par une
+> liste explicite des colonnes Gaia/photométriques (les 22 colonnes absentes de v7 ci-dessous) ; v7 a été entraîné avec ce
+> correctif, mais aucun run de référence complet spectro-only n'existe encore. Formulation du site (EN) : « Fixed in the code
+> with an explicit list of Gaia/photometric columns (the 22 columns absent from v7). v7 was trained with this fix, but no
+> complete spectro-only reference run exists yet. » Le correctif n'est pas vérifiable dans `_facts/` (le pack exporte les
+> rapports, pas `classifier.py`) ; à relire dans le dépôt de code lors du prochain export.
 
 | Fichier | `data/reports/20260525T191109Z/session_report_xgboost_20260525T191109Z.json` (+ `_meta.json`, figures ROC/PR/calibration/feature_importance) |
 |---|---|

@@ -41,11 +41,11 @@ Metrics: [Classification Performance](../science/classification-performance.mdx)
 
 Run v6 (`ST_350k_xgb_AFGKM_v6`) was trained with `spectro_only` enabled, but its <RunFact run="20260522T161236Z" path="features.selected" /> selected features include <RunFact run="20260522T161236Z" path="features.gaia_photometric.length" /> Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`). Its metrics are therefore not purely spectroscopic; see the [Data Leakage Audit](../concepts/data-leakage-audit.mdx).
 
-The cause is in the code: the `spectro_only` exclusion works by column-name prefixes, and the Gaia-derived columns do not match any of them (see [Classification](../pipeline/classification.md#feature-columns-and-spectro_only)).
+The cause was in the code: the `spectro_only` exclusion worked by column-name prefixes, and the Gaia-derived columns did not match any of them (see [Classification](../pipeline/classification.md#feature-columns-and-spectro_only)). Fixed in the code with an explicit list of Gaia/photometric columns (the 22 columns absent from v7). v7 was trained with this fix, but no complete spectro-only reference run exists yet.
 
-### Validation of the fix is incomplete
+### No complete spectro-only reference run yet
 
-A validation run with the Gaia/photometric columns removed exists (<RunFact run="classifier_validation" path="label" format="raw" />). It is **partial**: according to the author, its Gaia cross-match is incomplete and its SHAP analysis was not completed. It is therefore not used as a reference and its metrics are not reported as results.
+The fix is in the code, and the validation run v7 (<RunFact run="classifier_validation" path="label" format="raw" />) was trained with it, without the Gaia/photometric columns. That run is **partial**: according to the author, its Gaia cross-match is incomplete and its SHAP analysis was not completed. It is therefore not used as a reference and its metrics are not reported as results. No complete spectro-only reference run exists yet, so the reference classifier is still v6, with its Gaia columns.
 
 ### Two data generations
 
@@ -69,7 +69,7 @@ These items are intentions; none of them has published results yet.
 - **A complete spectroscopic-only reference run** — retrain with the corrected exclusion list on the full generation, with a complete Gaia cross-match and a full SHAP analysis, and use it to replace v6 as the reference.
 - **Hyperparameter optimisation** — a systematic search (Optuna is the planned tool) instead of reusing the parameters of an earlier run.
 - **Dimensionality reduction on G2** — decide whether the PHY-3500 study is extended to the larger generation.
-- **Publication** — a short manuscript on the classifier is in preparation; the leak correction above is a prerequisite.
+- **Publication** — a short manuscript on the classifier is in preparation; a complete spectro-only reference run (the code fix is in place) is a prerequisite.
 
 See the [Roadmap](../community/roadmap.md) and [Limitations](../science/limitations.md).
 

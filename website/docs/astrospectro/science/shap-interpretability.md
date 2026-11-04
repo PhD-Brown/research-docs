@@ -120,7 +120,7 @@ The two analyses use different data (PCA: G1; SHAP: the v6 run on G2) and answer
 3. **Single train/test split:** Bootstrapped SHAP stability across multiple splits
    has not been assessed in the current version.
 
-4. **Gaia/photometric columns:** The reference model includes four Gaia/photometric features (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`). A SHAP analysis of a model without them is not available: the validation run v7 is partial. See the [Data Leakage Audit](../concepts/data-leakage-audit.mdx).
+4. **Gaia/photometric columns:** The reference model includes four Gaia/photometric features (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`). A SHAP analysis of a model without them is not available: v7 was trained without them, but that run is partial and no complete spectro-only reference run exists yet. See the [Data Leakage Audit](../concepts/data-leakage-audit.mdx).
 :::
 
 ---
