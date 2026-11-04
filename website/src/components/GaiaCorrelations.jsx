@@ -82,7 +82,7 @@ export default function GaiaCorrelations({ run }) {
         ))}
       </div>
 
-      <div style={{ border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', overflow: 'hidden' }}>
+      <div style={{ border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr 1fr', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <div style={{ padding: '10px 14px', fontSize: '11px', fontWeight: '700', opacity: 0.5, color: 'var(--ifm-font-color-base)' }}>Gaia DR3 Parameter</div>
           <div style={{ padding: '10px 6px', fontSize: '11px', fontWeight: '700', opacity: 0.5, textAlign: 'center', color: 'var(--ifm-font-color-base)' }}>Unit</div>
@@ -108,7 +108,7 @@ export default function GaiaCorrelations({ run }) {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '14px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '10px', marginTop: '14px' }}>
         <div style={{ padding: '10px 14px', background: 'rgba(56,189,248,0.06)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
           <strong style={{ color: '#38BDF8' }}>PC1 = thermal axis</strong> — ρ(Teff) = {fmt.signed(CORRELATIONS[0].rho1)}. Continuous Teff gradient (hot A-F stars on the right, cool K-M on the left).
         </div>

@@ -140,6 +140,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "category", label: "Community",
       items: [
+        "astrospectro/community/index",
         "astrospectro/community/roadmap",
         "astrospectro/community/contributing",
         "astrospectro/community/citing",

@@ -1,0 +1,11 @@
+/* Cartes d'éléments à 4 raies ou plus : deux colonnes de la grille, sauf sur mobile.
+ * `grid-column: span 2` en ligne créait une 2e colonne implicite dans la grille à une colonne (débordement de 593 px). */
+.large {
+  grid-column: span 2;
+}
+
+@media (max-width: 640px) {
+  .large {
+    grid-column: span 1;
+  }
+}

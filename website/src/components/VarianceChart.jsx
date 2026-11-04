@@ -4,6 +4,9 @@
 // Le pack de faits n'exporte que PC1–PC10 (variance_summary_top10) et MSE(k) pour k ≤ 50 : l'ancienne
 // version affichait des valeurs « approximatives » pour PC3–PC20 (FACTS_INDEX §6), retirées.
 //
+// Thème : bordures, pistes et barres neutres via les variables --ifm-color-emphasis-* (lisibles en clair et en sombre) ;
+// les barres sont des enfants à hauteur en % d'un conteneur de hauteur fixe (80 px) : la colonne doit donc avoir height:100%.
+//
 // Usage :
 //   <VarianceChart />                             // run PCA de référence (registre FACTS_INDEX.md)
 //   <VarianceChart run="phy3500_pca_run_…" />
@@ -43,44 +46,45 @@ export default function VarianceChart({ run: runProp }) {
     <div style={{ margin: '28px 0' }}>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
         gap: '16px',
       }}>
         {/* Left: bar chart of individual variance */}
         <div style={{
           background: 'var(--ifm-card-background-color)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          border: '1px solid var(--ifm-color-emphasis-300)',
           borderRadius: '10px',
           padding: '18px',
         }}>
-          <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.4, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
+          <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.7, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
             Individual variance — PC1 to PC{PC_VARIANCES.length}
           </div>
 
           {/* Bars */}
-          <div style={{ display: 'flex', gap: '3px', alignItems: 'flex-end', height: '80px', marginBottom: '8px' }}>
+          <div style={{ display: 'flex', gap: '3px', alignItems: 'flex-end', height: '80px', marginBottom: '8px', borderBottom: '1px solid var(--ifm-color-emphasis-400)', background: 'var(--ifm-color-emphasis-100)', borderRadius: '4px 4px 0 0', padding: '0 2px' }}>
             {PC_VARIANCES.map((v, i) => {
               const isHov = hovPc === i;
               const isTop2 = i < 2;
               const height = (v / maxVar) * 100;
-              const color = i === 0 ? '#38BDF8' : i === 1 ? '#F59E0B' : `rgba(148,163,184,${0.6 - i * 0.02})`;
+              const color = i === 0 ? '#38BDF8' : i === 1 ? '#F59E0B' : 'var(--ifm-color-emphasis-600)';
               return (
                 <div
                   key={i}
                   onMouseEnter={() => setHovPc(i)}
                   onMouseLeave={() => setHovPc(null)}
                   title={`PC${i+1}: ${v}%`}
-                  style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', cursor: 'default' }}
+                  style={{ flex: 1, height: '100%', position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', cursor: 'default' }}
                 >
                   {isHov && (
                     <div style={{
+                      position: 'absolute', left: '50%', bottom: `calc(${height}% + 2px)`, transform: 'translateX(-50%)',
                       fontSize: '9px', fontFamily: 'monospace', textAlign: 'center',
-                      color: color, marginBottom: '2px', whiteSpace: 'nowrap',
+                      color: color, whiteSpace: 'nowrap', zIndex: 1,
                     }}>{v}%</div>
                   )}
                   <div style={{
                     height: `${height}%`,
-                    background: isHov ? color : (isTop2 ? color : 'rgba(148,163,184,0.35)'),
+                    background: isHov || isTop2 ? color : 'var(--ifm-color-emphasis-500)',
                     borderRadius: '2px 2px 0 0',
                     transition: 'background 0.1s',
                     minHeight: '2px',
@@ -98,7 +102,7 @@ export default function VarianceChart({ run: runProp }) {
                 fontSize: '8px',
                 textAlign: 'center',
                 color: i < 2 ? (i === 0 ? '#38BDF8' : '#F59E0B') : 'var(--ifm-font-color-base)',
-                opacity: i < 2 ? 0.9 : (i % 5 === 4 ? 0.4 : 0.15),
+                opacity: i < 2 ? 0.9 : (i % 5 === 4 ? 0.7 : 0.4),
                 fontFamily: 'monospace',
                 fontWeight: i < 2 ? '700' : '400',
               }}>
@@ -126,11 +130,11 @@ export default function VarianceChart({ run: runProp }) {
         {/* Right: cumulative thresholds */}
         <div style={{
           background: 'var(--ifm-card-background-color)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          border: '1px solid var(--ifm-color-emphasis-300)',
           borderRadius: '10px',
           padding: '18px',
         }}>
-          <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.4, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
+          <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.7, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
             Cumulative-variance thresholds requiring K components
           </div>
 
@@ -140,8 +144,8 @@ export default function VarianceChart({ run: runProp }) {
               return (
                 <div key={t.pct} style={{
                   padding: '10px 12px',
-                  background: t.highlighted ? `${t.color}0e` : 'rgba(255,255,255,0.02)',
-                  border: `1px solid ${t.highlighted ? t.color + '44' : 'rgba(255,255,255,0.05)'}`,
+                  background: t.highlighted ? `${t.color}14` : 'var(--ifm-color-emphasis-100)',
+                  border: `1px solid ${t.highlighted ? t.color + '66' : 'var(--ifm-color-emphasis-200)'}`,
                   borderRadius: '7px',
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', alignItems: 'center' }}>
@@ -155,11 +159,11 @@ export default function VarianceChart({ run: runProp }) {
                         fontWeight: '800',
                         color: t.color,
                       }}>K = {t.k}</span>
-                      <span style={{ fontSize: '10px', opacity: 0.45, color: 'var(--ifm-font-color-base)' }}>/ {p}</span>
+                      <span style={{ fontSize: '10px', opacity: 0.7, color: 'var(--ifm-font-color-base)' }}>/ {p}</span>
                     </div>
                   </div>
                   {/* Bar */}
-                  <div style={{ height: '5px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ height: '5px', background: 'var(--ifm-color-emphasis-200)', borderRadius: '3px', overflow: 'hidden' }}>
                     <div style={{
                       width: `${barWidth}%`,
                       height: '100%',
@@ -168,7 +172,7 @@ export default function VarianceChart({ run: runProp }) {
                       opacity: 0.8,
                     }} />
                   </div>
-                  <div style={{ fontSize: '10px', opacity: 0.4, marginTop: '4px', color: 'var(--ifm-font-color-base)' }}>
+                  <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '4px', color: 'var(--ifm-font-color-base)' }}>
                     {barWidth.toFixed(0)}% of components used
                   </div>
                 </div>
@@ -195,7 +199,7 @@ export default function VarianceChart({ run: runProp }) {
       <div style={{ marginTop: '16px' }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))',
           gap: '10px',
         }}>
           {MSE_ROWS.map((row) => {
@@ -204,11 +208,11 @@ export default function VarianceChart({ run: runProp }) {
               <div key={row.k} style={{
                 padding: '12px 16px',
                 background: isKstar ? 'rgba(52,211,153,0.07)' : 'var(--ifm-card-background-color)',
-                border: `1px solid ${isKstar ? '#34D39940' : 'rgba(255,255,255,0.07)'}`,
+                border: `1px solid ${isKstar ? '#34D39966' : 'var(--ifm-color-emphasis-300)'}`,
                 borderRadius: '8px',
                 textAlign: 'center',
               }}>
-                <div style={{ fontSize: '10px', opacity: 0.4, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ifm-font-color-base)' }}>
+                <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ifm-font-color-base)' }}>
                   K = {row.k} {isKstar && '★'}
                 </div>
                 <div style={{
@@ -219,11 +223,11 @@ export default function VarianceChart({ run: runProp }) {
                   lineHeight: 1,
                   marginBottom: '4px',
                 }}>{row.mse !== null ? row.mse.toFixed(3) : '—'}</div>
-                <div style={{ fontSize: '10px', opacity: 0.45, color: 'var(--ifm-font-color-base)' }}>{row.mse !== null ? 'MSE(K)' : 'MSE(K) not exported'}</div>
+                <div style={{ fontSize: '10px', opacity: 0.7, color: 'var(--ifm-font-color-base)' }}>{row.mse !== null ? 'MSE(K)' : 'MSE(K) not exported'}</div>
                 <div style={{
                   marginTop: '8px',
                   height: '4px',
-                  background: 'rgba(255,255,255,0.06)',
+                  background: 'var(--ifm-color-emphasis-200)',
                   borderRadius: '2px',
                   overflow: 'hidden',
                 }}>
@@ -235,7 +239,7 @@ export default function VarianceChart({ run: runProp }) {
                     borderRadius: '2px',
                   }} />
                 </div>
-                <div style={{ fontSize: '9px', opacity: 0.4, marginTop: '3px', color: 'var(--ifm-font-color-base)' }}>
+                <div style={{ fontSize: '9px', opacity: 0.7, marginTop: '3px', color: 'var(--ifm-font-color-base)' }}>
                   {row.capturedText}
                 </div>
               </div>

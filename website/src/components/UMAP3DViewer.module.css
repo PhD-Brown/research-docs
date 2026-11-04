@@ -1,0 +1,11 @@
+/* Animation du témoin de chargement de UMAP3DViewer.
+ * Elle était injectée par un élément <style>{`…`}</style> dans le JSX : le minifieur HTML du build en normalise le texte,
+ * ce qui ne correspondait plus au rendu client (erreur React #418 d'hydratation sur /docs/astrospectro/dimred). */
+.pulse {
+  animation: umap3dPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes umap3dPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}

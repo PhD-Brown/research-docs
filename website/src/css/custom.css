@@ -441,3 +441,11 @@ body[data-docs-slug='/'] li {
     align-self: center;
   }
 }
+/* === Images de contenu : jamais plus larges que la colonne ===
+ * Certaines pages posent style="max-width:900px" sur leurs <img> (ex. guides/quick-start) : sur mobile (390 px)
+ * l'image gardait sa largeur naturelle et faisait défiler toute la page (916 px). On borne à 100 % de la colonne ;
+ * !important est nécessaire pour passer devant le style en ligne. */
+.theme-doc-markdown img[style*="max-width"] {
+  max-width: 100% !important;
+  height: auto;
+}
