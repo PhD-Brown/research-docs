@@ -1,6 +1,7 @@
 import React from 'react';
 import { useBaseUrlUtils } from '@docusaurus/useBaseUrl';
 import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+import styles from './UMAP3DViewer.module.css';
 
 // Nombre de points : run UMAP/t-SNE de référence (runs.json) — figures HTML G1.
 const N_POINTS = fmt.int(getReferenceRun('umap_tsne').n);
@@ -151,11 +152,10 @@ export default function UMAP3DViewer() {
             zIndex: 10,
             gap: '12px',
           }}>
-            <div style={{
+            <div className={styles.pulse} style={{
               fontFamily: 'monospace',
               fontSize: '28px',
               color: current.color,
-              animation: 'pulse 1.5s ease-in-out infinite',
             }}>◎</div>
             <div style={{
               fontSize: '12px',
@@ -278,13 +278,6 @@ export default function UMAP3DViewer() {
           </button>
         ))}
       </div>
-
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.15); }
-        }
-      `}</style>
     </div>
   );
 }

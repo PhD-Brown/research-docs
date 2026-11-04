@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './MetalsTable.module.css';
 
 const WL_MIN = 3690; const WL_MAX = 9100;
 function wlPct(lambda) { return ((lambda - WL_MIN) / (WL_MAX - WL_MIN)) * 100; }
@@ -33,7 +34,7 @@ function ElementCard({ symbol, name, color, roman, lines, pcaNote }) {
   const [hov, setHov] = React.useState(false);
   const isLarge = lines.length >= 4;
   return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ background: hov ? `${color}0e` : 'var(--ifm-card-background-color)', border: `1px solid ${hov ? color + '55' : color + '25'}`, borderTop: `3px solid ${color}`, borderRadius: '8px', padding: '12px 14px', transition: 'all 0.15s', gridColumn: isLarge ? 'span 2' : 'span 1' }}>
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} className={isLarge ? styles.large : undefined} style={{ background: hov ? `${color}0e` : 'var(--ifm-card-background-color)', border: `1px solid ${hov ? color + '55' : color + '25'}`, borderTop: `3px solid ${color}`, borderRadius: '8px', padding: '12px 14px', transition: 'all 0.15s', minWidth: 0 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
         <div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: '900', fontSize: '20px', color: color, lineHeight: 1, marginBottom: '2px' }}>{symbol}</div>
@@ -72,7 +73,7 @@ export default function MetalsTable() {
         <span style={{ marginLeft: '8px' }}>· Bar shows λ position in 3690–9100 Å</span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '10px' }}>
         {ELEMENTS.map((el) => <ElementCard key={el.symbol} {...el} />)}
       </div>
 

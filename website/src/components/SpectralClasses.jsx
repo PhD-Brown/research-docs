@@ -88,7 +88,7 @@ function ClassCard({ letter, name, examples, teff, color, bgColor, performance, 
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        flex: 1,
+        flex: '1 1 170px',
         background: 'var(--ifm-card-background-color)',
         border: `1px solid ${hov ? bgColor + '66' : bgColor + '30'}`,
         borderTop: `4px solid ${bgColor}`,

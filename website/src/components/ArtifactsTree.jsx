@@ -63,7 +63,7 @@ function TreeDir({ name, color, children, depth = 0 }) {
 function MetaField({ field, desc, color }) {
   const [hov, setHov] = React.useState(false);
   return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ display: 'grid', gridTemplateColumns: '200px 1fr', alignItems: 'center', gap: '12px', padding: '7px 12px', borderBottom: '1px solid rgba(255,255,255,0.04)', background: hov ? `${color}0a` : 'transparent', transition: 'background 0.1s', cursor: 'default' }}>
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 200px) 1fr', alignItems: 'center', gap: '12px', padding: '7px 12px', borderBottom: '1px solid rgba(255,255,255,0.04)', background: hov ? `${color}0a` : 'transparent', transition: 'background 0.1s', cursor: 'default' }}>
       <code style={{ fontSize: '11.5px', color: hov ? color : 'var(--ifm-font-color-base)', opacity: hov ? 1 : 0.8, transition: 'color 0.1s' }}>{field}</code>
       <div style={{ fontSize: '11.5px', opacity: 0.6, color: 'var(--ifm-font-color-base)' }}>{desc}</div>
     </div>
@@ -72,8 +72,8 @@ function MetaField({ field, desc, color }) {
 
 export default function ArtifactsTree() {
   return (
-    <div style={{ margin: '24px 0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-      <div style={{ background: '#06080f', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '14px 4px', fontFamily: 'monospace' }}>
+    <div style={{ margin: '24px 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '14px' }}>
+      <div style={{ background: '#06080f', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '14px 4px', fontFamily: 'monospace', minWidth: 0, overflowX: 'auto' }}>
         <div style={{ padding: '4px 12px 12px', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.35, color: 'var(--ifm-font-color-base)' }}>Artefact structure</div>
         <div style={{ padding: '4px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{ fontSize: '14px' }}>📂</span>
@@ -85,7 +85,7 @@ export default function ArtifactsTree() {
         </div>
       </div>
 
-      <div style={{ background: 'var(--ifm-card-background-color)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--ifm-card-background-color)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', overflow: 'hidden', minWidth: 0 }}>
         <div style={{ padding: '10px 14px', background: 'rgba(56,189,248,0.06)', borderBottom: '1px solid rgba(56,189,248,0.15)', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>📋</span>
           <div style={{ fontWeight: '700', fontSize: '12px', color: '#38BDF8' }}>Contents of <code style={{ background: 'transparent', fontSize: 'inherit' }}>_meta.json</code></div>

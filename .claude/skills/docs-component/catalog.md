@@ -54,12 +54,12 @@ origine des données, compatibilité mode clair, page d'exemple.
 | `ResultsHero` | 5 cartes de synthèse (PCA ρ, HDBSCAN, Procrustes, ROC-AUC, part SHAP) | runs.json `pca`, `umap_tsne`, `autoencoder`, `classifier`, `shap` — deux groupes G1 / G2 | ✅ | `science/results-analysis.mdx` | ✅ |
 | `SHAPTop10` | Barres du top-10 SHAP par famille | runs.json `shap` : top-10 mean \|SHAP\|, familles du CSV + fuite | ⚠️ | `science/classification-performance.mdx`, `science/results-analysis.mdx` | ✅ v6 (prop `run`) |
 | `PCAvsXGBoost` | Deux colonnes « PCA (variance) vs XGBoost (discrimination) » | runs.json `pca` + SHAP de même génération (`shapRunFor`) : v5 / G1 | ⚠️ | idem | ✅ |
-| `SpectralClasses` | Cartes des classes A–M (Teff, performance qualitative, fraction) + barre Harvard | Teff Harvard (manuel) ; F1 et part du test set : runs.json `classifier` | ⚠️ | `science/classification-performance.mdx` | ✅ |
+| `SpectralClasses` | Cartes des classes A–M (Teff, performance qualitative, fraction) + barre Harvard | Teff Harvard (manuel) ; F1 et part du test set : runs.json `classifier` | ⚠️ | `science/classification-performance.mdx` | ✅ Cartes `flex: 1 1 170px` (passent à la ligne en mobile) |
 | `TrainingConfig` | Carte de configuration d'entraînement + hyperparamètres | runs.json `classifier` : N, features, classes, split, hyperparamètres | ⚠️ | `science/classification-performance.mdx` | ✅ (prop `run`) |
 | `UMAPPredictions` | Onglets d'images UMAP colorées par prédiction XGBoost + annotations de régions | images G1 ; confiance médiane et modèle projeté (v5) : runs.json `umap_tsne` | ⚠️ | `science/classification-performance.mdx` | ✅ |
 | `ModelSelector` | Grille des 11 modèles disponibles dans `SpectralClassifier` | badge du champion : BA runs.json `classifier` | ⚠️ | `guides/model-training.mdx` | ✅ |
 | `TrainingPipelineFlow` | Onglets « Integrated pipeline » / « W&B tracking (121 metrics) » | « 121 metrics » / « 85+ runs » retirés | ⚠️ | `guides/model-training.mdx` | ✅ |
-| `ArtifactsTree` | Arborescence `data/models`, `data/reports/<ISO>` + champs du `_meta.json` | noms de fichiers, champs | ❌ fond `#06080f` | `guides/model-training.mdx` | Champs à jour (cf. meta v6) |
+| `ArtifactsTree` | Arborescence `data/models`, `data/reports/<ISO>` + champs du `_meta.json` | noms de fichiers, champs | ❌ fond `#06080f` | `guides/model-training.mdx` | Champs à jour (cf. meta v6). Grille `auto-fit` et arbre défilant (`overflow-x: auto`) : plus de débordement mobile ; fond sombre toujours codé |
 
 ### 3.2 Réduction de dimension
 
@@ -69,19 +69,19 @@ origine des données, compatibilité mode clair, page d'exemple.
 | `AEArchitecture` | Schéma interactif encodeur/décodeur 183→256→128→64→2 | dims, Dropout 0.1, Adam 1e-3, batch 512, patience 15, ~330k params | ⚠️ | `dimred/autoencoder.mdx` | À recouper avec `AS/src/dimred/autoencoder.py` |
 | `AEReconBenchmark` | Courbe SVG MSE(k) PCA vs ligne AE(z=2) | runs.json `autoencoder` (`pca_mse_by_k`, `mse`) | ⚠️ | `dimred/autoencoder.mdx` | ✅ |
 | `AELatentCorrelations` | ρ Spearman des axes AE vs PCA avec Gaia (Teff, log g, [Fe/H], BP−RP) | runs.json `autoencoder` ; interprétations propres au run G1 | ⚠️ | `dimred/autoencoder.mdx` | ✅ |
-| `PCAxisCards` | 2 cartes d'axe (PC1 thermique, PC2 métallicité) avec contributions par famille | runs.json `pca` ; familles = part du top-10 \|loadings\| ; ρ(PC2,[M/H]) corrigé (affichait la valeur de PC1) | ⚠️ | `dimred/pca.mdx` | ✅ |
-| `VarianceChart` | Histogramme variance PC1–PC20 + seuils 80/90/95/99 % + table MSE | runs.json `pca` : PC1–PC10 (seules exportées), seuils, MSE(k ≤ 50) | ⚠️ | `dimred/pca.mdx` | ✅ |
-| `PCAVarianceMilestones` | Jalons k = 2/10/51/91/100 avec variance et MSE | runs.json `pca` ; MSE « n/a » au-delà de k = 50 | ⚠️ | `science/results-analysis.mdx` | ✅ |
-| `EigenspectraContrast` | PCA flux brut vs PCA features (3 PC chacun) | runs.json `pca` (flux brut : k95 = 5, corrigé) | ⚠️ | `dimred/pca.mdx` | ✅ |
+| `PCAxisCards` | 2 cartes d'axe (PC1 thermique, PC2 métallicité) avec contributions par famille | runs.json `pca` ; familles = part du top-10 \|loadings\| ; ρ(PC2,[M/H]) corrigé (affichait la valeur de PC1) | ⚠️ | `dimred/pca.mdx` | ✅ Cartes `flex: 1 1 300px` + `minWidth: 0` (débordement mobile corrigé) |
+| `VarianceChart` | Histogramme variance PC1–PC20 + seuils 80/90/95/99 % + table MSE | runs.json `pca` : PC1–PC10 (seules exportées), seuils, MSE(k ≤ 50) | ✅ | `dimred/pca.mdx` | ✅ Histogramme corrigé (colonnes `height: 100%`, barres visibles), bordures/pistes via `--ifm-color-emphasis-*`, grilles `auto-fit` |
+| `PCAVarianceMilestones` | Jalons k = 2/10/51/91/100 avec variance et MSE | runs.json `pca` ; MSE « n/a » au-delà de k = 50 | ✅ | `science/results-analysis.mdx` | ✅ Texte, fonds et bordures via variables Infima (plus de `#fff`) |
+| `EigenspectraContrast` | PCA flux brut vs PCA features (3 PC chacun) | runs.json `pca` (flux brut : k95 = 5, corrigé) | ⚠️ | `dimred/pca.mdx` | ✅ Panneaux `flex: 1 1 300px` (débordement mobile corrigé) |
 | `FamilyContributions` | Barres doubles PC1/PC2 par famille spectroscopique | runs.json `pca` : part de chaque famille dans le top-10 \|loadings\| (anciens % sans source retirés) | ⚠️ (texte noir sur barres) | `dimred/pca.mdx` | ✅ |
 | `LoadingsBars` | Top-5 loadings PC1 et PC2 | runs.json `pca` : top-5 loadings PC1/PC2 | ⚠️ | `dimred/pca.mdx`, `data/feature-dataset.mdx` | ✅ |
-| `GaiaCorrelations` | Heatmap ρ(PC1/PC2, paramètres Gaia/SNR/A_G) | runs.json `pca` : ρ Spearman PC1/PC2 | ⚠️ | `dimred/pca.mdx`, `data/feature-dataset.mdx` | ✅ |
-| `MethodComparison` | Tableau comparatif PCA / UMAP / t-SNE (MSE, ρ, Procrustes, CPU, paramétrique…) | runs.json `pca`, `autoencoder`, `umap_tsne` ; ρ t-SNE, temps PCA et matériel retirés | ⚠️ | `dimred/index.mdx` | ✅ |
+| `GaiaCorrelations` | Heatmap ρ(PC1/PC2, paramètres Gaia/SNR/A_G) | runs.json `pca` : ρ Spearman PC1/PC2 | ⚠️ | `dimred/pca.mdx`, `data/feature-dataset.mdx` | ✅ Tableau défilant dans son bloc en mobile |
+| `MethodComparison` | Tableau comparatif PCA / UMAP / t-SNE (MSE, ρ, Procrustes, CPU, paramétrique…) | runs.json `pca`, `autoencoder`, `umap_tsne` ; ρ t-SNE, temps PCA et matériel retirés | ⚠️ | `dimred/index.mdx` | ✅ Tableau à 4 colonnes défilant dans son bloc sous 600 px |
 | `ProcrustesStability` | Barres de distance de Procrustes par seed (UMAP vs t-SNE) | runs.json `umap_tsne` | ⚠️ | `dimred/index.mdx` | ✅ |
 | `HDBSCANClusters` | Barres des clusters HDBSCAN + groupes HR | runs.json `umap_tsne` ; plages Teff/log g sans source retirées | ⚠️ | `dimred/index.mdx` | ✅ |
 | `HyperparamSensitivity` | Onglets UMAP `n_neighbors` / t-SNE `perplexity` (5–100) avec verdict | qualitatif | ⚠️ | `dimred/index.mdx` | Qualitatif (figures de sensibilité) |
 | `DimRedPipeline` | Diagramme de flux X → scaler → PCA(91) → UMAP / t-SNE | runs.json `pca`, `umap_tsne` | ⚠️ | `dimred/index.mdx` | ✅ |
-| `UMAP3DViewer` | Onglets d'iframes Plotly 3D (classes, Teff, [Fe/H]) | fichiers HTML G1 ; N : runs.json `umap_tsne` | ⚠️ | `dimred/index.mdx` | ✅ |
+| `UMAP3DViewer` | Onglets d'iframes Plotly 3D (classes, Teff, [Fe/H]) | fichiers HTML G1 ; N : runs.json `umap_tsne` | ⚠️ | `dimred/index.mdx` | ✅ Animation de chargement dans `UMAP3DViewer.module.css` : l'ancien `<style>` en ligne causait l'erreur React #418 (hydratation) |
 | `DatasetStats` | 5 cartes du jeu dimred (N, p, λ, R, rayon Gaia) | runs.json `pca` (N, p) ; carte « Gaia 1″ » retirée | ⚠️ | `dimred/data-loader.mdx` | ✅ |
 | `ClassDistribution` | Barre STAR/GALAXY/QSO + cartes | runs.json `pca` (class_counts) + `autoencoder` (rapport des médianes QSO/STAR) | ✅ | `dimred/data-loader.mdx` | ✅ |
 | `QualityPipeline` | Étapes de filtrage (SNR_r > 10, RUWE < 1.4) | N : runs.json `pca` ; « ~250k » retiré | ⚠️ | `dimred/data-loader.mdx` | ⚠️ code : `>=` et masquage RUWE (STUBS #16) |
@@ -96,7 +96,7 @@ origine des données, compatibilité mode clair, page d'exemple.
 | `FamilyOverview` | Mosaïque 183 cellules par famille + légende | effectifs du catalogue (constants) ; badges PC1/PC2 : part du top-10 \|loadings\|, runs.json `pca` | ⚠️ | `data/feature-dataset.mdx` |
 | `SpectralCoverage` | Spectre 3690–9100 Å avec positions des raies par famille | longueurs d'onde | ⚠️ | `data/feature-dataset.mdx` |
 | `ExcludedVariables` | 3 cartes des variables exclues (ra, dec, redshift) | texte | ❌ fond de repli `#0a0c14` | `data/feature-dataset.mdx` |
-| `MetalsTable` | Cartes par élément (Fe, Cr, Ni, Na, Ba, Sr, Si, Ti, Al, Co, V) avec raies | λ, force | ⚠️ | `data/feature-dataset.mdx` |
+| `MetalsTable` | Cartes par élément (Fe, Cr, Ni, Na, Ba, Sr, Si, Ti, Al, Co, V) avec raies | λ, force | ⚠️ | `data/feature-dataset.mdx` | Grille `auto-fill` ; cartes « large » sur 2 colonnes seulement au-dessus de 640 px (`MetalsTable.module.css`) |
 | `LickIndexTable` | Indices Lick/SDSS/standard avec domaine λ | bandes | ⚠️ | `data/feature-dataset.mdx` |
 | `MolecularBands` | Bandes TiO/VO/CN/CH/CaH/MgH sur l'axe λ | centres, demi-largeurs | ⚠️ | `data/feature-dataset.mdx` |
 | `ContinuumDescriptors` | Pentes, courbures, sauts, couleurs synthétiques | noms de features, plages | ⚠️ | `data/feature-dataset.mdx` |
@@ -142,4 +142,4 @@ Modifier le texte de ces blocs = modifier `content.js`, pas le JSX.
 1. **Mode clair** : 43 composants utilisent `rgba(255,255,255,…)` pour bordures/grilles ; `ArtifactsTree` et `ExcludedVariables` ont un fond sombre codé, `FamilyContributions` écrit en noir sur les barres, et plusieurs info-bulles SVG ont un fond `#0d1117`. Toujours contrôler les captures en clair.
 2. **Liens** : `RelatedPages`, `CrossReferences`, `ResultsLocator`, `ResearchSections`, `DescriptorFamilies` utilisent `<Link>` (routes absolues vérifiées au build) ; `WhatAstroSpectroDoes` et `RunProvenance` (lien « detailed metrics ») rendent encore des `<a href>` relatifs → `docs-verify/scripts/check-links.mjs`.
 3. **Chiffres de run** : lus dans `runs.json` (§3) ; ne jamais en recoder dans un composant ou une page (skill `docs-new-run`). Restent codés : constantes instrumentales/physiques et `AstroSpectroIndex` (code mort, §5).
-4. **Rendu préexistant non corrigé** : histogramme de `VarianceChart` presque invisible (hauteurs en % dans un conteneur flex) ; texte `#fff` de la ligne mise en avant de `PCAVarianceMilestones` en mode clair ; débordements mobiles de plusieurs grilles de composants (`feature-dataset`, `model-training`, `results-analysis`).
+4. **Défauts de rendu corrigés (2026-11-04)** : histogramme de `VarianceChart` (hauteurs en % dans un conteneur flex sans hauteur) ; texte `#fff` de `PCAVarianceMilestones` en mode clair ; erreur React #418 sur `dimred` (élément `<style>` en ligne de `UMAP3DViewer`, voir ci-dessus) ; débordements mobiles de `MethodComparison`, `SpectralClasses`, `PCAxisCards`, `EigenspectraContrast`, `GaiaCorrelations`, `ArtifactsTree`, `MetalsTable` et des images à `max-width` fixe (règle `.theme-doc-markdown img[style*="max-width"]` de `custom.css`). **Restent** : les composants listés au point 1 (`rgba(255,255,255,…)`, fonds sombres codés), non retouchés hors périmètre. Règle à retenir : pas d'élément `<style>{`…`}</style>` dans un composant (le minifieur HTML du build en normalise le texte), et pas de `flex: 1` / `repeat(N, 1fr)` / `span 2` sans repli mobile.

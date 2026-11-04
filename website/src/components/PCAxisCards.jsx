@@ -47,7 +47,7 @@ function RhoDisplay({ value, label, color, isBig }) {
 function PCCard({ pcLabel, axiName, axiSub, color, variancePct, lambda, topRho, topRhoLabel, secondRho, secondRhoLabel, families, topLoading, topLoadingW, warning }) {
   const [hov, setHov] = React.useState(false);
   return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ flex: 1, background: 'var(--ifm-card-background-color)', border: `1px solid ${hov ? color + '66' : color + '30'}`, borderTop: `4px solid ${color}`, borderRadius: '12px', padding: '22px', transition: 'border-color 0.15s, box-shadow 0.15s', boxShadow: hov ? `0 8px 28px ${color}15` : '0 2px 8px rgba(0,0,0,0.08)', minWidth: 0 }}>
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ flex: '1 1 300px', minWidth: 0, background: 'var(--ifm-card-background-color)', border: `1px solid ${hov ? color + '66' : color + '30'}`, borderTop: `4px solid ${color}`, borderRadius: '12px', padding: '22px', transition: 'border-color 0.15s, box-shadow 0.15s', boxShadow: hov ? `0 8px 28px ${color}15` : '0 2px 8px rgba(0,0,0,0.08)', minWidth: 0 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
         <div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: '900', fontSize: '28px', color: color, lineHeight: 1, letterSpacing: '-1px' }}>{pcLabel}</div>

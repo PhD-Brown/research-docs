@@ -53,7 +53,7 @@ function PCRow({ pc, pct, interp, color, physical }) {
 
 function Panel({ title, subtitle, color, k95, totalPct3, pcs, badge, badgeColor }) {
   return (
-    <div style={{ flex: 1, background: 'var(--ifm-card-background-color)', border: `1px solid ${color}30`, borderTop: `3px solid ${color}`, borderRadius: '10px', padding: '18px', minWidth: 0 }}>
+    <div style={{ flex: '1 1 300px', background: 'var(--ifm-card-background-color)', border: `1px solid ${color}30`, borderTop: `3px solid ${color}`, borderRadius: '10px', padding: '18px', minWidth: 0 }}>
       <div style={{ marginBottom: '14px' }}>
         <div style={{ fontWeight: '800', fontSize: '14px', color: 'var(--ifm-font-color-base)', marginBottom: '3px' }}>{title}</div>
         <div style={{ fontSize: '11px', opacity: 0.5, color: 'var(--ifm-font-color-base)' }}>{subtitle}</div>

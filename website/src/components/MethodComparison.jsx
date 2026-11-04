@@ -69,6 +69,9 @@ export default function MethodComparison() {
   const [hoveredRow, setHoveredRow] = React.useState(null);
   return (
     <div style={{ margin: '28px 0' }}>
+      {/* Tableau à 4 colonnes (critère + 3 méthodes) : défile dans son bloc sous ~600 px au lieu de déborder de la page */}
+      <div style={{ overflowX: 'auto', paddingBottom: '2px' }}>
+      <div style={{ minWidth: '600px' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '200px repeat(3, 1fr)', gap: '0', marginBottom: '4px' }}>
         <div />
         {METHODS.map((m) => (
@@ -106,6 +109,8 @@ export default function MethodComparison() {
             </div>
           );
         })}
+      </div>
+      </div>
       </div>
 
       <div style={{ marginTop: '10px', fontSize: '11px', color: 'var(--ifm-font-color-base)', opacity: 0.4, textAlign: 'right' }}>
