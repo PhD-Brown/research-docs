@@ -1,0 +1,11 @@
+Classe,N total,g-r médian,Frac. bulbe médiane,N SDSS,% Blue Cloud,% Red Sequence
+Disturbed,1081,0.585,0.104,1076,61%,26%
+Merging,1853,0.891,0.104,1835,28%,58%
+Round Smooth,2645,0.906,0.089,2635,23%,63%
+In-between Round Smooth,2027,0.867,0.076,2026,26%,58%
+Cigar Shaped Smooth,334,0.765,0.070,332,43%,33%
+Barred Spiral,2043,0.756,0.111,2039,48%,20%
+Unbarred Tight Spiral,1829,0.679,0.110,1821,65%,14%
+Unbarred Loose Spiral,2628,0.640,0.108,2617,71%,12%
+Edge-on without Bulge,1423,0.670,0.109,1414,58%,17%
+Edge-on with Bulge,1873,0.970,0.085,1870,3%,85%

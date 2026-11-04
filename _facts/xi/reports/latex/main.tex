@@ -1,0 +1,465 @@
+% !TeX program = pdflatex
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+
+\graphicspath{{../../figures/}{../figures/}{figures/}}
+
+\newcommand{\LCDM}{$\Lambda$CDM}
+\newcommand{\Om}{\Omega_m}
+\newcommand{\Hzero}{H_0}
+\newcommand{\wz}{w(z)}
+\newcommand{\Xiosc}{$\Xi_{\rm osc}$}
+\newcommand{\rd}{r_d}
+
+\title{\textbf{Test de l'hypothèse $\Xi$ — Protocole 1b}\\
+\large Analyse combinée Pantheon+SH0ES + DESI DR2 BAO}
+\author{Alex Baker\\{\small Travail présenté à Serge Lacasse}}
+\date{Mai 2026}
+
+\begin{document}
+\maketitle
+
+\vspace{-1em}
+\begin{center}
+\small
+Ce document résume les résultats numériques obtenus pour le Protocole 1b, en combinant les supernovae Pantheon+SH0ES et les mesures BAO DESI DR2.\\
+\textit{Les sections de formalisme rappellent brièvement les hypothèses utilisées par le script; elles peuvent être ignorées si le cadre est déjà connu.}
+\end{center}
+
+\section{Résumé exécutif}
+
+L'objectif de ce protocole est de reprendre l'analyse du Protocole 1, initialement effectuée avec Pantheon+SH0ES seul, en ajoutant les mesures BAO DESI DR2. Le but est de tester si l'ajout des BAO renforce ou affaiblit la préférence pour un scénario d'énergie sombre dynamique, notamment via le paramètre d'amplitude oscillante $\epsilon$ du modèle \Xiosc.
+
+Les résultats principaux de la run longue finale sont :
+
+\begin{itemize}
+    \item Données combinées : $1590$ supernovae Pantheon+SH0ES après coupure $z>0.01$ et $13$ mesures BAO DESI DR2.
+    \item Horizon sonore fixé : $\rd = 147.09\,\mathrm{Mpc}$.
+    \item MCMC : $96$ walkers, $100000$ steps, burn-in $20000$.
+    \item Nombre d'échantillons conservés pour \Xiosc : $7\,680\,000$.
+    \item \LCDM\ est fortement défavorisé sur le jeu de données combiné.
+    \item CPL est favorisé selon l'AIC.
+    \item \Xiosc\ donne le meilleur $\chi^2$ brut et devient pratiquement comparable à CPL selon l'AIC.
+    \item L'amplitude oscillante obtenue est
+    \[
+        \epsilon = 0.1847^{+0.0768}_{-0.0867},
+    \]
+    soit environ $2.26\sigma$ selon une incertitude symétrisée.
+    \item Le critère pratique de convergence $N/50>\tau_{\rm max}$ est maintenant satisfait pour \Xiosc.
+\end{itemize}
+
+\section{Données utilisées}
+
+\subsection{Pantheon+SH0ES}
+
+Les données de supernovae proviennent du fichier \texttt{Pantheon+SH0ES.dat}. Le script utilise les colonnes :
+\begin{itemize}
+    \item \texttt{zHD} : redshift cosmologique corrigé;
+    \item \texttt{MU\_SH0ES} : module de distance observé;
+    \item \texttt{MU\_SH0ES\_ERR\_DIAG} : erreur diagonale associée.
+\end{itemize}
+
+Une coupure $z>0.01$ est appliquée afin de réduire l'impact des vitesses particulières locales. Après cette coupure :
+\[
+    N_{\rm SNe} = 1590
+\]
+supernovae sont conservées sur un total initial de $1701$.
+
+La plage de redshift utilisée est :
+\[
+    z \in [0.01016,\ 2.26137].
+\]
+
+La covariance complète statistique + systématique est chargée depuis :
+\[
+    \texttt{Pantheon+SH0ES\_STAT+SYS.cov}.
+\]
+
+\subsection{DESI DR2 BAO}
+
+Les données BAO DESI DR2 utilisées sont chargées à partir des fichiers :
+\begin{itemize}
+    \item \texttt{desi\_gaussian\_bao\_ALL\_GCcomb\_mean.txt}
+    \item \texttt{desi\_gaussian\_bao\_ALL\_GCcomb\_cov.txt}
+\end{itemize}
+
+Les observables BAO incluses sont :
+\begin{itemize}
+    \item $D_V(z)/r_d$,
+    \item $D_M(z)/r_d$,
+    \item $D_H(z)/r_d$.
+\end{itemize}
+
+Le nombre total de mesures BAO chargées est :
+\[
+    N_{\rm BAO} = 13.
+\]
+
+Ainsi, pour la comparaison AIC/BIC :
+\[
+    N_{\rm total} = N_{\rm SNe} + N_{\rm BAO} = 1590 + 13 = 1603.
+\]
+
+\section{Rappel du modèle observationnel}
+
+Les supernovae Ia fournissent des modules de distance observés $\mu_{\rm obs}(z)$. Le modèle prédit :
+\begin{equation}
+    \mu_{\rm th}(z)=5\log_{10}\!\left(\frac{D_L(z)}{\mathrm{Mpc}}\right)+25,
+\end{equation}
+où $D_L(z)$ est la distance de luminosité.
+
+Dans un univers plat, on utilise :
+\begin{equation}
+    D_L(z) = (1+z)\frac{c}{H_0}\int_0^z \frac{dz'}{E(z')},
+    \qquad
+    E(z)=\frac{H(z)}{H_0}.
+\end{equation}
+
+Pour les BAO :
+\begin{equation}
+    D_H(z)=\frac{c}{H(z)},
+\end{equation}
+et, en univers plat,
+\begin{equation}
+    D_M(z)=D_C(z).
+\end{equation}
+
+Le point BAO isotrope est calculé via :
+\begin{equation}
+    D_V(z)=\left[z\,D_M^2(z)\,D_H(z)\right]^{1/3}.
+\end{equation}
+
+\section{Vraisemblance combinée}
+
+La vraisemblance totale utilisée est la somme des contributions supernovae et BAO :
+\begin{equation}
+    \ln \mathcal{L}_{\rm total}=\ln \mathcal{L}_{\rm SNe}+\ln \mathcal{L}_{\rm BAO}.
+\end{equation}
+
+Pour les supernovae :
+\begin{equation}
+    \ln \mathcal{L}_{\rm SNe}=-\frac{1}{2}\Delta\mu^{\mathsf T} C_{\rm SNe}^{-1}\Delta\mu,
+\end{equation}
+où
+\[
+    \Delta\mu=\mu_{\rm obs}-\mu_{\rm th}.
+\]
+
+Pour les BAO :
+\begin{equation}
+    \ln \mathcal{L}_{\rm BAO}=-\frac{1}{2}\Delta_{\rm BAO}^{\mathsf T}C_{\rm BAO}^{-1}\Delta_{\rm BAO},
+\end{equation}
+où $\Delta_{\rm BAO}$ est le vecteur des résidus entre les mesures BAO et les prédictions du modèle.
+
+\section{Modèles cosmologiques testés}
+
+\subsection{\texorpdfstring{$\Lambda$CDM}{LambdaCDM}}
+
+Dans \LCDM, l'énergie sombre est une constante cosmologique :
+\[
+    w=-1.
+\]
+
+En univers plat :
+\begin{equation}
+    E^2(z)=\Om(1+z)^3+(1-\Om).
+\end{equation}
+
+Paramètres ajustés :
+\[
+    (H_0,\Omega_m).
+\]
+
+\subsection{CPL}
+
+Le paramétrage CPL est :
+\begin{equation}
+    w(z)=w_0+w_a\frac{z}{1+z}.
+\end{equation}
+
+La contribution d'énergie sombre évolue comme :
+\begin{equation}
+    \rho_{\rm DE}(z)\propto(1+z)^{3(1+w_0+w_a)}\exp\!\left[-3w_a\frac{z}{1+z}\right].
+\end{equation}
+
+Ainsi :
+\begin{equation}
+    E^2(z)=\Om(1+z)^3+(1-\Om)(1+z)^{3(1+w_0+w_a)}\exp\!\left[-3w_a\frac{z}{1+z}\right].
+\end{equation}
+
+Paramètres ajustés :
+\[
+    (H_0,\Omega_m,w_0,w_a).
+\]
+
+\subsection{\texorpdfstring{$\Xi_{\rm osc}$}{Xi osc}}
+
+Le modèle oscillant \Xiosc\ est paramétré par :
+\[
+    (H_0,\Omega_m,w_{0,{\rm mean}},\epsilon,T,\phi_0),
+\]
+où :
+\begin{itemize}
+    \item $w_{0,{\rm mean}}$ est la valeur moyenne de l'équation d'état;
+    \item $\epsilon$ est l'amplitude oscillante;
+    \item $T$ est la période en Gyr;
+    \item $\phi_0$ est la phase.
+\end{itemize}
+
+Dans l'implémentation numérique utilisée ici, la forme effective est :
+\begin{equation}
+    w(t)=w_{0,{\rm mean}}+\epsilon\cos\!\left(\frac{2\pi t}{T}+\phi_0\right),
+\end{equation}
+avec une conversion temps cosmique--redshift effectuée numériquement.
+
+\section{Configuration MCMC}
+
+L'échantillonnage est effectué avec \texttt{emcee}. La run finale utilise :
+\begin{itemize}
+    \item $96$ walkers;
+    \item $100000$ steps;
+    \item burn-in de $20000$ steps;
+    \item $7\,680\,000$ échantillons conservés pour \Xiosc;
+    \item covariance complète Pantheon+ STAT+SYS;
+    \item covariance DESI DR2 BAO;
+    \item $r_d=147.09\,\mathrm{Mpc}$ fixé.
+\end{itemize}
+
+Les paramètres rapportés sont les médianes avec intervalles crédibles $16$--$84\%$.
+
+\section{Résultats numériques}
+
+\subsection{Contraintes sur les paramètres}
+
+\begin{table}[H]
+\centering
+\caption{Contraintes MCMC pour les modèles testés. Les incertitudes correspondent aux intervalles crédibles $16$--$84\%$.}
+\label{tab:params}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+Modèle & $H_0$ & $\Omega_m$ & $w_0$ / $w_{0,{\rm mean}}$ & $w_a$ & $\epsilon$ & $T$ [Gyr] \\
+\midrule
+\LCDM
+&
+$73.861^{+0.144}_{-0.145}$
+&
+$0.2365^{+0.0035}_{-0.0035}$
+&
+-- & -- & -- & -- \\
+CPL
+&
+$73.880^{+0.324}_{-0.314}$
+&
+$0.2716^{+0.0073}_{-0.0080}$
+&
+$w_0=-0.9525^{+0.0730}_{-0.0730}$
+&
+$-1.1829^{+0.4542}_{-0.4570}$
+&
+-- & -- \\
+\Xiosc
+&
+$74.169^{+0.350}_{-0.345}$
+&
+$0.2559^{+0.0064}_{-0.0061}$
+&
+$w_{0,{\rm mean}}=-1.1424^{+0.0445}_{-0.0461}$
+&
+--
+&
+$0.1847^{+0.0768}_{-0.0867}$
+&
+$5.47^{+3.60}_{-2.22}$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Pour \Xiosc, la phase obtenue est :
+\[
+    \phi_0=-0.090^{+2.460}_{-2.382}.
+\]
+
+\subsection{Significativité de l'amplitude oscillante}
+
+Le paramètre clé du Protocole 1b est l'amplitude oscillante $\epsilon$. On obtient :
+\begin{equation}
+    \epsilon=0.1847^{+0.0768}_{-0.0867}.
+\end{equation}
+
+En utilisant une incertitude symétrisée approximative :
+\[
+    \sigma_\epsilon\approx\frac{0.0768+0.0867}{2}\approx0.0818,
+\]
+on trouve :
+\begin{equation}
+    \frac{\epsilon}{\sigma_\epsilon}\approx\frac{0.1847}{0.0818}\approx2.26.
+\end{equation}
+
+L'ajout des BAO DESI DR2 maintient donc une amplitude oscillante non nulle à environ $2.3\sigma$.
+
+\section{Comparaison des modèles}
+
+Les critères d'information utilisés sont :
+\begin{equation}
+    \mathrm{AIC}=\chi^2+2k,
+    \qquad
+    \mathrm{BIC}=\chi^2+k\ln N,
+\end{equation}
+où $k$ est le nombre de paramètres et $N=1603$.
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des modèles pour Pantheon+SH0ES + DESI DR2 BAO.}
+\label{tab:aicbic}
+\begin{tabular}{lccccc}
+\toprule
+Modèle & $\chi^2$ & $k$ & AIC & BIC & $\Delta$AIC \\
+\midrule
+CPL & 1531.824 & 4 & 1539.824 & 1561.343 & 0.000 \\
+\Xiosc & 1529.763 & 6 & 1541.763 & 1574.041 & 1.939 \\
+\LCDM & 1554.165 & 2 & 1558.165 & 1568.924 & 18.341 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Lecture rapide}
+
+\begin{itemize}
+    \item CPL est le meilleur modèle selon l'AIC.
+    \item \Xiosc\ donne le meilleur $\chi^2$ brut.
+    \item La différence $\Delta\mathrm{AIC}\approx1.94$ entre CPL et \Xiosc\ est négligeable à faible; selon l'AIC, les deux modèles sont pratiquement comparables.
+    \item Le BIC demeure plus sévère envers \Xiosc\ en raison de ses paramètres additionnels; selon le BIC, CPL reste le modèle préféré.
+    \item \LCDM\ est fortement défavorisé sur le dataset combiné.
+\end{itemize}
+
+\section{Figures}
+
+\subsection{Postérieurs MCMC}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{corner_LCDM_combined.png}
+    \caption{Postérieurs MCMC pour $\Lambda$CDM avec Pantheon+SH0ES + DESI DR2 BAO.}
+    \label{fig:corner_lcdm}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{corner_CPL_combined.png}
+    \caption{Postérieurs MCMC pour le modèle CPL avec Pantheon+SH0ES + DESI DR2 BAO.}
+    \label{fig:corner_cpl}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{corner_Xi_osc_combined.png}
+    \caption{Postérieurs MCMC pour le modèle $\Xi_{\rm osc}$ avec Pantheon+SH0ES + DESI DR2 BAO.}
+    \label{fig:corner_xi}
+\end{figure}
+
+\subsection{Reconstruction de $w(z)$}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{w_of_z_combined.png}
+    \caption{Équation d'état reconstruite pour $\Lambda$CDM, CPL et $\Xi_{\rm osc}$.}
+    \label{fig:wz}
+\end{figure}
+
+\subsection{Résidus BAO normalisés}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{bao_residuals_combined.png}
+    \caption{Résidus BAO normalisés pour les trois modèles testés. Les résidus sont normalisés par les écarts-types marginaux; la covariance complète est utilisée dans la vraisemblance.}
+    \label{fig:bao_residuals}
+\end{figure}
+
+\section{Diagnostics de convergence}
+
+Les diagnostics d'autocorrélation rapportés par \texttt{emcee} sont :
+
+\begin{table}[H]
+\centering
+\caption{Diagnostics MCMC principaux.}
+\label{tab:convergence}
+\begin{tabular}{lccc}
+\toprule
+Modèle & Acceptance fraction & $\tau_{\rm max}$ approx. & Commentaire \\
+\midrule
+\LCDM & $\sim0.715$ & $\sim33$ & Convergence satisfaisante \\
+CPL & $\sim0.575$ & $\sim60$ & Convergence satisfaisante \\
+\Xiosc & $0.180$ & $\sim1504$ & Chaîne longue; critère $N/50>\tau_{\rm max}$ satisfait \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Pour \Xiosc, la longue run contient $100000$ steps avec $96$ walkers, soit :
+\[
+    N/50 = 100000/50 = 2000
+\]
+pour l'estimation du temps d'autocorrélation. Le plus grand temps d'autocorrélation estimé est :
+\[
+    \tau_{\rm max}\approx1504,
+\]
+associé principalement aux paramètres les plus lents, soit $T$ et $\phi_0$.
+
+Le critère pratique :
+\[
+    N/50>\tau_{\rm max}
+\]
+est donc satisfait. Les paramètres $T$ et $\phi_0$ demeurent toutefois physiquement larges, ce qui indique qu'ils restent faiblement contraints par les données, même si la chaîne est maintenant beaucoup plus défendable du point de vue de la convergence.
+
+\section{Fichiers générés}
+
+Les fichiers produits par le script sont :
+\begin{itemize}
+    \item \texttt{summary\_protocol1b\_combined.txt}
+    \item \texttt{chains\_LCDM\_combined.npy}
+    \item \texttt{chains\_CPL\_combined.npy}
+    \item \texttt{chains\_Xi\_osc\_combined.npy}
+    \item \texttt{corner\_LCDM\_combined.png}
+    \item \texttt{corner\_CPL\_combined.png}
+    \item \texttt{corner\_Xi\_osc\_combined.png}
+    \item \texttt{w\_of\_z\_combined.png}
+    \item \texttt{bao\_residuals\_combined.png}
+\end{itemize}
+
+La commande utilisée pour la run finale est :
+\begin{verbatim}
+python .\src\xi_protocol1b_bao_run.py --nsteps 100000 --burn-in 20000 --nwalkers 96
+\end{verbatim}
+
+\section{Conclusion technique}
+
+Le Protocole 1b a été exécuté avec succès sur le jeu de données combiné Pantheon+SH0ES + DESI DR2 BAO. L'ajout des BAO modifie fortement la comparaison des modèles par rapport à l'analyse Pantheon+ seule.
+
+Les résultats montrent que :
+\begin{itemize}
+    \item \LCDM\ est nettement défavorisé sur le dataset combiné.
+    \item CPL est favorisé selon l'AIC.
+    \item \Xiosc\ présente le meilleur $\chi^2$ brut et devient pratiquement comparable à CPL selon l'AIC, tandis que le BIC demeure plus favorable à CPL.
+    \item L'amplitude oscillante $\epsilon$ demeure non nulle à environ $2.3\sigma$.
+    \item La convergence de \Xiosc\ est maintenant beaucoup plus défendable, avec $N/50>\tau_{\rm max}$, bien que $T$ et $\phi_0$ demeurent faiblement contraints.
+\end{itemize}
+
+Ces résultats ne constituent pas une détection définitive d'une composante oscillante, mais ils indiquent que l'ajout des BAO maintient une amplitude oscillante non nulle et rapproche \Xiosc\ du modèle CPL selon l'AIC.
+
+\end{document}
