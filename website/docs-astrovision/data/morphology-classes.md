@@ -7,7 +7,7 @@ sidebar_position: 3
 import Fact from '@site/src/components/astrovision/Fact';
 import ClassTable from '@site/src/components/astrovision/ClassTable';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json dataset.by_class.* (data/synthesis_summary_table.csv, cross-checked with master_synthesis.csv) · models.*.recall.* (notebook 02/08, figure dino_finetune_confusion.png) */}

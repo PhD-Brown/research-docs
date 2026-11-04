@@ -8,7 +8,7 @@ import Fact from '@site/src/components/astrovision/Fact';
 import FactCards from '@site/src/components/astrovision/FactCards';
 import FactTable from '@site/src/components/astrovision/FactTable';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json crossmatch.* (data/master_synthesis.csv; csv_summaries.json for the 57 columns) · code: src/astrovision/crossmatcher.py · notebook 05 (complement: KS tests, Lasso) */}

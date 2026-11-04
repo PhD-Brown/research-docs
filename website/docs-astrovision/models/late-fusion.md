@@ -9,7 +9,7 @@ import FactCards from '@site/src/components/astrovision/FactCards';
 import FactBars from '@site/src/components/astrovision/FactBars';
 import FactTable from '@site/src/components/astrovision/FactTable';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json models.fusion.*, ablation.* (data/fusion_ablation_results.json), split.fusion.* · notebook 08 (complement) · FACTS_INDEX §4.1–4.2 · code: src/astrovision/fusion.py */}

@@ -9,7 +9,7 @@ import FactCards from '@site/src/components/astrovision/FactCards';
 import FactTable from '@site/src/components/astrovision/FactTable';
 import FactBars from '@site/src/components/astrovision/FactBars';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json unet.*, segmenter.*, segmentation.* (notebook 06 complement; data/master_synthesis.csv for bulge fractions) · code: src/astrovision/unet.py, segmenter.py */}

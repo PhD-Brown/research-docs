@@ -9,7 +9,7 @@ import FactCards from '@site/src/components/astrovision/FactCards';
 import FactTable from '@site/src/components/astrovision/FactTable';
 import ClassTable from '@site/src/components/astrovision/ClassTable';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json dinov2_pca.* (figures/seg_dino_morpho_corr.png), crossmatch.*, segmentation.* (data/master_synthesis.csv), dataset.by_class.* · notebooks 05–07 (complement) · FACTS_INDEX §4.4–4.5, §4.8 */}

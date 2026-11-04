@@ -9,7 +9,7 @@ import FactCards from '@site/src/components/astrovision/FactCards';
 import FactTable from '@site/src/components/astrovision/FactTable';
 import FactBars from '@site/src/components/astrovision/FactBars';
 import FactProvenance from '@site/src/components/astrovision/FactProvenance';
-import FigureGallery from '@site/src/components/astrovision/Gallery';
+import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
 
 {/* facts: facts.json uncertainty.* (notebook 09, complement; FACTS_INDEX §4.6–4.7) · code: src/astrovision/uncertainty.py · model: fusion (models.fusion.*) */}

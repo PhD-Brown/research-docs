@@ -12,6 +12,18 @@ export default function FigureGallery({ figures, columns = 3 }) {
   const [lightbox, setLightbox] = React.useState(null);
   const [loaded, setLoaded] = React.useState({});
   const { withBaseUrl } = useBaseUrlUtils();
+  const gridRef = React.useRef(null);
+
+  // Une image déjà chargée avant l'hydratation a perdu son événement `load` : on la marque comme chargée au montage.
+  React.useEffect(() => {
+    const root = gridRef.current;
+    if (!root) return;
+    const done = {};
+    root.querySelectorAll('img[data-fig-index]').forEach((img) => {
+      if (img.complete && img.naturalWidth > 0) done[img.dataset.figIndex] = true;
+    });
+    if (Object.keys(done).length) setLoaded((p) => ({ ...p, ...done }));
+  }, [figures]);
 
   function open(i)  { setLightbox(i); }
   function close()  { setLightbox(null); }
@@ -39,19 +51,19 @@ export default function FigureGallery({ figures, columns = 3 }) {
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '12px', margin: '20px 0' }}>
+      <div ref={gridRef} style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '12px', margin: '20px 0' }}>
         {figures.map((fig, i) => (
           <div key={i} onClick={() => open(i)} style={{ background: '#0a0c14', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '9px', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.15s, border-color 0.15s, box-shadow 0.15s', position: 'relative', display: 'flex', flexDirection: 'column' }}
             onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'rgba(56,189,248,0.35)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(56,189,248,0.1)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.boxShadow = 'none'; }}>
             <div style={{ background: '#06080f', aspectRatio: '4/3', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
               {!loaded[i] && (<div style={{ fontSize: '11px', opacity: 0.25, color: 'var(--ifm-font-color-base)', fontFamily: 'monospace' }}>◎</div>)}
-              <img src={withBaseUrl(fig.src)} alt={fig.title} loading="lazy" onLoad={() => setLoaded((p) => ({ ...p, [i]: true }))} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '6px', opacity: loaded[i] ? 1 : 0, transition: 'opacity 0.3s', display: 'block' }} />
+              <img src={withBaseUrl(fig.src)} alt={fig.title} data-fig-index={i} loading="lazy" onLoad={() => setLoaded((p) => ({ ...p, [i]: true }))} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '6px', opacity: loaded[i] ? 1 : 0, transition: 'opacity 0.3s', display: 'block' }} />
             </div>
             <div style={{ padding: '10px 12px', flex: 1 }}>
               {fig.tag && (<div style={{ display: 'inline-block', background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.25)', borderRadius: '4px', padding: '1px 7px', fontSize: '9.5px', fontWeight: '700', color: '#38BDF8', fontFamily: 'monospace', marginBottom: '5px' }}>{fig.tag}</div>)}
               <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--ifm-font-color-base)', marginBottom: '3px', lineHeight: 1.3 }}>{fig.title}</div>
-              {fig.desc && (<div style={{ fontSize: '10.5px', color: 'var(--ifm-font-color-base)', opacity: 0.5, lineHeight: 1.4 }}>{fig.desc}</div>)}
+              {fig.desc && (<div style={{ fontSize: '10.5px', color: 'var(--ifm-font-color-base)', opacity: 0.75, lineHeight: 1.4 }}>{fig.desc}</div>)}
             </div>
           </div>
         ))}
