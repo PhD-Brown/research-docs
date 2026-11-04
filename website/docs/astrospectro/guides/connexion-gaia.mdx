@@ -2,8 +2,118 @@
 id: connexion-gaia
 title: Gaia Connection
 sidebar_label: Gaia Connection
+description: Step-by-step guide to configuring the .env credentials, testing the Gaia Archive login and running the Gaia DR3 cross-match of an AstroSpectro catalogue.
 ---
 
-import UnderConstruction from '@site/src/components/UnderConstruction';
+import RelatedPages from '@site/src/components/RelatedPages';
 
-<UnderConstruction />
+{/* facts: none — guide derived from AS/src/utils.py (load_env_vars), AS/.env.example, notebooks/00_master_pipeline.ipynb, src/tools/gaia_crossmatcher.py */}
+
+# Gaia Connection
+
+This guide shows how to prepare the credentials AstroSpectro reads from a `.env` file, check that the Gaia Archive accepts them, and run the cross-match that adds Gaia DR3 columns to the catalogue. It follows the notebook `notebooks/00_master_pipeline.ipynb`. For the method itself, see [Gaia DR3 Cross-match](../data/gaia-dr3).
+
+:::note[Prerequisites]
+- AstroSpectro installed ([Installation](./installation)) with its Python environment active.
+- A Gaia Archive account if you want authenticated access (optional, see below).
+- A catalogue with `ra` and `dec` columns in degrees (produced by `generate_catalog_from_fits`).
+:::
+
+---
+
+## Step 1 — Create the `.env` file
+
+At the project root (the folder that contains `src/`), copy the template:
+
+```bash
+cp .env.example .env
+```
+
+The template declares three variables:
+
+```text
+GAIA_USER=
+GAIA_PASS=
+WANDB_API_KEY=
+```
+
+Fill `GAIA_USER` and `GAIA_PASS` with your Gaia Archive credentials. `WANDB_API_KEY` is only needed for [experiment tracking](../pipeline/experiment-tracking) and can stay empty.
+
+:::danger[Never commit `.env`]
+The file contains passwords. Keep it out of version control and out of screenshots.
+:::
+
+## Step 2 — Load the variables
+
+`setup_project_env()` locates the project root; `load_env_vars()` reads `<root>/.env`. It raises `FileNotFoundError` if the file does not exist, and by default keeps only variables starting with `GAIA_` (pass `prefix=""` to load all).
+
+```python
+# src/utils.py
+from utils import setup_project_env, load_env_vars
+
+paths = setup_project_env()
+env_vars = load_env_vars(prefix="")          # all variables, as in the master notebook
+```
+
+## Step 3 — Test the login
+
+```python
+from astroquery.gaia import Gaia
+
+try:
+    Gaia.login(user=env_vars.get("GAIA_USER"), password=env_vars.get("GAIA_PASS"))
+    print("Gaia authentication successful")
+except Exception as e:
+    print(f"Gaia authentication failed: {e}")
+```
+
+The notebook treats a failed login as non-fatal and continues in local mode (no Gaia enrichment). The cross-match function itself ignores a failed `gaia_user` / `gaia_pass` login with a warning. The position match of the primary `xmatch` strategy goes through the CDS X-Match service, which the code calls without any Gaia login.
+
+## Step 4 — Run the cross-match
+
+After selecting a batch, enable Gaia enrichment when generating the catalogue:
+
+```python
+# notebooks/00_master_pipeline.ipynb
+pipeline.generate_and_enrich_catalog(
+    enrich_gaia=True,
+    mode="auto",          # xmatch → bulk → cone
+    ruwe_max=1.4,         # Gaia columns set to NaN when RUWE ≥ 1.4
+    include_risky=False,  # radius / mass / age (GSP-Phot) left out
+)
+```
+
+The search radius is not set in the notebook, so the default of 0.5″ applies. The function prints `matched/total` objects, and the enriched catalogue is saved as `master_catalog_gaia.csv` in the catalogue directory. A `session_pending.json` file lets you resume feature extraction after a kernel restart without repeating the cross-match.
+
+## Expected outputs
+
+| File | Location | Content |
+|---|---|---|
+| `master_catalog_temp.csv` | `data/catalog/` | Local catalogue from FITS headers (pipe-delimited) |
+| `master_catalog_gaia.csv` | `data/catalog/` | Catalogue plus Gaia columns (comma-delimited) |
+| `session_pending.json` | `data/catalog/` | Resume file, removed after feature extraction |
+
+## Troubleshooting
+
+| Symptom | Likely cause | What to do |
+|---|---|---|
+| `FileNotFoundError` from `load_env_vars` | No `.env` at the project root, or the notebook runs outside the project tree | Create the file; start the kernel inside the repository |
+| `Gaia authentication failed` | Wrong credentials, or archive maintenance | Check `GAIA_USER` / `GAIA_PASS`; the pipeline can still run without enrichment |
+| `xmatch` mode fails, `bulk` also fails | CDS or ESA service unavailable | Use `mode="cone"`: slow (one query per star) but independent of both services |
+| TAP job errors after an archive update | Outdated `astroquery` | The module documents installing the development version of `astroquery` |
+| Many rows without Gaia values | Positions outside the 0.5″ radius, or RUWE mask | Inspect `match_dist_arcsec` and `ruwe`; both are kept in the catalogue |
+
+## Next steps
+
+- [Gaia DR3 Cross-match](../data/gaia-dr3) — columns, RUWE masking, derived quantities.
+- [Master Catalog](../data/master-catalog) — structure of the resulting file.
+- [Feature extraction](./feature-extraction) — turn the catalogue and FITS files into features.
+
+---
+
+<RelatedPages pages={[
+  { href: '/docs/astrospectro/data/gaia-dr3', title: 'Gaia DR3 Cross-match', desc: 'Method and columns', category: 'concepts' },
+  { href: '/docs/astrospectro/guides/installation', title: 'Installation', desc: 'Environment and .env setup', category: 'guides' },
+  { href: '/docs/astrospectro/guides/downloading-data', title: 'Downloading Data', desc: 'Fetch the LAMOST spectra first', category: 'guides' },
+  { href: '/docs/astrospectro/guides/feature-extraction', title: 'Feature Extraction', desc: 'Next step after enrichment', category: 'guides' },
+]} />
