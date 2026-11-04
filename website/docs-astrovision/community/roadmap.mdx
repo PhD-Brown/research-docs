@@ -3,6 +3,10 @@ title: Roadmap
 description: "Development and manuscript roadmap for AstroVision."
 ---
 
+import Fact from '@site/src/components/astrovision/Fact';
+
+{/* facts: facts.json models.fusion.test.balanced_accuracy · models.dinov2_ft.test.balanced_accuracy · FACTS_INDEX §4.1–4.2 */}
+
 # Roadmap
 
 This page tracks the next scientific, technical, and editorial milestones for AstroVision. The purpose is not to list every small task, but to make the direction of the project clear to readers, supervisors, collaborators, and future reviewers.
@@ -30,7 +34,7 @@ AstroVision is in a consolidation phase: the main architecture exists, the stron
 
 ### 1. Consolidate the late-fusion result
 
-The current headline result is the late-fusion multimodal model, reported at approximately **86.3% balanced accuracy**. This should remain the central result, but it needs to be documented with full context.
+The late-fusion multimodal model reports **<Fact k="models.fusion.test.balanced_accuracy" format="pct" /> balanced accuracy** on its own test split. It stays the flagship model but is not a clean modality gain: the split differs from the image-only models (best: DINOv2 fine-tuned, <Fact k="models.dinov2_ft.test.balanced_accuracy" format="pct" />), the ablation differences are below 0.4 points, and a leak through the fine-tuned backbone cannot be ruled out (see [Evaluation Protocol](/research-docs/astrovision/results/evaluation-protocol)). It needs to be documented with full context.
 
 Required next steps:
 

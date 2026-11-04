@@ -3,6 +3,10 @@ title: Evaluation Protocol
 description: "Evaluation protocol for AstroVision classification, uncertainty, calibration, and interpretability results."
 ---
 
+import Fact from '@site/src/components/astrovision/Fact';
+
+{/* facts: facts.json models.dinov2_ft.* · models.fusion.* · split.* · FACTS_INDEX §4.1–4.2 */}
+
 # 📐 Evaluation Protocol
 
 This page defines how AstroVision results should be evaluated, compared, and reported. Its role is to make the project reproducible and to prevent inconsistent comparisons between baseline CNNs, EfficientNet, DINOv2, and the late-fusion multimodal model.
@@ -37,9 +41,9 @@ Without this page, a reader can see the final score, but cannot easily know whet
 | Secondary metrics | Accuracy, macro-F1, per-class precision/recall/F1, confusion matrix |
 | Uncertainty tools | MC Dropout, conformal prediction, calibration diagnostics |
 | Interpretability tools | Grad-CAM, physical interpretation, morphometry comparison |
-| Flagged model | Late-fusion multimodal model |
-| Current headline result | **86.3% balanced accuracy** |
-| Key known weakness | Disturbed galaxies remain difficult, with approximately **0.53** class-level performance in the current analysis |
+| Best image-only model | DINOv2 fine-tuned: **<Fact k="models.dinov2_ft.test.balanced_accuracy" format="pct" /> balanced accuracy** (<Fact k="split.test" format="int" /> test images) |
+| Late-fusion multimodal model | <Fact k="models.fusion.test.balanced_accuracy" format="pct" /> balanced accuracy on a different split (<Fact k="split.fusion.test" format="int" /> test images) — not a like-for-like comparison: the ablation shows no modality gain and the fine-tuned backbone may have seen part of this test set (possible leak, not verifiable from the exported facts) |
+| Key known weakness | Disturbed galaxies remain difficult: recall <Fact k="models.fusion.recall.disturbed" format="num" digits={2} /> for late fusion and <Fact k="models.dinov2_ft.recall.disturbed" format="num" digits={2} /> for DINOv2 fine-tuned |
 
 :::warning[Verification note]
 

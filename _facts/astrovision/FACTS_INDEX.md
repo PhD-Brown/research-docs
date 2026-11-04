@@ -300,13 +300,16 @@ Notebooks : `nb 04` = `notebooks/04_dinov2_finetune.ipynb`, etc. Numéros de cel
 11. **`build_model('dinov2')`** (README) n'existe pas : `models.py` n'enregistre que `simplecnn` et `efficientnet` ; `DINOv2Classifier` est défini dans le notebook 04.
 12. **nb 00** affiche « 90 % de variance atteinte avec 1 composante » (PCA de pixels) alors que PC1 = 19,6 % : incohérent, non publié.
 
-## 5. Chiffres du site actuel (pages non modifiées) sans source dans `_facts/`
+## 5. Chiffres du site sans source dans `_facts/` — état après la passe de finition (2026-11-04)
 
-| Page | Chiffre | Constat |
+Les « 86,3 % » et « R² = 0,536 » codés en dur ont été retirés ; les pages lisent désormais `facts.json` via `<Fact />`.
+
+| Page | Avant | Après |
 |---|---|---|
-| `docs-astrovision/index.md` | « 86,3 % balanced accuracy » | = fusion nb 08 (§4.1) ; R² = 0,536 → §4.4 |
-| `docs-astrovision/results/evaluation-protocol.mdx` | « 86,3 % », « ≈ 0,53 » (Disturbed) | 0,53 = rappel de DINOv2 fine-tuné (figure), pas de la fusion (0,59) |
-| `docs-astrovision/community/roadmap.mdx`, `citing.mdx` | — | non relues pour les chiffres |
+| `docs-astrovision/index.md` | « 86,3 % balanced accuracy », R² 0,536 | DINOv2 fine-tuné (`models.dinov2_ft.test.balanced_accuracy`), ρ(PC2, Gini), R² Lasso 0,443 ; fusion citée avec renvoi à §4.1 |
+| `docs-astrovision/models/index.md` | « ~60 / ~74 / ~78 / ~82 / 86,3 % », « ViT-S/14 » | valeurs de test de `facts.json` (59,5 / 82,7 / 55,5 / 83,9 / 86,3 %), « ViT-B/14 » (`models.dinov2.feature_dim` = 768) ; réserve split + ablation (§4.1–4.2) |
+| `docs-astrovision/results/evaluation-protocol.mdx` | « 86,3 % headline », « ≈ 0,53 » (Disturbed) | meilleur modèle d'image = DINOv2 fine-tuné ; fusion citée comme comparaison inter-jeux ; rappels Disturbed 0,59 (fusion) et 0,53 (DINOv2 fine-tuné, figure) |
+| `docs-astrovision/community/roadmap.mdx`, `citing.mdx` | « ≈ 86,3 % » | `<Fact k="models.fusion.test.balanced_accuracy" />` avec la réserve |
 
 ## 6. Procédure de mise à jour
 
