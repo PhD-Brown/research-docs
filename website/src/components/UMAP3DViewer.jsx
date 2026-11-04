@@ -1,5 +1,9 @@
 import React from 'react';
 import { useBaseUrlUtils } from '@docusaurus/useBaseUrl';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+// Nombre de points : run UMAP/t-SNE de référence (runs.json) — figures HTML G1.
+const N_POINTS = fmt.int(getReferenceRun('umap_tsne').n);
 
 const VIEWS = [
   {
@@ -63,7 +67,7 @@ export default function UMAP3DViewer() {
             opacity: 0.4,
             color: 'var(--ifm-font-color-base)',
           }}>
-            Interactive 3D visualization — Plotly · LAMOST DR5 × Gaia DR3 · N = 43,019
+            Interactive 3D visualization — Plotly · LAMOST DR5 × Gaia DR3 · N = {N_POINTS}
           </div>
         </div>
         <div style={{
@@ -166,7 +170,7 @@ export default function UMAP3DViewer() {
               opacity: 0.3,
               fontFamily: 'monospace',
             }}>
-              43,019 points · Plotly.js
+              {N_POINTS} points · Plotly.js
             </div>
           </div>
         )}

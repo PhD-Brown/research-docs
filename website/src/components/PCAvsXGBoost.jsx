@@ -1,45 +1,56 @@
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, getRun, shapRunFor, fmt, prettyFeature, generationLabel } from '@site/src/data/astrospectro';
 
-const SIDES = [
-  {
-    method: 'PCA',
-    goal: 'Direction of maximum variance',
-    color: '#38BDF8',
-    topFeature: 'Balmer lines',
-    topFeatureColor: '#60A5FA',
-    topFeatureSub: 'Hα, Hβ, Hγ… PC1 = 31.5%',
-    result: 'Temperature T_eff',
-    resultMetric: 'ρ(PC1, Teff) = +0.831',
-    interpretation: 'Spectra vary mostly in Teff between O and M types. Balmer is the most variable in variance space.',
-    nature: 'Unsupervised',
-    icon: '∑',
-    bullets: [
-      'Maximises total variance',
-      'Balmer dominates → PC1 thermal',
-      'Temperature = variance source #1',
-      'No labels used',
-    ],
-  },
-  {
-    method: 'XGBoost',
-    goal: 'Optimal decision boundary',
-    color: '#F59E0B',
-    topFeature: 'Ca II H&K lines',
-    topFeatureColor: '#C084FC',
-    topFeatureSub: 'Ca K, Ca H (SHAP ranks 1-5)',
-    result: 'Metallicity + gravity',
-    resultMetric: 'Ca II dominates SHAP top-5',
-    interpretation: 'To distinguish classes, Ca II and Mg b are more discriminant than Balmer — metallicity separates spectral types better than temperature alone.',
-    nature: 'Supervised',
-    icon: '⟂',
-    bullets: [
-      'Minimises classification error',
-      'Ca II dominates → discriminability',
-      'Metallicity = best separator',
-      'Spectral type labels used',
-    ],
-  },
-];
+// Les deux colonnes sont tirées de runs.json pour une même génération de données (règle 2) : la PCA de
+// référence et le SHAP calculé sur le même fichier de features (shapRunFor).
+//
+// Usage :
+//   <PCAvsXGBoost />                                   // PCA de référence (registre) + SHAP de même génération
+//   <PCAvsXGBoost pcaRun="phy3500_pca_run_…" />
+
+function sidesOf(pca, shap, model) {
+  const pm = pca.metrics;
+  const top = pm.loadings.PC1[0];
+  const sm = shap.metrics;
+  const top3 = sm.top.slice(0, 3).map((f) => prettyFeature(f.feature));
+  return [
+    {
+      method: 'PCA',
+      goal: 'Direction of maximum variance',
+      color: '#38BDF8',
+      topFeature: prettyFeature(top.feature),
+      topFeatureColor: '#60A5FA',
+      topFeatureSub: `top PC1 loading ${fmt.signed(top.loading)} · PC1 = ${fmt.pct(pm.variance[0])} variance`,
+      result: 'Temperature T_eff',
+      resultMetric: `ρ(PC1, Teff) = ${fmt.signed(pm.gaia_spearman.PC1.teff_gspphot)}`,
+      nature: 'Unsupervised',
+      bullets: [
+        'Maximises total variance',
+        'Balmer and continuum shape load PC1 → thermal axis',
+        'Temperature = variance source #1',
+        'No labels used',
+      ],
+    },
+    {
+      method: 'XGBoost',
+      goal: 'Optimal decision boundary',
+      color: '#F59E0B',
+      topFeature: top3[0],
+      topFeatureColor: '#C084FC',
+      topFeatureSub: `SHAP top 3: ${top3.join(' · ')}`,
+      result: 'Spectroscopic features dominate',
+      resultMetric: `${fmt.pct(sm.physical_share)} of Σ|SHAP| · ${sm.top30_physical}/30 top features`,
+      nature: 'Supervised',
+      bullets: [
+        'Minimises classification error',
+        `SHAP on ${model ? model.label : shap.id} (${shap.n_features} features)`,
+        'Mixes molecular bands, Mg b and Balmer lines',
+        'Spectral type labels used',
+      ],
+    },
+  ];
+}
 
 function Side({ method, goal, color, topFeature, topFeatureColor, topFeatureSub, result, resultMetric, nature, bullets }) {
   const [hov, setHov] = React.useState(false);
@@ -76,15 +87,23 @@ function Side({ method, goal, color, topFeature, topFeatureColor, topFeatureSub,
   );
 }
 
-export default function PCAvsXGBoost() {
+export default function PCAvsXGBoost({ pcaRun }) {
+  const pca = resolveRun(pcaRun, 'pca');
+  const shap = shapRunFor(pca.generation);
+  if (!shap) return null;
+  const model = shap.model_run ? getRun(shap.model_run) : null;
   return (
     <div style={{ margin: '28px 0' }}>
+      <div style={{ fontSize: '11px', fontFamily: 'var(--ifm-font-family-monospace)', color: 'var(--ifm-font-color-base)', opacity: 0.6, marginBottom: '8px' }}>
+        PCA {pca.id} ({generationLabel(pca)}) · SHAP {model ? `${model.label} (run ${model.id} · ${generationLabel(model)})` : shap.id}
+      </div>
       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '14px' }}>
-        {SIDES.map((s) => <Side key={s.method} {...s} />)}
+        {sidesOf(pca, shap, model).map((s) => <Side key={s.method} {...s} />)}
       </div>
       <div style={{ padding: '14px 18px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', fontSize: '13px', color: 'var(--ifm-font-color-base)', opacity: 0.85, lineHeight: 1.65 }}>
-        <strong style={{ color: '#34D399' }}>✓ These two results are consistent and complementary</strong> — they answer two different questions. PCA answers: <em>"what is the dominant source of variance?"</em> → temperature. XGBoost answers: <em>"what information best separates classes?"</em> → metallicity via Ca II. The fact that both supervised and unsupervised approaches converge on the same physical structure confirms the validity of the 183 features.
+        <strong style={{ color: '#34D399' }}>✓ These two results are complementary</strong> — they answer two different questions. PCA answers: <em>"what is the dominant source of variance?"</em> → temperature. XGBoost answers: <em>"what information best separates classes?"</em> → the SHAP ranking of {model ? model.label : 'this model'} (same feature generation as the PCA), led by {prettyFeature(shap.metrics.top[0].feature)}.
       </div>
+      {model && <GaiaLeakNote run={model} style={{ marginTop: '8px' }} />}
     </div>
   );
 }

@@ -1,26 +1,32 @@
+// src/components/SHAPTop10.jsx
+// Top-10 SHAP (mean |SHAP|) d'un run SHAP de runs.json, coloré par famille (colonne `family` du CSV du pipeline).
+//
+// Usage :
+//   <SHAPTop10 />                                              // SHAP de référence (registre FACTS_INDEX.md)
+//   <SHAPTop10 run="shap/features_20260305T174836Z" />         // autre run SHAP
+
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, getRun, fmt, prettyFeature, generationLabel } from '@site/src/data/astrospectro';
 
-const FAMILY_COLORS = {
-  'Ca II':  '#C084FC',
-  'Balmer': '#60A5FA',
-  'Metals': '#34D399',
-};
+const PALETTE = ['#C084FC', '#60A5FA', '#34D399', '#F59E0B', '#FB7185', '#38BDF8', '#A3E635', '#F472B6', '#FBBF24', '#94A3B8'];
 
-const SHAP_FEATURES = [
-  { rank: '1',   name: 'Ca II K prominence',      family: 'Ca II',  importance: 0.98, note: 'K line strength at 3934 Å' },
-  { rank: '2',   name: 'Ca II K EW',               family: 'Ca II',  importance: 0.94, note: 'Equivalent width W(CaIIK)' },
-  { rank: '3',   name: 'Ca II K FWHM',             family: 'Ca II',  importance: 0.91, note: 'Full width at half maximum' },
-  { rank: '4',   name: 'Ca II H prominence',       family: 'Ca II',  importance: 0.87, note: 'H line strength at 3968 Å' },
-  { rank: '5',   name: 'Ca II H EW',               family: 'Ca II',  importance: 0.84, note: 'Equivalent width W(CaIIH)' },
-  { rank: '6',   name: 'Hα EW',                    family: 'Balmer', importance: 0.76, note: 'Equivalent width Hα 6563 Å' },
-  { rank: '7',   name: 'Hα prominence',            family: 'Balmer', importance: 0.73, note: 'Hα line strength' },
-  { rank: '8',   name: 'Mg b EW',                  family: 'Metals', importance: 0.68, note: 'W(Mg b) 5175 Å — [Mg/Fe] proxy' },
-  { rank: '9',   name: 'Mg b prominence',          family: 'Metals', importance: 0.64, note: 'Mg b triplet strength' },
-  { rank: '10',  name: 'Balmer temperature index', family: 'Balmer', importance: 0.59, note: 'Hγ/Hβ gradient — T_eff index' },
-];
+function familyColors(features) {
+  const out = {};
+  features.forEach((f) => { if (!(f.family in out)) out[f.family] = PALETTE[Object.keys(out).length % PALETTE.length]; });
+  return out;
+}
 
-export default function SHAPTop10() {
+export default function SHAPTop10({ run: runProp }) {
   const [hov, setHov] = React.useState(null);
+  const shap = resolveRun(runProp, 'shap');
+  const model = shap.model_run ? getRun(shap.model_run) : null;
+  const sm = shap.metrics;
+  const SHAP_FEATURES = sm.top.slice(0, 10).map((f) => ({
+    rank: String(f.rank), name: prettyFeature(f.feature), family: f.family, importance: f.mean_abs_shap,
+    note: `${f.feature} · ${f.category}`,
+  }));
+  const FAMILY_COLORS = familyColors(SHAP_FEATURES);
   const maxVal = Math.max(...SHAP_FEATURES.map(f => f.importance));
 
   return (
@@ -29,10 +35,10 @@ export default function SHAPTop10() {
         <div style={{ fontFamily: 'monospace', fontSize: '28px', color: '#C084FC', lineHeight: 1, flexShrink: 0 }}>⚡</div>
         <div>
           <div style={{ fontWeight: '800', fontSize: '14px', color: '#C084FC', marginBottom: '4px' }}>
-            Key discovery — Ca II dominates over Balmer
+            Top SHAP feature — {SHAP_FEATURES[0].name} ({SHAP_FEATURES[0].family})
           </div>
           <div style={{ fontSize: '13px', color: 'var(--ifm-font-color-base)', opacity: 0.8, lineHeight: 1.5 }}>
-            The top 5 SHAP features are all Ca II H&K lines — <strong>metallicity is more discriminant than temperature</strong> for XGBoost. A direct contrast with PCA where temperature (Balmer, PC1) dominates.
+            The top 10 span <strong>{Object.keys(FAMILY_COLORS).length} feature families</strong>; spectroscopic features carry <strong>{fmt.pct(sm.physical_share)}</strong> of the total mean |SHAP|{model ? <> for <code>{model.label}</code></> : null}.
           </div>
         </div>
       </div>
@@ -48,7 +54,7 @@ export default function SHAPTop10() {
           );
         })}
         <div style={{ marginLeft: 'auto', fontSize: '10px', opacity: 0.35, color: 'var(--ifm-font-color-base)', alignSelf: 'center' }}>
-          Normalised relative importance — run 20260213T225019Z
+          mean |SHAP| — {model ? `model run ${model.id} · ${generationLabel(model)}` : shap.id}
         </div>
       </div>
 
@@ -63,7 +69,7 @@ export default function SHAPTop10() {
           const color = FAMILY_COLORS[f.family];
           const barWidth = (f.importance / maxVal) * 100;
           const isHov = hov === i;
-          const isTop5Ca = f.family === 'Ca II';
+          const isTop5Ca = Number(f.rank) <= 3;
           return (
             <div key={i} onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)} style={{ display: 'grid', gridTemplateColumns: '28px 180px 1fr 80px', gap: '10px', padding: '9px 14px', alignItems: 'center', borderBottom: i < SHAP_FEATURES.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', background: isHov ? `${color}0c` : isTop5Ca ? 'rgba(192,132,252,0.03)' : 'transparent', transition: 'background 0.1s', cursor: 'default' }}>
               <div style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: '700', color: color, opacity: isHov ? 1 : 0.65 }}>{f.rank}</div>
@@ -83,8 +89,9 @@ export default function SHAPTop10() {
       </div>
 
       <div style={{ marginTop: '12px', padding: '10px 14px', background: 'rgba(96,165,250,0.05)', border: '1px solid rgba(96,165,250,0.15)', borderRadius: '7px', fontSize: '11.5px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
-        <strong style={{ color: '#60A5FA' }}>97.9%</strong> of the 30 most important features (SHAP top-30) are physical spectral features — no non-physical feature dominates. Hover bars to see the interpretation of each feature.
+        <strong style={{ color: '#60A5FA' }}>{sm.top30_physical}/30</strong> of the 30 most important features (SHAP top-30) are spectroscopic; they carry <strong style={{ color: '#60A5FA' }}>{fmt.pct(sm.physical_share)}</strong> of the total mean |SHAP|. Hover bars to see the pipeline name of each feature.
       </div>
+      {model && <GaiaLeakNote run={model} style={{ marginTop: '8px' }} />}
     </div>
   );
 }

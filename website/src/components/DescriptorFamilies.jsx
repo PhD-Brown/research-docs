@@ -1,12 +1,28 @@
+// src/components/DescriptorFamilies.jsx
+// Cartes des 6 familles de descripteurs (effectifs ~ du catalogue, constants). La ligne « → PCA » est calculée
+// sur le run PCA de référence (runs.json) : part de la famille dans le top-10 |loadings| ou loading d'une feature.
+// Les anciens « Balmer 31.5 % / Ca 22.4 % » n'avaient pas de source ; « SHAP top-3 » (run G2) retiré d'un bloc G1.
+//
+// Usage : <DescriptorFamilies />
+
 import React from 'react';
+import Link from '@docusaurus/Link';
+import { getReferenceRun, familyShares, fmt } from '@site/src/data/astrospectro';
+
+const PCA = getReferenceRun('pca');
+const SHARE1 = Object.fromEntries(familyShares(PCA.metrics.loadings.PC1).map((f) => [f.key, f.pct]));
+const loading = (pc, feature) => {
+  const l = PCA.metrics.loadings[pc].find((x) => x.feature === feature);
+  return l ? fmt.signed(l.loading) : 'n/a';
+};
 
 const FAMILIES = [
-  { name: 'Balmer lines', range: 'Hα – Hθ', count: '~35', indicator: 'Teff — thermal axis PC1', color: '#60A5FA', description: 'Hydrogen absorption series. Primary thermal indicator: maximum strength around 10,000 K (type A), weakens toward M and O.', lines: 'Hα 6563 Å · Hβ 4861 Å · Hγ 4341 Å · Hδ 4102 Å · Hθ 3798 Å', pcaRole: 'PC1 (Balmer: 31.5%)' },
-  { name: 'Ca II H&K + IR triplet', range: 'H 3968 · K 3933 · IR 8498–8662', count: '~20', indicator: 'Metallicity + chromospheric activity', color: '#C084FC', description: 'Ionised calcium in absorption. Sensitive to both metallicity ([Ca/H]) and stellar magnetic activity (emission core filling).', lines: 'Ca II H 3968 Å · Ca II K 3933 Å · IR triplet 8498, 8542, 8662 Å', pcaRole: 'PC1 (Ca: 22.4%) · SHAP top-3' },
-  { name: 'Magnesium & α-elements', range: 'Mg b · Mg I 5184 · Mg II', count: '~15', indicator: '[Mg/Fe] · stellar population', color: '#34D399', description: 'Mg b triplet and magnesium lines. Tracers of α-element enrichment — discriminates halo and Galactic disk populations.', lines: 'Mg b 5167–5183 Å · Mg I 5184 Å · Mg II 4481 Å', pcaRole: 'PC1 (W(Mgb) = −0.171)' },
-  { name: 'Iron peak metals', range: 'Fe, Cr, V, Ni, Ba, Sr...', count: '~30', indicator: '[Fe/H] · metallicity', color: '#FB923C', description: 'Iron peak element lines. Direct measurement of iron abundance and heavy metals. Dominate PC2.', lines: 'Fe I 5270, 5335 Å · Cr I · V I · Ni I · Ba II · Sr II', pcaRole: 'PC2 ([Fe/H]proxy: 0.205)' },
-  { name: 'Lick/SDSS/CaH indices', range: 'Lick IDS indices · CaH · TiO', count: '~18', indicator: 'Age + composite metallicity', color: '#FBBF24', description: 'Standardised spectral indices. Narrow-band combinations calibrated to measure age and metallicity of stellar populations.', lines: 'Lick IDS indices · CaH1, CaH2 · TiO1, TiO2 · SDSS composites', pcaRole: 'PC2 (Idxmétal: 0.198)' },
-  { name: 'Continuum · slopes · colours', range: 'Flux ratios · photom. indices', count: '~65', indicator: 'Teff (slope) · luminosity (breaks)', color: '#F87171', description: 'Global spectral continuum shape. Largest family by count. Encodes temperature via blackbody slope and luminosity via spectral breaks.', lines: 'fblue/fred · synthetic B−V · local slopes · photometric indices', pcaRole: 'PC1 (continuum: fblue/fred = 0.161)' },
+  { name: 'Balmer lines', range: 'Hα – Hθ', count: '~35', indicator: 'Teff — thermal axis PC1', color: '#60A5FA', description: 'Hydrogen absorption series. Primary thermal indicator: maximum strength around 10,000 K (type A), weakens toward M and O.', lines: 'Hα 6563 Å · Hβ 4861 Å · Hγ 4341 Å · Hδ 4102 Å · Hθ 3798 Å', pcaRole: `PC1 (Balmer: ${SHARE1.balmer}% of top-10 |loadings|)` },
+  { name: 'Ca II H&K + IR triplet', range: 'H 3968 · K 3933 · IR 8498–8662', count: '~20', indicator: 'Metallicity + chromospheric activity', color: '#C084FC', description: 'Ionised calcium in absorption. Sensitive to both metallicity ([Ca/H]) and stellar magnetic activity (emission core filling).', lines: 'Ca II H 3968 Å · Ca II K 3933 Å · IR triplet 8498, 8542, 8662 Å', pcaRole: `PC1 (Ca II: ${SHARE1.caii}% of top-10 |loadings|)` },
+  { name: 'Magnesium & α-elements', range: 'Mg b · Mg I 5184 · Mg II', count: '~15', indicator: '[Mg/Fe] · stellar population', color: '#34D399', description: 'Mg b triplet and magnesium lines. Tracers of α-element enrichment — discriminates halo and Galactic disk populations.', lines: 'Mg b 5167–5183 Å · Mg I 5184 Å · Mg II 4481 Å', pcaRole: `PC1 (W(Mgb) = ${loading('PC1', 'feature_Mg_b_eq_width')})` },
+  { name: 'Iron peak metals', range: 'Fe, Cr, V, Ni, Ba, Sr...', count: '~30', indicator: '[Fe/H] · metallicity', color: '#FB923C', description: 'Iron peak element lines. Direct measurement of iron abundance and heavy metals. Dominate PC2.', lines: 'Fe I 5270, 5335 Å · Cr I · V I · Ni I · Ba II · Sr II', pcaRole: `PC2 ([Fe/H]proxy: ${loading('PC2', 'feature_FeH_proxy')})` },
+  { name: 'Lick/SDSS/CaH indices', range: 'Lick IDS indices · CaH · TiO', count: '~18', indicator: 'Age + composite metallicity', color: '#FBBF24', description: 'Standardised spectral indices. Narrow-band combinations calibrated to measure age and metallicity of stellar populations.', lines: 'Lick IDS indices · CaH1, CaH2 · TiO1, TiO2 · SDSS composites', pcaRole: `PC2 (metal index: ${loading('PC2', 'feature_metal_index_combined')})` },
+  { name: 'Continuum · slopes · colours', range: 'Flux ratios · photom. indices', count: '~65', indicator: 'Teff (slope) · luminosity (breaks)', color: '#F87171', description: 'Global spectral continuum shape. Largest family by count. Encodes temperature via blackbody slope and luminosity via spectral breaks.', lines: 'fblue/fred · synthetic B−V · local slopes · photometric indices', pcaRole: `PC1 (continuum: fblue/fred = ${loading('PC1', 'feature_flux_ratio_blue_red')})` },
 ];
 
 function FamilyCard({ name, range, count, indicator, color, description, lines, pcaRole }) {
@@ -42,7 +58,7 @@ export default function DescriptorFamilies() {
       </div>
       <div style={{ marginTop: '16px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.5, textAlign: 'center' }}>
         183 features · 6 spectroscopic families ·{' '}
-        <a href="/AstroSpectro/docs/science/features-list-183" style={{ color: 'inherit', textDecoration: 'underline dotted' }}>complete catalogue →</a>
+        <Link to="/docs/astrospectro/data/feature-dataset" style={{ color: 'inherit', textDecoration: 'underline dotted' }}>complete catalogue →</Link>
       </div>
     </div>
   );

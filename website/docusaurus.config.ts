@@ -148,7 +148,7 @@ const config: Config = {
         },
         // ── Other ─────────────────────────────────────────────────────────
         {
-          to: "/blog",
+          to: "/Blog", // = blog.routeBasePath (sensible à la casse)
           label: "Blog",
           position: "left",
         },
@@ -188,7 +188,7 @@ const config: Config = {
             { label: "Glossary", to: "/docs/atlas/glossary" },
             { label: "Methods Index", to: "/docs/atlas/methods-index" },
             { label: "Reading Paths", to: "/docs/reading-paths" },
-            { label: "Blog", to: "/journal" },
+            { label: "Blog", to: "/Blog" },
           ],
         },
         {

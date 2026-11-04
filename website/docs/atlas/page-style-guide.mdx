@@ -4,6 +4,8 @@ description: How research-docs pages are built and how they look — page templa
 ---
 
 import CrossReferences from '@site/src/components/CrossReferences';
+import RunFact from '@site/src/components/RunFact';
+import GaiaLeakNote from '@site/src/components/GaiaLeakNote';
 
 # Page Style Guide
 
@@ -181,11 +183,14 @@ The stat-card row is a **component**, placed directly under `## Key results` wit
 
 | Page family | Existing component | Shape |
 |---|---|---|
-| Autoencoder | `AEKeyMetrics` | 4 cards, hard-coded |
-| PCA | `PCAxisCards` | 2 axis cards, hard-coded |
-| Classification | `ClassifierMetrics` | 3 cards, hard-coded (values outdated) |
-| Results hub | `ResultsHero` | 5 cards, hard-coded (values outdated) |
-| Dataset | `DatasetStats` | 5 cards, hard-coded |
+| Autoencoder | `AEKeyMetrics` | 4 cards, reference `autoencoder` run |
+| PCA | `PCAxisCards` | 2 axis cards, reference `pca` run |
+| Classification | `ClassifierMetrics` | 3 cards, reference `classifier` run + leak note |
+| Results hub | `ResultsHero` | 5 cards in two labelled groups (G1 dimred · G2 classification) |
+| Dataset | `DatasetStats` | 4 cards, reference `pca` run |
+
+These components read `src/data/astrospectro/runs.json`, generated from `_facts/` and the run registry of
+`FACTS_INDEX.md` (`python3 scripts/build_runs_data.py`); most accept a `run` prop (registry key or run ID).
 
 </div>
 
@@ -193,7 +198,7 @@ Rules:
 
 - 3–6 cards. Each card = value (with sign and unit) · metric name · context line (N, run, condition).
 - If no component fits, use a three-column Markdown table `Metric | Value | Context` (as in the [Model Card](../astrospectro/science/model-card)) — never raw HTML with custom class names.
-- New key-metrics components must be **prop-driven** (values passed from the page, so they can be checked against `_facts/`) and theme-aware; see `.claude/skills/docs-component`.
+- New key-metrics components never hard-code run numbers: they read `runs.json` through `@site/src/data/astrospectro` or receive values as props, and are theme-aware; see `.claude/skills/docs-component`.
 
 ### 4.3 Admonitions
 
@@ -294,13 +299,17 @@ Use `@theme/Tabs` only to compare two variants of the same thing (UMAP vs t-SNE,
 ### 4.9 Closing navigation and links
 
 - **Method, data, result pages**: `---` then `<RelatedPages pages={[…]} />` with 3–6 entries (`href`, `title`, `desc`, `category`, optional `badge`).
-- **Landing and overview pages**: `## Cross-references` then `<CrossReferences links={[…]} />` (table, theme-aware) — as at the bottom of this page. Do not set `featured: true` for now: the highlighted row is unreadable in dark mode (light-blue background under light text).
-- Both components render raw `<a href>` elements: **Docusaurus does not check these links**, and the href is resolved from the *rendered URL*, not from the file. On a category index (`dimred/index.mdx`, served at `/docs/astrospectro/dimred`), `./pca` resolves to `/docs/astrospectro/pca` — write `./dimred/pca`. Run `check-links.mjs` (skill `docs-verify`) on every page you touch.
+- **Landing and overview pages**: `## Cross-references` then `<CrossReferences links={[…]} />` (table, theme-aware) — as at the bottom of this page. `featured: true` highlights one row (readable in both themes).
+- Both components render Docusaurus `<Link>`s: prefer **absolute routes** (`/docs/astrospectro/dimred/pca`) — the base URL is added and the build checks them. A relative href is still resolved from the *rendered URL*, not from the file: on a category index (`dimred/index.mdx`, served at `/docs/astrospectro/dimred`), `./pca` resolves to `/docs/astrospectro/pca`. Run `check-links.mjs` (skill `docs-verify`) on every page you touch.
 - In prose, prefer Markdown links to the source file (`[PCA](./pca.mdx)`): those are checked by the build.
 
 ### 4.10 Run provenance
 
-- Classifier results: `<RunProvenance experiment=… savedAt=… md5=… notes=… stack=… keyResultsHref=… />`, values copied from the files listed in `FACTS_INDEX.md` §1. The reference run is v6; every block that cites it also states that its 99 selected features include four Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`) and links to the [Data Leakage Audit](../astrospectro/concepts/data-leakage-audit). The v7 validation run is never featured.
+- Classifier results: `<RunProvenance />` — with no props it shows the reference run of the registry (`runs.json`); explicit props still override. The reference run is v6; every block that cites it also states that its 99 selected features include four Gaia/photometric columns (`M_G`, `M_BP`, `M_RP`, `ag_gspphot`) and links to the [Data Leakage Audit](../astrospectro/concepts/data-leakage-audit). Components that cite a run with Gaia/photometric features render the short note themselves; elsewhere use `<GaiaLeakNote />`, which renders:
+
+<GaiaLeakNote />
+
+- The v7 validation run is never featured.
 - Dimensionality-reduction results: a `:::note[Run]` carrying the label **PHY-3500 · G1 · 43,019 spectra** and the run ID(s). Never mix data generations in one block.
 
 ### 4.11 Colour and theme
@@ -356,9 +365,10 @@ These complement the [Editorial Guide](../editorial-guide) (tone, canonical page
 ### 5.2 Numbers
 
 - **Every number comes from `_facts/`**, through the file and key listed in `FACTS_INDEX.md`. A number that cannot be traced is not published.
+- **No run number is typed into a page**: in prose, write `<RunFact run="classifier" path="metrics.balanced_accuracy" format="pct" />` — rendered here as <RunFact run="classifier" path="metrics.balanced_accuracy" format="pct" /> — so that a new reference run updates the sentence (procedure: skill `docs-new-run`). `run` is a registry key or a run ID; `format` is one of `pct`, `num`, `signed`, `int`, `sci`, `seconds`, `raw`.
 - Always units and signs: `N = 43,019 spectra`, `MSE = 0.489`, `ρ(T_eff) = +0.831`.
 - English thousands separator (`43,019`) and decimal point.
-- Hardware context when timing is quoted (CPU, threads).
+- Hardware context when timing is quoted (CPU, threads) — only if the hardware is recorded in `_facts/`.
 
 ### 5.3 Dataset context
 

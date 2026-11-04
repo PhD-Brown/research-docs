@@ -1,4 +1,23 @@
+// src/components/DimRedPipeline.jsx
+// Diagramme X → scaler → PCA → UMAP / t-SNE → HDBSCAN. Dimensions, paramètres, temps et résultats HDBSCAN
+// lus dans les runs PCA et UMAP/t-SNE de référence (runs.json).
+//
+// Usage : <DimRedPipeline />
+
 import React from 'react';
+import { getReferenceRun, fmt, mean } from '@site/src/data/astrospectro';
+
+const PCA = getReferenceRun('pca');
+const UM = getReferenceRun('umap_tsne');
+const N = fmt.int(PCA.n);
+const P = PCA.p;
+const K95 = PCA.metrics.n_components_for_variance['95pct'];
+const U = UM.parameters.umap;
+const T = UM.parameters.tsne;
+const HD = UM.metrics.hdbscan;
+const seedsOf = (xs) => xs.filter((s) => s.seed !== 0).map((s) => s.d);
+const RATIO = Math.round(mean(seedsOf(UM.metrics.procrustes_umap)) / mean(seedsOf(UM.metrics.procrustes_tsne)));
+const MB = Math.round((PCA.n * PCA.p * 8) / 1e6);
 
 const ARROW = () => (<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '28px', color: 'rgba(255,255,255,0.2)', fontSize: '18px', userSelect: 'none', flexShrink: 0 }}>↓</div>);
 
@@ -22,11 +41,11 @@ export default function DimRedPipeline() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0' }}>
-        <Node dim="43,019 × 183" label="Raw matrix X" sub="183 spectroscopic features" meta="dtype float64 · ~60 MB" color="#94A3B8" />
+        <Node dim={`${N} × ${P}`} label="Raw matrix X" sub={`${P} spectroscopic features`} meta={`dtype float64 · ~${MB} MB`} color="#94A3B8" />
         <ARROW />
-        <Node dim="43,019 × 183" label="StandardScaler" sub="x̃ᵢⱼ = (xᵢⱼ − x̄ⱼ) / sⱼ" meta="Variance = 1 per feature · Mean = 0" color="#60A5FA" />
+        <Node dim={`${N} × ${P}`} label="StandardScaler" sub="x̃ᵢⱼ = (xᵢⱼ − x̄ⱼ) / sⱼ" meta="Variance = 1 per feature · Mean = 0" color="#60A5FA" />
         <ARROW />
-        <Node dim="43,019 × 91" label="PCA (K = 91)" sub="95% variance · Lanczos SVD" meta="t < 1 s · deterministic · Eckart-Young optimal" color="#38BDF8" />
+        <Node dim={`${N} × ${K95}`} label={`PCA (K = ${K95})`} sub="95% variance · Lanczos SVD" meta="deterministic · Eckart-Young optimal" color="#38BDF8" />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0', width: '100%', maxWidth: '520px', margin: '0' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -42,18 +61,18 @@ export default function DimRedPipeline() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', width: '100%', maxWidth: '520px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0' }}>
             <ARROW />
-            <Node dim="43,019 × 2" label="UMAP" sub="Topological · Manifold" meta={'n_neighbors=15 · min_dist=0.1\nt = 40.1 s · non-deterministic'} color="#F59E0B" isFork />
+            <Node dim={`${N} × 2`} label="UMAP" sub="Topological · Manifold" meta={`n_neighbors=${U.n_neighbors} · min_dist=${U.min_dist}\nt = ${fmt.seconds(UM.metrics.umap_fit_time_s)} · non-deterministic`} color="#F59E0B" isFork />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0' }}>
             <ARROW />
-            <Node dim="43,019 × 2" label="t-SNE" sub="Probabilistic · KL divergence" meta={"perplexity=30 · init='pca'\nt = 80.2 s · stable (×60)"} color="#A78BFA" isFork />
+            <Node dim={`${N} × 2`} label="t-SNE" sub="Probabilistic · KL divergence" meta={`perplexity=${T.perplexity} · init='${T.init}'\nt = ${fmt.seconds(UM.metrics.tsne_fit_time_s)} · stable (×${RATIO})`} color="#A78BFA" isFork />
           </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', width: '100%', maxWidth: '520px', marginTop: '0' }}>
           {[
-            { label: 'Continuous continent', sub: 'Harvard sequence visible\nHDBSCAN → 20 clusters', color: '#F59E0B' },
-            { label: 'Compact archipelago',  sub: 'Separated sub-populations\nt-SNE ~60× more stable',  color: '#A78BFA' },
+            { label: 'Continuous continent', sub: `Harvard sequence visible\nHDBSCAN → ${HD.n_clusters} clusters`, color: '#F59E0B' },
+            { label: 'Compact archipelago',  sub: `Separated sub-populations\nt-SNE ~${RATIO}× more stable`,  color: '#A78BFA' },
           ].map((o) => (
             <div key={o.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <ARROW />
@@ -70,7 +89,7 @@ export default function DimRedPipeline() {
             <ARROW />
             <div style={{ width: '100%', padding: '10px 14px', background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.25)', borderRadius: '8px', textAlign: 'center' }}>
               <div style={{ fontSize: '12px', fontWeight: '700', color: '#34D399', marginBottom: '2px' }}>HDBSCAN</div>
-              <div style={{ fontSize: '11px', opacity: 0.55, color: 'var(--ifm-font-color-base)' }}>20 clusters · 6.14% noise</div>
+              <div style={{ fontSize: '11px', opacity: 0.55, color: 'var(--ifm-font-color-base)' }}>{HD.n_clusters} clusters · {fmt.pctRaw(HD.pct_noise, 2)} noise</div>
             </div>
           </div>
           <div />
@@ -78,9 +97,9 @@ export default function DimRedPipeline() {
       </div>
 
       <div style={{ marginTop: '20px', display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', fontSize: '11px', opacity: 0.45, color: 'var(--ifm-font-color-base)' }}>
-        <span>Input: X ∈ ℝ^(43019×183)</span><span>·</span>
-        <span>PCA intermediate: Z_pca ∈ ℝ^(43019×91)</span><span>·</span>
-        <span>Outputs: Z_umap, Z_tsne ∈ ℝ^(43019×2)</span>
+        <span>Input: X ∈ ℝ^({PCA.n}×{P})</span><span>·</span>
+        <span>PCA intermediate: Z_pca ∈ ℝ^({PCA.n}×{K95})</span><span>·</span>
+        <span>Outputs: Z_umap, Z_tsne ∈ ℝ^({PCA.n}×2)</span>
       </div>
     </div>
   );

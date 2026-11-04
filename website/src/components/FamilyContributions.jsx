@@ -1,15 +1,30 @@
+// src/components/FamilyContributions.jsx
+// Part de chaque famille de descripteurs dans Σ|loading| des 10 premiers loadings de PC1 et PC2
+// (run PCA de référence, runs.json : metrics.loadings ; familles : featureFamily()).
+// L'ancienne version affichait des pourcentages par famille sans source (31.5 %, 22.4 %, 43.3 %…) : le pack
+// n'exporte que les 10 premiers loadings, d'où ce calcul sur le top-10.
+//
+// Usage :
+//   <FamilyContributions />                            // run PCA de référence (registre FACTS_INDEX.md)
+//   <FamilyContributions run="phy3500_pca_run_…" />
+
 import React from 'react';
+import { resolveRun, familyShares } from '@site/src/data/astrospectro';
 
-const FAMILIES = [
-  { name: 'Balmer lines',     sub: 'H α–θ',           pc1: 31.5, pc2:  8.2, color: '#60A5FA', pc1dom: true  },
-  { name: 'Ionised calcium',  sub: 'Ca II H&K + IR',  pc1: 22.4, pc2: 12.1, color: '#C084FC', pc1dom: true  },
-  { name: 'Iron & metals',    sub: 'Fe, Cr, V, Ni…',  pc1: 15.3, pc2: 43.3, color: '#FB923C', pc2dom: true  },
-  { name: 'Magnesium / α',   sub: 'Mg b, [Mg/Fe]',   pc1: 10.8, pc2: 18.4, color: '#34D399', pc2dom: true  },
-  { name: 'Lick indices',     sub: 'Lick IDS, SDSS',  pc1:  9.7, pc2: 11.6, color: '#FBBF24', neutral: true },
-  { name: 'Continuum',        sub: 'slopes, colours', pc1: 10.3, pc2:  6.4, color: '#F87171', pc1dom: true  },
-];
+function familiesOf(run) {
+  const s1 = familyShares(run.metrics.loadings.PC1);
+  const s2 = familyShares(run.metrics.loadings.PC2);
+  const max1 = Math.max(...s1.map((f) => f.pct));
+  const max2 = Math.max(...s2.map((f) => f.pct));
+  return s1.map((f, i) => ({
+    name: f.label, sub: f.sub, color: f.color, pc1: f.pct, pc2: s2[i].pct,
+    pc1dom: f.pct === max1, pc2dom: s2[i].pct === max2,
+  }));
+}
 
-const MAX_PCT = 50;
+const top = (fams, key) => [...fams].sort((a, b) => b[key] - a[key]);
+
+const MAX_PCT = 100;
 const PC1_COLOR = '#38BDF8';
 const PC2_COLOR = '#F59E0B';
 
@@ -52,7 +67,10 @@ function Row({ name, sub, pc1, pc2, color, pc1dom, pc2dom }) {
   );
 }
 
-export default function FamilyContributions() {
+export default function FamilyContributions({ run }) {
+  const FAMILIES = familiesOf(resolveRun(run, 'pca'));
+  const [a1, b1] = top(FAMILIES, 'pc1');
+  const [a2, b2] = top(FAMILIES, 'pc2');
   return (
     <div style={{ margin: '28px 0' }}>
       <div style={{ border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', overflow: 'hidden' }}>
@@ -72,12 +90,15 @@ export default function FamilyContributions() {
         </div>
         {FAMILIES.map((f) => <Row key={f.name} {...f} />)}
       </div>
+      <div style={{ marginTop: '6px', fontSize: '10.5px', opacity: 0.55, color: 'var(--ifm-font-color-base)' }}>
+        Share of Σ|loading| over the 10 largest loadings of each component (the facts pack exports the top 10 only).
+      </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '14px' }}>
         <div style={{ padding: '10px 14px', background: 'rgba(56,189,248,0.06)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
-          <strong style={{ color: '#38BDF8' }}>PC1 thermal:</strong> Balmer (31.5%) + Ca II (22.4%) = 53.9% — temperature indicators dominate unambiguously.
+          <strong style={{ color: '#38BDF8' }}>PC1 thermal:</strong> {a1.name} ({a1.pc1}%) + {b1.name} ({b1.pc1}%) of the top-10 |loadings| — the two leading families of the thermal axis.
         </div>
         <div style={{ padding: '10px 14px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
-          <strong style={{ color: '#F59E0B' }}>PC2 composition:</strong> Iron & metals (43.3%) — the only family clearly dominating PC2. The rest is distributed between Mg (18.4%) and Ca II (12.1%).
+          <strong style={{ color: '#F59E0B' }}>PC2 composition:</strong> {a2.name} ({a2.pc2}%) dominates the top-10 |loadings| of PC2, followed by {b2.name} ({b2.pc2}%).
         </div>
       </div>
     </div>

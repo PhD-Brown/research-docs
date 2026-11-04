@@ -14,15 +14,20 @@
 
 ## Registre des runs de référence — **le seul endroit à changer quand un run arrive**
 
-| Rôle | Run | Statut éditorial |
-|---|---|---|
-| Classifieur de référence | `20260522T161236Z` — `ST_350k_xgb_AFGKM_v6` (G2, 349 998 spectres) | **Mis en avant.** Toujours accompagné de la mention de fuite Gaia (§1.1) |
-| Classifieur — validation | `20260525T191109Z` — `VALIDATION_spectro_only_v7` (G2) | Run de validation **partiel** : documenté (§1.2), **jamais mis en avant** |
-| PCA | G1 `phy3500_pca_run_20260408T012751Z` | Pages dimred, étiquette « PHY-3500 · G1 · 43 019 spectres » |
-| UMAP / t-SNE / HDBSCAN | G1 `phy3500_umap_tsne_run_20260405T214233Z` (+ résumés `…_20260430T215407Z.json`) | idem |
-| Autoencodeur | G1 `phy3500_autoencoder_run_20260405T220839Z` | idem |
-| SHAP | v6 : `logs/shap/features_20260522T153123Z/01_data_leak/` | Avec la mention de fuite |
-| Validation scientifique | G2 : `logs/validation/features_20260522T153123Z/` | — |
+| Clé | Rôle | Run(s) | Statut éditorial |
+|---|---|---|---|
+| `classifier` | Classifieur de référence | `20260522T161236Z` — `ST_350k_xgb_AFGKM_v6` (G2, 349 998 spectres) | **Mis en avant.** Toujours accompagné de la mention de fuite Gaia (§1.1) |
+| `classifier_validation` | Classifieur — validation | `20260525T191109Z` — `VALIDATION_spectro_only_v7` (G2) | Run de validation **partiel** : documenté (§1.2), **jamais mis en avant** |
+| `pca` | PCA | G1 `phy3500_pca_run_20260408T012751Z` | Pages dimred, étiquette « PHY-3500 · G1 · 43 019 spectres » |
+| `umap_tsne` | UMAP / t-SNE / HDBSCAN | G1 `phy3500_umap_tsne_run_20260405T214233Z` (+ résumés `phy3500_umap_tsne_run_20260430T215407Z`) | idem |
+| `autoencoder` | Autoencodeur | G1 `phy3500_autoencoder_run_20260405T220839Z` | idem |
+| `shap` | SHAP | v6 : `logs/shap/features_20260522T153123Z/01_data_leak/` | Avec la mention de fuite |
+| `validation` | Validation scientifique | G2 : `logs/validation/features_20260522T153123Z/` | — |
+
+Format lu par `scripts/build_runs_data.py` : 1re colonne = clé entre backticks (ne pas la renommer, les composants
+l'utilisent : `getReferenceRun('classifier')`…) ; colonne « Run(s) » = identifiants **complets** entre backticks (le premier
+est le run principal) ; tout autre texte entre backticks y est ignoré s'il ne correspond à aucun run du pack (ex. le nom
+d'expérience). Le mot « partiel » dans la colonne « Statut » pose le drapeau `partial` dans `runs.json`.
 
 Procédure de mise à jour : §7.
 
@@ -239,7 +244,15 @@ Figures : `FIGURE_1_validation_composite.png`, `caii_validation.png`, `cak_hbeta
 
 ## 6. Chiffres du site sans source ou contradictoires (relevé du 2026-11-03)
 
-À corriger lors de la réécriture des pages concernées — **pas dans cette PR**.
+Relevé initial. **Mise à jour 2026-11-04 (PR « fondations »)** : tous les composants listés ci-dessous lisent désormais
+`runs.json` ; les valeurs sans source ont été retirées ou remplacées par la valeur du run (détail : en-tête de chaque
+fichier de composant et catalogue `docs-component` §3). Restent à corriger : la **prose** des pages (`editorial-guide.mdx`,
+descriptions et paragraphes de `science/results-analysis.mdx`, `science/classification-performance.mdx`…), à reprendre
+avec `<RunFact />` lors de leur réécriture.
+
+Constat ajouté le 2026-11-04 : les runs v3, v4 et v5 ont aussi des colonnes Gaia/photométriques parmi leurs features
+sélectionnées (v5 : `M_G` ; v3 : `M_G`, `M_RP`, `phot_bp_rp_excess_factor`) — drapeau `gaia_leak` de `runs.json`.
+Le SHAP v5 le confirme (`M_G` au rang 10). Les composants qui citent ces runs affichent la mention de fuite.
 
 | Où | Affiché | Constat d'après `_facts/` |
 |---|---|---|
@@ -262,24 +275,28 @@ Figures : `FIGURE_1_validation_composite.png`, `caii_validation.png`, `cak_hbeta
 
 ## 7. Procédure « nouveau run » (objectif : quelques minutes)
 
-Principe (décision éditoriale) : la documentation doit pouvoir passer à un nouveau run en quelques minutes.
-Concrètement, un run de référence n'est nommé qu'à **un** endroit (registre en tête de ce fichier) et chaque page
-déclare les fichiers dont elle tire ses chiffres (commentaire `{/* facts: … */}`, skill `docs-page`).
+Principe (décision éditoriale n° 4) : un run de référence n'est nommé qu'à **un** endroit — le registre en tête de ce
+fichier. Les composants du site lisent leurs chiffres dans `website/src/data/astrospectro/runs.json`, généré depuis
+`_facts/` et ce registre ; aucun chiffre de run n'est codé en dur dans une page ou un composant. Skill détaillé :
+`.claude/skills/docs-new-run/`.
 
-1. **Exporter** le nouveau run dans `_facts/astrospectro/` (même arborescence ; `MANIFEST.md` régénéré).
-2. **Lire ses chiffres** : `session_report_*.json` (classifieur) ou `phy3500_*_run_<ID>.txt` (dimred). Comparer aux
-   tableaux §1–§4 ; vérifier en particulier la présence de colonnes Gaia/photométriques dans `selected_features`.
-3. **Mettre à jour ce fichier** : registre en tête, section concernée (§1.1 ou §2.x), historique §1.3, et la mention de
-   fuite si elle change.
-4. **Trouver les pages touchées** :
+```text
+export_doc_facts.py (AstroSpectro/scripts) → commit _facts → registre → build_runs_data.py → docs-verify
+```
 
-   ```bash
-   grep -rln "<ancien run ID>" website/docs* website/src/components   # pages et composants qui citent l'ancien run
-   grep -rln "facts:.*<ancien fichier>" website/docs*                  # pages qui déclarent l'ancienne source
-   python3 .claude/skills/docs-verify/scripts/check_facts.py <page> --all   # après remplacement des valeurs
-   ```
-
-5. **Remplacer les valeurs** dans les pages (et dans les props des composants), puis lancer le skill `docs-verify`.
-6. **Composants à chiffres codés en dur** (catalogue `.claude/skills/docs-component/catalog.md`, §3) : ce sont eux qui
-   rendent la mise à jour lente. À chaque passage, préférer les convertir en composants *prop-driven* (valeurs passées
-   par la page) — à faire dans une tâche dédiée, pas au fil de l'eau.
+1. **Exporter** (machine qui a `data/` et `logs/` d'AstroSpectro) :
+   `cd AstroSpectro && python scripts/export_doc_facts.py --target ../research-docs` (`--dry-run` pour voir ; régénère
+   `_facts/astrospectro/` et `MANIFEST.md`).
+2. **Committer `_facts/`** sur une branche de research-docs (pas `main`) : `git add _facts && git commit`.
+3. **Mettre à jour le registre** (en tête de ce fichier) : remplacer l'identifiant dans la colonne « Run(s) » de la clé
+   concernée ; « partiel » dans « Statut » si le run est partiel. Mettre à jour la section §1.1 / §2.x, l'historique
+   §1.3 et, si besoin, la mention de fuite (le drapeau `gaia_leak` est calculé : colonnes Gaia/photométriques parmi les
+   features utilisées). Nouvelle génération de features → ajouter son fichier à `GENERATIONS` dans le script et à §0.
+4. **Régénérer les données** : `python3 scripts/build_runs_data.py --summary` (vérifier la ligne de chaque clé :
+   run, génération, BA/AUC, colonnes Gaia) puis `python3 scripts/build_runs_data.py --check` (doit dire « à jour »).
+5. **docs-verify** : build, liens, captures des pages qui utilisent les composants à données (liste :
+   `grep -rl "src/data/astrospectro" website/src/components`, puis catalogue `catalog.md` colonne « Exemple »),
+   `check_facts.py`.
+6. **Texte des pages** : les composants se mettent à jour seuls ; la prose qui cite des chiffres en dur doit être
+   relue (`grep -rln "<ancien run ID>\|<ancienne valeur>" website/docs*`). Les interprétations qualitatives des
+   composants (ex. « axe 1 de l'AE = gravité », propre au run G1) sont signalées dans leur en-tête de fichier.

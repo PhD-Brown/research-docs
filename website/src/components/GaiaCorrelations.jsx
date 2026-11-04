@@ -1,13 +1,27 @@
-import React from 'react';
+// src/components/GaiaCorrelations.jsx
+// Heatmap ρ de Spearman (PC1, PC2) × paramètres Gaia DR3 / SNR, lue dans le run PCA de référence
+// (runs.json : metrics.gaia_spearman ; [Fe/H] = mh_gspphot).
+//
+// Usage :
+//   <GaiaCorrelations />                            // run PCA de référence (registre FACTS_INDEX.md)
+//   <GaiaCorrelations run="phy3500_pca_run_…" />
 
-const CORRELATIONS = [
-  { param: 'Teff',       unit: 'K',   symbol: 'T_eff',   rho1: +0.831, rho2: +0.156, note1: 'dominant thermal axis',        note2: null },
-  { param: 'log g',      unit: 'dex', symbol: 'log g',   rho1: -0.155, rho2: +0.081, note1: null,                           note2: null },
-  { param: '[Fe/H]',     unit: 'dex', symbol: '[Fe/H]',  rho1: -0.548, rho2: -0.082, note1: 'PC1 captures metallicity',     note2: null },
-  { param: 'G_BP − G_RP',unit: 'mag', symbol: 'G_BP-G_RP',rho1:-0.768, rho2: -0.025, note1: 'photometric colour ∝ Teff',   note2: null },
-  { param: 'SNR_r',      unit: '',    symbol: 'SNR',     rho1: +0.071, rho2: -0.310, note1: null,                           note2: 'instrumental contamination', warn2: true },
-  { param: 'A_G',        unit: 'mag', symbol: 'A_G',     rho1: -0.070, rho2: +0.196, note1: null,                           note2: null },
+import React from 'react';
+import { resolveRun, fmt } from '@site/src/data/astrospectro';
+
+const ROWS = [
+  { param: 'Teff',        unit: 'K',   symbol: 'T_eff',     col: 'teff_gspphot', note1: 'dominant thermal axis',      note2: null },
+  { param: 'log g',       unit: 'dex', symbol: 'log g',     col: 'logg_gspphot', note1: null,                         note2: null },
+  { param: '[Fe/H]',      unit: 'dex', symbol: '[Fe/H]',    col: 'mh_gspphot',   note1: 'PC1 captures metallicity',   note2: null },
+  { param: 'G_BP − G_RP', unit: 'mag', symbol: 'G_BP-G_RP', col: 'bp_rp',        note1: 'photometric colour ∝ Teff',  note2: null },
+  { param: 'SNR_r',       unit: '',    symbol: 'SNR',       col: 'snr_r',        note1: null,                         note2: 'instrumental contamination', warn2: true },
+  { param: 'A_G',         unit: 'mag', symbol: 'A_G',       col: 'ag_gspphot',   note1: null,                         note2: null },
 ];
+
+function correlationsOf(run) {
+  const g = run.metrics.gaia_spearman;
+  return ROWS.map((r) => ({ ...r, rho1: g.PC1[r.col], rho2: g.PC2[r.col] }));
+}
 
 function rhoColor(rho) {
   const abs = Math.abs(rho);
@@ -49,7 +63,8 @@ function CorrelationCell({ rho, note, warn }) {
   );
 }
 
-export default function GaiaCorrelations() {
+export default function GaiaCorrelations({ run }) {
+  const CORRELATIONS = correlationsOf(resolveRun(run, 'pca'));
   return (
     <div style={{ margin: '28px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px', fontSize: '11px', color: 'var(--ifm-font-color-base)', opacity: 0.6 }}>
@@ -95,10 +110,10 @@ export default function GaiaCorrelations() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '14px' }}>
         <div style={{ padding: '10px 14px', background: 'rgba(56,189,248,0.06)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
-          <strong style={{ color: '#38BDF8' }}>PC1 = thermal axis</strong> — dominated by Balmer (31.5%) + Ca II (22.4%). Continuous Teff gradient (hot A-F stars on the right, cool K-M on the left).
+          <strong style={{ color: '#38BDF8' }}>PC1 = thermal axis</strong> — ρ(Teff) = {fmt.signed(CORRELATIONS[0].rho1)}. Continuous Teff gradient (hot A-F stars on the right, cool K-M on the left).
         </div>
         <div style={{ padding: '10px 14px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.8 }}>
-          <strong style={{ color: '#F59E0B' }}>PC2 = metallicity axis</strong> — dominated by metals (43.3%). ⚠️ Partially contaminated by SNR (ρ = −0.310): instrumental artefact inherent to unsupervised PCA.
+          <strong style={{ color: '#F59E0B' }}>PC2 = metallicity axis</strong> — metal indices lead its loadings. ⚠️ Partially contaminated by SNR (ρ = {fmt.signed(CORRELATIONS[4].rho2)}): instrumental artefact inherent to unsupervised PCA.
         </div>
       </div>
     </div>

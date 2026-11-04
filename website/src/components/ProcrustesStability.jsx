@@ -1,9 +1,21 @@
-import React from 'react';
+// src/components/ProcrustesStability.jsx
+// Distances de Procrustes par seed (UMAP vs t-SNE), lues dans le run UMAP/t-SNE de référence
+// (runs.json : metrics.procrustes_umap / procrustes_tsne ; seed 0 = référence, exclue des moyennes).
+//
+// Usage : <ProcrustesStability />
 
-const UMAP_SEEDS = [{ seed: 1, dP: 0.00701 }, { seed: 2, dP: 0.03802 }, { seed: 3, dP: 0.04971 }, { seed: 4, dP: 0.02461 }];
-const UMAP_MEAN = 0.030;
-const TSNE_SEEDS = [{ seed: 1, dP: 0.000490 }, { seed: 2, dP: 0.000101 }, { seed: 3, dP: 0.000285 }, { seed: 4, dP: 0.001016 }];
-const TSNE_MEAN = 5.0e-4;
+import React from 'react';
+import { getReferenceRun, mean } from '@site/src/data/astrospectro';
+
+const UM = getReferenceRun('umap_tsne');
+const seedsOf = (xs) => xs.filter((s) => s.seed !== 0);
+const UMAP_MEAN_ = mean(seedsOf(UM.metrics.procrustes_umap).map((s) => s.d));
+const TSNE_MEAN_ = mean(seedsOf(UM.metrics.procrustes_tsne).map((s) => s.d));
+const STABILITY_RATIO = Math.round(UMAP_MEAN_ / TSNE_MEAN_);
+const UMAP_SEEDS = seedsOf(UM.metrics.procrustes_umap).map((s) => ({ seed: s.seed, dP: s.d }));
+const UMAP_MEAN = UMAP_MEAN_;
+const TSNE_SEEDS = seedsOf(UM.metrics.procrustes_tsne).map((s) => ({ seed: s.seed, dP: s.d }));
+const TSNE_MEAN = TSNE_MEAN_;
 const UMAP_COLOR = '#F59E0B';
 const TSNE_COLOR = '#A78BFA';
 const MAX_DP = 0.06;
@@ -56,7 +68,7 @@ export default function ProcrustesStability() {
   return (
     <div style={{ margin: '28px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '20px', padding: '14px 20px', background: 'rgba(167,139,250,0.06)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '10px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: '900', fontSize: '28px', color: '#A78BFA', letterSpacing: '-1px' }}>~60×</span>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: '900', fontSize: '28px', color: '#A78BFA', letterSpacing: '-1px' }}>~{STABILITY_RATIO}×</span>
         <div>
           <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--ifm-font-color-base)' }}>t-SNE is more reproducible than UMAP</div>
           <div style={{ fontSize: '12px', opacity: 0.55, color: 'var(--ifm-font-color-base)' }}>Counter-intuitive result — both methods use SGD</div>
@@ -65,7 +77,7 @@ export default function ProcrustesStability() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
         <Panel title="UMAP" subtitle="Spectral initialisation — SGD with negative sampling" color={UMAP_COLOR} seeds={UMAP_SEEDS} mean={UMAP_MEAN} maxDP={MAX_DP} />
-        <Panel title="t-SNE" subtitle="init='pca' — KL penalty concentrated locally" color={TSNE_COLOR} seeds={TSNE_SEEDS} mean={TSNE_MEAN} maxDP={MAX_DP} />
+        <Panel title="t-SNE" subtitle={`init='${UM.parameters.tsne.init}' — KL penalty concentrated locally`} color={TSNE_COLOR} seeds={TSNE_SEEDS} mean={TSNE_MEAN} maxDP={MAX_DP} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '14px' }}>

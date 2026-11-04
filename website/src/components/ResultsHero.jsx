@@ -1,52 +1,89 @@
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { getReferenceRun, fmt, mean, generationLabel, prettyFeature } from '@site/src/data/astrospectro';
 
-const RESULTS = [
-  {
-    axis: 'PCA',
-    headline: 'PC1 = Thermal axis',
-    metric: '+0.831',
-    metricLabel: 'ρ(PC1, Teff)',
-    details: ['16.9% variance · λ₁ = 30.19', '91 components → 95% variance', 'Balmer 31.5% + Ca II 22.4%'],
-    color: '#38BDF8',
-    badge: 'Linear',
-  },
-  {
-    axis: 'UMAP',
-    headline: 'Harvard sequence emergent',
-    metric: '20',
-    metricLabel: 'HDBSCAN clusters',
-    details: ['Continuous continent structure', 'Dwarfs / giants separated without labels', 'ρ(ax.1, Teff) = +0.464'],
-    color: '#F59E0B',
-    badge: 'Topological',
-  },
-  {
-    axis: 't-SNE',
-    headline: '60× more reproducible',
-    metric: '5×10⁻⁴',
-    metricLabel: 'mean Procrustes dP',
-    details: ["init='pca' → maximum stability", 'Archipelago of compact clusters', 'Perplexity 30 — optimal [15,50]'],
-    color: '#A78BFA',
-    badge: 'Probabilistic',
-  },
-  {
-    axis: 'XGBoost',
-    headline: '87% balanced accuracy',
-    metric: '~0.964',
-    metricLabel: 'ROC-AUC macro',
-    details: ['spectro_only=True — pure physics', 'Median confidence 96.3%', 'Geographic coherence in UMAP'],
-    color: '#34D399',
-    badge: 'Supervised',
-  },
-  {
-    axis: 'SHAP',
-    headline: 'Ca II > Balmer',
-    metric: '97.9%',
-    metricLabel: 'physical features top-30',
-    details: ['Metallicity more discriminant than T_eff', 'Central scientific validation', 'Ca II K ranks 1–3'],
-    color: '#C084FC',
-    badge: 'Interpretability',
-  },
-];
+// Cartes calculées depuis runs.json (scripts/build_runs_data.py). Deux groupes distincts pour ne jamais
+// mélanger les générations de données (CLAUDE.md, règle 2) : réduction de dimension (G1) et classification (G2).
+//
+// Usage :
+//   <ResultsHero />   // runs de référence du registre (pca, umap_tsne, autoencoder, classifier, shap)
+
+function dimredCards() {
+  const pca = getReferenceRun('pca');
+  const um = getReferenceRun('umap_tsne');
+  const ae = getReferenceRun('autoencoder');
+  const pm = pca.metrics;
+  const rho = pm.gaia_spearman.PC1;
+  const seeds = (xs) => xs.filter((s) => s.seed !== 0).map((s) => s.d);
+  const umapMean = mean(seeds(um.metrics.procrustes_umap));
+  const tsneMean = mean(seeds(um.metrics.procrustes_tsne));
+  const tsne = um.parameters.tsne;
+  return [
+    {
+      axis: 'PCA',
+      headline: 'PC1 = Thermal axis',
+      metric: fmt.signed(rho.teff_gspphot),
+      metricLabel: 'ρ(PC1, Teff)',
+      details: [`${fmt.pct(pm.variance[0])} variance · λ₁ = ${fmt.num(pm.eigenvalues[0], 2)}`, `${pm.n_components_for_variance['95pct']} components → 95% variance`, `ρ(PC1, BP−RP) = ${fmt.signed(rho.bp_rp)}`],
+      color: '#38BDF8',
+      badge: 'Linear',
+    },
+    {
+      axis: 'UMAP',
+      headline: 'Harvard sequence emergent',
+      metric: String(um.metrics.hdbscan.n_clusters),
+      metricLabel: 'HDBSCAN clusters',
+      details: ['Continuous continent structure', 'Dwarfs / giants separated without labels', `ρ(ax.1, Teff) = ${ae.metrics.rho_axis1_teff.UMAP}`],
+      color: '#F59E0B',
+      badge: 'Topological',
+    },
+    {
+      axis: 't-SNE',
+      headline: `${Math.round(umapMean / tsneMean)}× more reproducible`,
+      metric: fmt.sci(tsneMean),
+      metricLabel: 'mean Procrustes dP (seeds 1–4)',
+      details: [`init='${tsne.init}' → maximum stability`, 'Archipelago of compact clusters', `Perplexity ${tsne.perplexity} — optimal [15,50]`],
+      color: '#A78BFA',
+      badge: 'Probabilistic',
+    },
+  ];
+}
+
+function classifierCards() {
+  const clf = getReferenceRun('classifier');
+  const shap = getReferenceRun('shap');
+  const cm = clf.metrics;
+  const sm = shap.metrics;
+  return [
+    {
+      axis: 'XGBoost',
+      headline: `${fmt.pct(cm.balanced_accuracy)} balanced accuracy`,
+      metric: fmt.num(cm.roc_auc_macro),
+      metricLabel: 'ROC-AUC macro',
+      details: [clf.label, `F1 macro ${fmt.num(cm.f1_macro)} · accuracy ${fmt.pct(cm.accuracy)}`, `Test set N = ${fmt.int(clf.n.test)}`],
+      color: '#34D399',
+      badge: 'Supervised',
+    },
+    {
+      axis: 'SHAP',
+      headline: 'Spectroscopy-driven decisions',
+      metric: fmt.pct(sm.physical_share),
+      metricLabel: 'share of Σ|SHAP| from spectroscopic features',
+      details: [`Top 3: ${sm.top.slice(0, 3).map((f) => prettyFeature(f.feature)).join(' · ')}`, `${sm.top30_physical}/30 top features are spectroscopic`, `Gaia/photometric: ${fmt.pct(sm.gaia_photometric_share)} of Σ|SHAP|`],
+      color: '#C084FC',
+      badge: 'Interpretability',
+    },
+  ];
+}
+
+function GroupLabel({ title, sub }) {
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '8px', margin: '0 0 8px' }}>
+      <span style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--ifm-font-color-base)', opacity: 0.75 }}>{title}</span>
+      <span style={{ fontSize: '11px', fontFamily: 'var(--ifm-font-family-monospace)', color: 'var(--ifm-font-color-base)', opacity: 0.55 }}>{sub}</span>
+    </div>
+  );
+}
 
 function ResultCard({ axis, headline, metric, metricLabel, details, color, badge }) {
   const [hov, setHov] = React.useState(false);
@@ -74,11 +111,22 @@ function ResultCard({ axis, headline, metric, metricLabel, details, color, badge
 }
 
 export default function ResultsHero() {
+  const clf = getReferenceRun('classifier');
+  const pca = getReferenceRun('pca');
+  const grid = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' };
   return (
     <div style={{ margin: '28px 0' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-        {RESULTS.map((r) => <ResultCard key={r.axis} {...r} />)}
+      <GroupLabel title="Dimensionality reduction" sub={generationLabel(pca)} />
+      <div style={grid}>
+        {dimredCards().map((r) => <ResultCard key={r.axis} {...r} />)}
       </div>
+      <div style={{ marginTop: '18px' }}>
+        <GroupLabel title="Classification" sub={`reference run ${clf.id} · ${generationLabel(clf)}`} />
+      </div>
+      <div style={grid}>
+        {classifierCards().map((r) => <ResultCard key={r.axis} {...r} />)}
+      </div>
+      <GaiaLeakNote run={clf} style={{ marginTop: '8px' }} />
     </div>
   );
 }

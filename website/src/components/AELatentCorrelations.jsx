@@ -1,8 +1,21 @@
-import React from 'react';
+// src/components/AELatentCorrelations.jsx
+// ρ de Spearman des axes latents de l'AE et de PC1/PC2 avec Teff, log g, [M/H] (mh_gspphot) et BP−RP,
+// lus dans le run autoencodeur de référence (runs.json : metrics.latent_spearman, metrics.pca_spearman).
+// Les interprétations (« gravity », « thermal ») sont propres au run G1 (FACTS_INDEX §2.4).
+//
+// Usage : <AELatentCorrelations />
 
+import React from 'react';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+const AE_RUN = getReferenceRun('autoencoder');
+const L = AE_RUN.metrics.latent_spearman;
+const P = AE_RUN.metrics.pca_spearman;
+const axis = (i) => ({ teff: L.teff_gspphot[i], logg: L.logg_gspphot[i], feh: L.mh_gspphot[i], bprp: L.bp_rp[i] });
+const pc = (k) => ({ teff: P[k].teff_gspphot, logg: P[k].logg_gspphot, feh: P[k].mh_gspphot, bprp: P[k].bp_rp });
 const DATA = {
-  ae:  { axis1: { teff: +0.019, logg: +0.340, feh: -0.224, bprp: -0.320, interp: 'Surface gravity (log g)' }, axis2: { teff: +0.793, logg: -0.112, feh: -0.542, bprp: -0.770, interp: 'Temperature + metallicity' } },
-  pca: { pc1:   { teff: +0.831, logg: -0.155, feh: -0.548, bprp: -0.768, interp: 'Thermal (T_eff)' },         pc2:   { teff: +0.156, logg: +0.081, feh: -0.082, bprp: -0.025, interp: 'Mixed (weak signal)' } },
+  ae:  { axis1: { ...axis(0), interp: 'Surface gravity (log g)' }, axis2: { ...axis(1), interp: 'Temperature + metallicity' } },
+  pca: { pc1:   { ...pc('PC1'), interp: 'Thermal (T_eff)' },        pc2:   { ...pc('PC2'), interp: 'Mixed (weak signal)' } },
 };
 
 const PARAMS = [
@@ -61,7 +74,7 @@ export default function AELatentCorrelations() {
             Discovery — the autoencoder encodes gravity on its first axis
           </div>
           <div style={{ fontSize: '12.5px', color: 'var(--ifm-font-color-base)', opacity: 0.8, lineHeight: 1.55 }}>
-            Unlike PCA (PC1 = temperature, ρ = +0.831), the autoencoder's first latent axis is weakly correlated with T_eff (ρ = +0.019) but moderately with log g (ρ = +0.340). Axis 2 encodes temperature (ρ = +0.793). This inversion suggests that the <strong>non-linear structure of gravity</strong> is more salient in the network's learned space.
+            Unlike PCA (PC1 = temperature, ρ = {fmt.signed(DATA.pca.pc1.teff)}), the autoencoder's first latent axis is weakly correlated with T_eff (ρ = {fmt.signed(DATA.ae.axis1.teff)}) but moderately with log g (ρ = {fmt.signed(DATA.ae.axis1.logg)}). Axis 2 encodes temperature (ρ = {fmt.signed(DATA.ae.axis2.teff)}). This inversion suggests that the <strong>non-linear structure of gravity</strong> is more salient in the network's learned space.
           </div>
         </div>
       </div>
@@ -90,10 +103,10 @@ export default function AELatentCorrelations() {
           ))}
         </div>
         {[
-          { label: 'AE axis 1',  color: '#34D399', teff: +0.019, logg: +0.340, feh: -0.224, bprp: -0.320, interp: '← Gravity',       bold: true },
-          { label: 'AE axis 2',  color: '#F59E0B', teff: +0.793, logg: -0.112, feh: -0.542, bprp: -0.770, interp: 'Thermal',         bold: false },
-          { label: 'PCA — PC1',  color: '#38BDF8', teff: +0.831, logg: -0.155, feh: -0.548, bprp: -0.768, interp: '← Thermal',       bold: false },
-          { label: 'PCA — PC2',  color: '#94A3B8', teff: +0.156, logg: +0.081, feh: -0.082, bprp: -0.025, interp: 'Weak / Mixed',    bold: false },
+          { label: 'AE axis 1',  color: '#34D399', ...DATA.ae.axis1,  interp: '← Gravity',       bold: true },
+          { label: 'AE axis 2',  color: '#F59E0B', ...DATA.ae.axis2,  interp: 'Thermal',         bold: false },
+          { label: 'PCA — PC1',  color: '#38BDF8', ...DATA.pca.pc1,   interp: '← Thermal',       bold: false },
+          { label: 'PCA — PC2',  color: '#94A3B8', ...DATA.pca.pc2,   interp: 'Weak / Mixed',    bold: false },
         ].map((r, i) => (
           <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 80px 80px 80px 80px 80px', padding: '9px 14px', gap: '8px', borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.04)' : 'none', background: r.bold ? `${r.color}06` : 'transparent', alignItems: 'center' }}>
             <code style={{ fontSize: '12px', fontWeight: r.bold ? '700' : '400', color: r.color }}>{r.label}</code>

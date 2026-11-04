@@ -1,12 +1,23 @@
-import React from 'react';
+// src/components/DatasetStats.jsx
+// Cartes du jeu de données dimred. N et p viennent du run PCA (runs.json) ; couverture et résolution sont
+// des constantes de l'instrument LAMOST. Le rayon de cross-match Gaia n'a pas de source dans _facts
+// (FACTS_INDEX §6) : la carte a été retirée.
+//
+// Usage :
+//   <DatasetStats />                              // run PCA de référence (registre FACTS_INDEX.md)
+//   <DatasetStats run="phy3500_pca_run_…" />
 
-const STATS = [
-  { symbol: 'N', value: '43,019',  label: 'Retained spectra',    sub: 'Filtered LAMOST DR5',        color: '#F59E0B' },
-  { symbol: 'p', value: '183',     label: 'Features',            sub: 'pure spectroscopic',          color: '#38BDF8' },
-  { symbol: 'λ', value: '3690–9100',label: 'Spectral coverage',  sub: 'Ångströms',                  color: '#A78BFA' },
-  { symbol: 'R', value: '≈ 1800',  label: 'Resolution',          sub: 'low resolution',              color: '#34D399' },
-  { symbol: '⊕', value: '1″',      label: 'Gaia cross-match',    sub: 'angular radius',              color: '#FB7185' },
-];
+import React from 'react';
+import { resolveRun, fmt, generationLabel } from '@site/src/data/astrospectro';
+
+function statsOf(run) {
+  return [
+    { symbol: 'N', value: fmt.int(run.n),  label: 'Retained spectra',  sub: generationLabel(run),  color: '#F59E0B' },
+    { symbol: 'p', value: String(run.p),   label: 'Features',          sub: 'pure spectroscopic',  color: '#38BDF8' },
+    { symbol: 'λ', value: '3690–9100',     label: 'Spectral coverage', sub: 'Ångströms',           color: '#A78BFA' },
+    { symbol: 'R', value: '≈ 1800',        label: 'Resolution',        sub: 'low resolution',      color: '#34D399' },
+  ];
+}
 
 function StatCard({ symbol, value, label, sub, color }) {
   const [hovered, setHovered] = React.useState(false);
@@ -21,7 +32,8 @@ function StatCard({ symbol, value, label, sub, color }) {
   );
 }
 
-export default function DatasetStats() {
+export default function DatasetStats({ run: runProp }) {
+  const STATS = statsOf(resolveRun(runProp, 'pca'));
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(155px, 1fr))', gap: '12px', margin: '28px 0' }}>
       {STATS.map((s) => <StatCard key={s.label} {...s} />)}

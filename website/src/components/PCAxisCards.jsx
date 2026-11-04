@@ -1,22 +1,17 @@
+// src/components/PCAxisCards.jsx
+// Cartes PC1 / PC2 : variance, λ, ρ de Spearman avec Gaia, loading principal et répartition par famille
+// du top-10 des loadings (run PCA de référence, runs.json).
+// Correction : la carte PC2 affichait ρ([Fe/H]) = −0.548, qui est la valeur de PC1 ; ρ(PC2, [M/H]) vient
+// désormais du run.
+//
+// Usage :
+//   <PCAxisCards />                            // run PCA de référence (registre FACTS_INDEX.md)
+//   <PCAxisCards run="phy3500_pca_run_…" />
+
 import React from 'react';
+import { resolveRun, familyShares, prettyFeature, fmt } from '@site/src/data/astrospectro';
 
-const PC1_FAMILIES = [
-  { name: 'Balmer (H)',    pct: 31.5, color: '#60A5FA' },
-  { name: 'Ca II',         pct: 22.4, color: '#C084FC' },
-  { name: 'Iron & metals', pct: 15.3, color: '#FB923C' },
-  { name: 'Mg / α',       pct: 10.8, color: '#34D399' },
-  { name: 'Lick/SDSS',    pct:  9.7, color: '#FBBF24' },
-  { name: 'Continuum',    pct: 10.3, color: '#F87171' },
-];
-
-const PC2_FAMILIES = [
-  { name: 'Balmer (H)',    pct:  8.2, color: '#60A5FA' },
-  { name: 'Ca II',         pct: 12.1, color: '#C084FC' },
-  { name: 'Iron & metals', pct: 43.3, color: '#FB923C' },
-  { name: 'Mg / α',       pct: 18.4, color: '#34D399' },
-  { name: 'Lick/SDSS',    pct: 11.6, color: '#FBBF24' },
-  { name: 'Continuum',    pct:  6.4, color: '#F87171' },
-];
+const toBar = (shares) => shares.filter((f) => f.pct > 0).map((f) => ({ name: f.short, pct: f.pct, color: f.color }));
 
 function FamilyBar({ families }) {
   return (
@@ -79,7 +74,7 @@ function PCCard({ pcLabel, axiName, axiSub, color, variancePct, lambda, topRho, 
       </div>
 
       <div style={{ marginBottom: warning ? '14px' : '0' }}>
-        <div style={{ fontSize: '10px', opacity: 0.4, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--ifm-font-color-base)' }}>Family contributions</div>
+        <div style={{ fontSize: '10px', opacity: 0.4, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--ifm-font-color-base)' }}>Family share of top-10 |loadings|</div>
         <FamilyBar families={families} />
       </div>
 
@@ -88,11 +83,18 @@ function PCCard({ pcLabel, axiName, axiSub, color, variancePct, lambda, topRho, 
   );
 }
 
-export default function PCAxisCards() {
+export default function PCAxisCards({ run: runProp }) {
+  const run = resolveRun(runProp, 'pca');
+  const m = run.metrics;
+  const g1 = m.gaia_spearman.PC1;
+  const g2 = m.gaia_spearman.PC2;
+  const [l1] = m.loadings.PC1;
+  const [l2] = m.loadings.PC2;
+  const pct = (x) => Number((x * 100).toFixed(1));
   return (
     <div style={{ display: 'flex', gap: '16px', margin: '28px 0', flexWrap: 'wrap' }}>
-      <PCCard pcLabel="PC1" axiName="Thermal Axis" axiSub="Dominant effective temperature" color="#38BDF8" variancePct={16.9} lambda="30.19" topRho={+0.831} topRhoLabel="Teff" secondRho={-0.768} secondRhoLabel="GBP−GRP" families={PC1_FAMILIES} topLoading="W(Hα)" topLoadingW={+0.173} warning={null} />
-      <PCCard pcLabel="PC2" axiName="Metallicity Axis" axiSub="Chemical composition + SNR contamination" color="#F59E0B" variancePct={12.0} lambda="21.39" topRho={-0.548} topRhoLabel="[Fe/H]" secondRho={-0.310} secondRhoLabel="SNR_r" families={PC2_FAMILIES} topLoading="[Fe/H]proxy" topLoadingW={+0.205} warning="ρ(SNRr) = −0.310: PC2 contains a share of instrumental variance — it is not a pure metallicity axis." />
+      <PCCard pcLabel="PC1" axiName="Thermal Axis" axiSub="Dominant effective temperature" color="#38BDF8" variancePct={pct(m.variance[0])} lambda={fmt.num(m.eigenvalues[0], 2)} topRho={g1.teff_gspphot} topRhoLabel="Teff" secondRho={g1.bp_rp} secondRhoLabel="GBP−GRP" families={toBar(familyShares(m.loadings.PC1))} topLoading={prettyFeature(l1.feature)} topLoadingW={l1.loading} warning={null} />
+      <PCCard pcLabel="PC2" axiName="Metallicity Axis" axiSub="Chemical composition + SNR contamination" color="#F59E0B" variancePct={pct(m.variance[1])} lambda={fmt.num(m.eigenvalues[1], 2)} topRho={g2.mh_gspphot} topRhoLabel="[M/H]" secondRho={g2.snr_r} secondRhoLabel="SNR_r" families={toBar(familyShares(m.loadings.PC2))} topLoading={prettyFeature(l2.feature)} topLoadingW={l2.loading} warning={`ρ(SNRr) = ${fmt.signed(g2.snr_r)}: PC2 contains a share of instrumental variance — it is not a pure metallicity axis.`} />
     </div>
   );
 }

@@ -1,4 +1,14 @@
+// src/components/LAMOSTSpecs.jsx
+// Fiche technique LAMOST (constantes instrument) + sous-ensemble AstroSpectro. N et p viennent du run PCA
+// de référence (runs.json). Retirés faute de source dans _facts (FACTS_INDEX §5–6) : « ~250,000 FITS
+// files » et « 1″ radius · ~100% of stars matched ».
+//
+// Usage : <LAMOSTSpecs />
+
 import React from 'react';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+const PCA = getReferenceRun('pca');
 
 const SPECS = [
   {
@@ -36,10 +46,8 @@ const SPECS = [
     group: 'AstroSpectro — subset',
     color: '#F59E0B',
     fields: [
-      { label: 'Downloaded spectra',        value: '~250,000 FITS files', mono: false },
-      { label: 'After quality filtering',   value: 'N = 43,019 (SNR > 10 · RUWE < 1.4)', mono: false },
-      { label: 'Extracted features',        value: 'p = 183 (spectro_only=True mode)', mono: false },
-      { label: 'Gaia DR3 cross-match',     value: '1″ radius · ~100% of stars matched', mono: false },
+      { label: 'After quality filtering',   value: `N = ${fmt.int(PCA.n)} (SNR > 10 · RUWE < 1.4) · PHY-3500 · G1`, mono: false },
+      { label: 'Extracted features',        value: `p = ${PCA.p} (spectro_only=True mode)`, mono: false },
     ],
   },
 ];

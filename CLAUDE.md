@@ -31,7 +31,9 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 | `website/docs-astrovision/`, `website/docs-xi/` | Instances `astrovision` (route `/astrovision`) et `xi-dark-energy` (route `/xi-dark-energy`) |
 | `website/docs/_archive/` | Copie FR de l'ancien site AstroSpectro — exclue du build (préfixe `_`), source pour la migration |
 | `website/docs/api/` | Doublon FR des pages API de l'ancien site, publié mais hors sidebar (à fusionner, cf. `MIGRATION_MAP.md`) |
-| `website/src/components/` | 72 composants MDX → catalogue : `.claude/skills/docs-component/catalog.md` |
+| `website/src/components/` | 74 composants MDX → catalogue : `.claude/skills/docs-component/catalog.md` |
+| `website/src/data/astrospectro/` | `runs.json` (**généré**, ne pas éditer) + `index.js` (accès : `getReferenceRun`, `fmt`…) — source des chiffres de run des composants |
+| `scripts/build_runs_data.py` | `_facts/` + registre de `FACTS_INDEX.md` → `runs.json` (`--check`, `--summary`) |
 | `website/src/css/custom.css` | Thème (Inter / JetBrains Mono, variables clair/sombre) |
 | `website/static/img/` | Images publiées (`img/dimred/` = figures G1) |
 | `website/sidebars*.ts` | Une sidebar par instance ; une nouvelle page doit y être ajoutée |
@@ -55,6 +57,7 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 | `docs-page` | Écrire / réécrire / migrer une page (dont remplacer un stub) |
 | `docs-component` | Choisir ou créer un composant ; catalogue complet dans `catalog.md` |
 | `docs-verify` | Avant tout commit : build, liens (`check-links.mjs`), captures Playwright (`screenshots.cjs`), chiffres (`check_facts.py`) |
+| `docs-new-run` | Nouveau run AstroSpectro : export `_facts` → registre → `build_runs_data.py` → docs-verify |
 
 ## Commandes
 
@@ -63,26 +66,30 @@ cd website && npm ci            # installation (Node ≥ 18 ; la CI utilise Node
 cd website && npm run start     # dev → http://localhost:3000/research-docs/
 cd website && npm run build     # build de production (la CI de déploiement fait npm ci + npm run build)
 cd website && npm run serve     # sert website/build
+python3 scripts/build_runs_data.py --summary    # régénère website/src/data/astrospectro/runs.json
 node .claude/skills/docs-verify/scripts/check-links.mjs website/build
 node .claude/skills/docs-verify/scripts/screenshots.cjs --from-git=main
 python3 .claude/skills/docs-verify/scripts/check_facts.py --from-git=main --all
 ```
 
-## État connu de `main` (2026-11-03)
+## État connu de `main` (après la PR « fondations », 2026-11-04)
 
-`npm run build` passe (`[SUCCESS]`) avec des avertissements préexistants — à ne pas confondre avec une régression :
+`npm run build` passe (`[SUCCESS]`) avec deux avertissements préexistants seulement — à ne pas confondre avec une régression :
 
 - Browserslist : `caniuse-lite` vieux de 7 mois.
 - `Critical dependency` dans `vscode-languageserver-types` (dépendance de Mermaid).
-- Minifieur HTML (SSG) sur 6 pages : `/docs/api/classifier`, `/docs/astrospectro/concepts`, `/docs/astrospectro/guides/{downloading-data, feature-extraction, quick-start, visualization}`.
-- Liens cassés sur **toutes** les pages : `/research-docs/blog` (navbar `to: "/blog"` vs `routeBasePath: "Blog"`) et `/research-docs/journal` (footer) ; plus 12 liens propres à 7 pages (détail dans `.claude/skills/docs-verify/SKILL.md`).
-- `check-links.mjs` trouve 59 liens internes cassés uniques, la plupart dans des `<a href>` de composants que Docusaurus ne contrôle pas.
+
+Aucune erreur du minifieur HTML, aucun lien cassé (Docusaurus et `check-links.mjs` : 0). Défauts connus restants
+(captures) : débordements mobiles de quelques grilles de composants et erreur React #418 sur `docs/astrospectro/dimred`
+(détail : `.claude/skills/docs-verify/SKILL.md` §0).
 
 ## Pièges
 
 - `onBrokenLinks: "warn"` : un lien cassé ne fait pas échouer le build — lire le journal ou lancer `check-links.mjs`.
-- `trailingSlash: false` : dans les props de composants (`<a href>` bruts), un chemin relatif se résout depuis l'URL rendue ; sur une page `index.mdx` de catégorie, `./x` vise le dossier **parent**.
+- Blog : `routeBasePath: "Blog"` → liens vers `/Blog` (sensible à la casse ; `/blog` et `/journal` n'existent pas).
+- `trailingSlash: false` : dans les props de composants, un chemin relatif se résout depuis l'URL rendue ; sur une page `index.mdx` de catégorie, `./x` vise le dossier **parent**. `RelatedPages`/`CrossReferences` utilisent `<Link>` : y écrire des routes absolues `/docs/…`.
 - `baseUrl` = `/research-docs/` : les chemins d'images passés à `FigureGallery` s'écrivent sans (`/img/dimred/x.png`).
 - Mode clair : beaucoup de composants utilisent des bordures `rgba(255,255,255,…)` ; toujours contrôler les captures en clair.
-- Mobile : `custom.css` force `.markdown table { display: table }` → les tableaux larges font déborder la page.
+- Mobile : sous 997 px les tableaux Markdown défilent dans leur bloc (`custom.css`) ; les grilles de composants à colonnes fixes peuvent encore déborder.
+- Chiffres de run : jamais codés dans une page ou un composant — composant qui lit `runs.json`, ou `<RunFact …/>` dans la prose.
 - Les classes `stats-row` / `summary-cards` du guide v1 n'ont aucun CSS.

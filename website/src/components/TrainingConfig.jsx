@@ -1,53 +1,37 @@
+// src/components/TrainingConfig.jsx
+// Configuration d'entraînement et hyperparamètres d'un run classifieur, lus dans runs.json.
+// Correction (FACTS_INDEX §6) : l'ancienne version mêlait N = 43,019 (jeu dimred G1), le run
+// 20260213T225019Z et les hyperparamètres de v6.
+//
+// Usage :
+//   <TrainingConfig />                          // run de référence 'classifier' (registre FACTS_INDEX.md)
+//   <TrainingConfig run="20260306T020848Z" />
+
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, fmt } from '@site/src/data/astrospectro';
 
-const CONFIG = [
-  {
-    key: 'Dataset',
-    value: 'LAMOST DR5 × Gaia DR3',
-    sub: 'N = 43,019 spectra',
-    color: '#38BDF8',
-    icon: '◎',
-  },
-  {
-    key: 'Descriptors',
-    value: '183',
-    sub: 'mode spectro_only=True',
-    color: '#34D399',
-    icon: 'p',
-    mono: true,
-  },
-  {
-    key: 'Target classes',
-    value: 'A · F · G · K · M',
-    sub: '5 stellar spectral types',
-    color: '#FBBF24',
-    icon: '★',
-  },
-  {
-    key: 'Metric',
-    value: 'balanced_accuracy',
-    sub: 'optimization & evaluation',
-    color: '#A78BFA',
-    icon: '≡',
-    mono: true,
-  },
-  {
-    key: 'Split train/test',
-    value: '80 / 20',
-    sub: 'stratified by class',
-    color: '#FB923C',
-    icon: '⊘',
-  },
-];
+const HP_COLORS = ['#38BDF8', '#34D399', '#FBBF24', '#A78BFA', '#FB923C', '#F87171'];
+const HP_KEYS = ['n_estimators', 'max_depth', 'learning_rate', 'colsample_bytree', 'subsample', 'tree_method'];
 
-const HYPERPARAMS = [
-  { name: 'n_estimators', value: '600',   color: '#38BDF8' },
-  { name: 'max_depth',    value: '6',     color: '#34D399' },
-  { name: 'learning_rate',value: '0.1',   color: '#FBBF24' },
-  { name: 'colsample_bytree', value: '0.8', color: '#A78BFA' },
-  { name: 'subsample',    value: '0.8',   color: '#FB923C' },
-  { name: 'tree_method',  value: '"hist"',color: '#F87171' },
-];
+function configOf(run) {
+  const f = run.features;
+  const total = (run.n.train || 0) + (run.n.test || 0);
+  return [
+    { key: 'Dataset', value: 'LAMOST DR5 × Gaia DR3', sub: `N = ${fmt.int(run.n.processed)} spectra · ${run.generation}`, color: '#38BDF8', icon: '◎' },
+    { key: 'Descriptors', value: String(f.used), sub: f.selected ? `selected from ${f.candidates} candidates` : `${f.candidates} candidates, no selection`, color: '#34D399', icon: 'p', mono: true },
+    { key: 'Target classes', value: run.classes.join(' · '), sub: `${run.classes.length} stellar spectral types`, color: '#FBBF24', icon: '★' },
+    { key: 'Metric', value: 'balanced_accuracy', sub: 'optimization & evaluation', color: '#A78BFA', icon: '≡', mono: true },
+    { key: 'Split train/test', value: `${fmt.int(run.n.train)} / ${fmt.int(run.n.test)}`, sub: total ? `${Math.round((run.n.train / total) * 100)} / ${Math.round((run.n.test / total) * 100)} · stratified by class` : 'stratified by class', color: '#FB923C', icon: '⊘' },
+  ];
+}
+
+function hyperparamsOf(run) {
+  const hp = run.hyperparameters || {};
+  return HP_KEYS.filter((k) => hp[k] !== undefined).map((k, i) => ({
+    name: k, value: typeof hp[k] === 'string' ? `"${hp[k]}"` : String(hp[k]), color: HP_COLORS[i % HP_COLORS.length],
+  }));
+}
 
 function ConfigRow({ k, value, sub, color, icon, mono }) {
   const [hov, setHov] = React.useState(false);
@@ -146,7 +130,10 @@ function HyperParam({ name, value, color }) {
   );
 }
 
-export default function TrainingConfig() {
+export default function TrainingConfig({ run: runProp }) {
+  const run = resolveRun(runProp, 'classifier');
+  const CONFIG = configOf(run);
+  const HYPERPARAMS = hyperparamsOf(run);
   return (
     <div style={{ margin: '24px 0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
 
@@ -195,7 +182,7 @@ export default function TrainingConfig() {
         }}>
           <span>XGBoost hyperparameters</span>
           <span style={{ fontSize: '9px', opacity: 0.6, textTransform: 'none', letterSpacing: 0, fontWeight: '400', fontFamily: 'monospace' }}>
-            run 20260213T225019Z
+            run {run.id}
           </span>
         </div>
 
@@ -218,6 +205,9 @@ export default function TrainingConfig() {
         }}>
           Tuning with GridSearchCV · tree_method hist = GPU/CPU
         </div>
+      </div>
+      <div style={{ gridColumn: '1 / -1', marginTop: '-4px' }}>
+        <GaiaLeakNote run={run} />
       </div>
     </div>
   );

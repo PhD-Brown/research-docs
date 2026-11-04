@@ -1,9 +1,35 @@
 ---
 name: docs-component
-description: Choisir, utiliser ou créer un composant React MDX pour le site research-docs (website/src/components). Contient le catalogue complet des 72 composants existants (rôle, props, origine des données, compatibilité mode clair, page d'exemple). À utiliser avant d'insérer un bloc visuel dans une page, avant de créer ou modifier un composant, ou pour savoir d'où viennent les chiffres affichés par un composant.
+description: Choisir, utiliser ou créer un composant React MDX pour le site research-docs (website/src/components). Contient le catalogue complet des 74 composants existants (rôle, props, origine des données, compatibilité mode clair, page d'exemple). À utiliser avant d'insérer un bloc visuel dans une page, avant de créer ou modifier un composant, ou pour savoir d'où viennent les chiffres affichés par un composant (runs.json, module @site/src/data/astrospectro).
 ---
 
 # docs-component
+
+## 0. Règle des chiffres de run (décision éditoriale n° 4)
+
+**Aucun chiffre de run codé en dur dans un composant.** Un composant qui affiche des résultats lit
+`website/src/data/astrospectro/runs.json` via le module d'accès, ou reçoit ses valeurs par props :
+
+```jsx
+import { getReferenceRun, resolveRun, fmt, generationLabel } from '@site/src/data/astrospectro';
+
+export default function MyBlock({ run }) {
+  const r = resolveRun(run, 'classifier');      // prop `run` = clé du registre ou identifiant ; défaut = référence
+  return <span>{fmt.pct(r.metrics.balanced_accuracy)} · {generationLabel(r)}</span>;
+}
+```
+
+- `runs.json` est **généré** (`python3 scripts/build_runs_data.py`) depuis `_facts/` et le registre de `FACTS_INDEX.md` :
+  ne jamais l'éditer à la main (procédure : skill `docs-new-run`).
+- Fonctions utiles (`website/src/data/astrospectro/index.js`) : `getRun(id)`, `getReferenceRun(clé)`,
+  `getReferenceRuns(clé)`, `resolveRun(runOuId, cléParDéfaut)`, `findRuns({kind, generation…})`, `shapRunFor(génération)`,
+  `fmt.{pct,pctRaw,num,signed,int,sci,seconds,date}`, `generationLabel(run)`, `shortName(run)`, `leakNote(run)`,
+  `prettyFeature(nom)`, `featureFamily(nom)`, `familyShares(loadings)`, `mean`, `ratio`.
+- Tout bloc qui cite un run portant le drapeau `gaia_leak` (v6, mais aussi v3–v5) affiche `<GaiaLeakNote run={r} />`.
+- Un bloc ne mélange jamais G1 et G2 (règle 2) : séparer en groupes étiquetés (`generationLabel`), cf. `ResultsHero`.
+- Texte qualitatif propre à un run (ex. « axe 1 = gravité ») : le signaler dans l'en-tête du fichier.
+- Les constantes physiques ou instrumentales (longueurs d'onde, résolution LAMOST, plages Teff de Harvard, 183
+  descripteurs du catalogue) ne sont pas des chiffres de run.
 
 ## 1. D'abord chercher dans le catalogue
 
@@ -33,7 +59,7 @@ Les valeurs passées en props viennent des fichiers listés dans `FACTS_INDEX.md
 |---|---|
 | Fichier `website/src/components/PascalCase.jsx` (ou dossier + `index.jsx` + `styles.module.css` si le style est conséquent) | Convention du dépôt |
 | En-tête de commentaire « Usage » avec un exemple de props (modèle : `CrossReferences.jsx`, `RunProvenance.jsx`) | Le catalogue et les autres sessions s'en servent |
-| **Prop-driven** : aucun chiffre scientifique codé en dur ; les données arrivent par props depuis la page | Les chiffres restent vérifiables par `check_facts.py` dans la page |
+| **Données de run** : lues dans `runs.json` (module `@site/src/data/astrospectro`) ou reçues par props ; jamais codées | Mise à jour d'un run en quelques minutes (décision n° 4) |
 | Couleurs de texte/fond/bordure via `var(--ifm-…)` uniquement ; accents tirés de la palette de `page-style-guide.mdx` §4.11 | Lisible en clair **et** en sombre |
 | Pas de `rgba(255,255,255,…)`, pas de fond sombre codé (`#06080f`, `#0a0c14`, `#0d1117`) | Invisible ou bloc noir en mode clair |
 | Liens internes via `@docusaurus/Link` (`<Link to="/docs/…">`) plutôt que `<a href>` | Docusaurus vérifie alors les liens au build et ajoute la baseUrl |
@@ -44,6 +70,7 @@ Les valeurs passées en props viennent des fichiers listés dans `FACTS_INDEX.md
 
 ## 3. Après création ou modification
 
-1. Ajouter / mettre à jour la ligne correspondante dans `catalog.md` (rôle, props, données, clair, page d'exemple).
+1. Ajouter / mettre à jour la ligne correspondante dans `catalog.md` (rôle, props, données, clair, page d'exemple) ;
+   si le composant lit `runs.json`, l'indiquer (« runs.json : clé du registre ») — la liste sert au skill `docs-new-run`.
 2. Utiliser le composant sur une page, puis lancer le skill `docs-verify` (build, liens, **captures clair/sombre/mobile**, chiffres).
 3. Ne pas modifier un composant utilisé par d'autres pages sans vérifier ces pages aussi (colonne « Exemple » du catalogue, ou `grep -rl "components/<Nom>" website/docs*`).

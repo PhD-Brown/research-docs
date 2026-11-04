@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from '@docusaurus/Link';
 
 // Page category colors — mapped to section names
 const CATEGORY_COLORS = {
@@ -52,7 +53,7 @@ export default function RelatedPages({ pages, title = 'Related pages' }) {
           const isExternal = cat === 'external' || page.href?.startsWith('http');
 
           return (
-            <a key={i} href={page.href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}
+            <Link key={i} to={page.href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}
               style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '14px 16px', background: 'var(--ifm-card-background-color)', border: `1px solid rgba(255,255,255,0.07)`, borderLeft: `3px solid ${color}`, borderRadius: '8px', textDecoration: 'none', transition: 'all 0.15s', position: 'relative', overflow: 'hidden' }}
               onMouseEnter={(e) => { e.currentTarget.style.background = `${color}0c`; e.currentTarget.style.borderColor = `${color}55`; e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.transform = 'translateX(3px)'; e.currentTarget.style.boxShadow = `0 3px 14px ${color}14`; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--ifm-card-background-color)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
@@ -66,7 +67,7 @@ export default function RelatedPages({ pages, title = 'Related pages' }) {
                 {isExternal && (<span style={{ fontSize: '11px', color: color, opacity: 0.5, flexShrink: 0 }}>↗</span>)}
               </div>
               {page.desc && (<div style={{ fontSize: '11.5px', color: 'var(--ifm-font-color-base)', opacity: 0.55, lineHeight: 1.5, paddingLeft: '20px' }}>{page.desc}</div>)}
-            </a>
+            </Link>
           );
         })}
       </div>

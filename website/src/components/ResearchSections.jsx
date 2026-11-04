@@ -3,10 +3,11 @@
 // Renders the AstroSpectro section navigation hub as an enhanced table.
 
 import React from 'react';
+import Link from '@docusaurus/Link';
 
 const SECTIONS = [
   {
-    href: './',
+    href: '/docs/astrospectro/overview',
     label: 'Overview',
     contents: 'Scientific motivation · key results · project map',
     featured: false,
@@ -139,7 +140,7 @@ function SectionCell({ section }) {
   return (
     <td style={tdStyle}>
       {section.icon && <span style={{ marginRight: '0.35rem' }}>{section.icon}</span>}
-      <a href={section.href} style={linkStyle}>{section.label}</a>
+      <Link to={section.href} style={linkStyle}>{section.label}</Link>
     </td>
   );
 }

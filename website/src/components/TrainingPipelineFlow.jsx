@@ -206,7 +206,7 @@ export default function TrainingPipelineFlow() {
       }}>
         {[
           { id: 'pipeline', label: 'Integrated pipeline', color: '#38BDF8' },
-          { id: 'wandb',    label: 'W&B tracking (121 metrics)', color: '#F59E0B' },
+          { id: 'wandb',    label: 'W&B tracking', color: '#F59E0B' },
         ].map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             background: tab === t.id ? `${t.color}12` : 'transparent',
@@ -264,15 +264,9 @@ export default function TrainingPipelineFlow() {
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ fontSize: '11px', opacity: 0.4, color: 'var(--ifm-font-color-base)' }}>
-                Project <code style={{ color: '#F59E0B' }}>astrospectro</code> · 85+ recorded runs
+                Project <code style={{ color: '#F59E0B' }}>astrospectro</code> · metric families logged per run
               </div>
-              <div style={{
-                fontFamily: 'monospace',
-                fontWeight: '900',
-                fontSize: '22px',
-                color: '#F59E0B',
-                lineHeight: 1,
-              }}>121 metrics<span style={{ fontSize: '12px', opacity: 0.5, fontWeight: '400' }}> / run</span></div>
+              {/* « 121 metrics / 85+ runs » retirés : aucune source dans _facts (FACTS_INDEX §5–6) */}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {WANDB_CATEGORIES.map((c) => <WandBCategory key={c.cat} {...c} />)}

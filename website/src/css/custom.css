@@ -120,6 +120,26 @@ hr {
   margin: 1rem auto 2rem auto;
 }
 
+/* Mobile / tablette : un tableau large défile horizontalement dans son propre bloc au lieu de faire
+   déborder toute la page (display: table empêche overflow-x ; on revient au comportement Infima). */
+@media (max-width: 996px) {
+  .markdown table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 1rem 0 2rem 0;
+  }
+}
+
+/* CrossReferences : fond de la ligne « featured ». Clair = inchangé ; sombre = teinte translucide du
+   bleu primaire (l'ancien --ifm-color-primary-lightest rendait le texte illisible). */
+:root {
+  --cross-ref-featured-bg: var(--ifm-color-primary-lightest);
+}
+html[data-theme='dark'] {
+  --cross-ref-featured-bg: rgba(61, 139, 255, 0.14);
+}
+
 /*
   ==========================================================================
   Styles personnalisés pour la page d'accueil de la documentation ("Hub")

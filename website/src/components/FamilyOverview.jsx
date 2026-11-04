@@ -1,10 +1,22 @@
+// src/components/FamilyOverview.jsx
+// Mosaïque des 183 descripteurs par famille (effectifs du catalogue de features, constants). Les badges PC1/PC2
+// donnent la part de la famille dans Σ|loading| du top-10 des loadings du run PCA de référence (runs.json) ;
+// les anciens pourcentages par famille n'avaient pas de source.
+//
+// Usage : <FamilyOverview />
+
 import React from 'react';
+import { getReferenceRun, familyShares } from '@site/src/data/astrospectro';
+
+const PCA = getReferenceRun('pca');
+const SHARE1 = Object.fromEntries(familyShares(PCA.metrics.loadings.PC1).map((f) => [f.key, f.pct]));
+const SHARE2 = Object.fromEntries(familyShares(PCA.metrics.loadings.PC2).map((f) => [f.key, f.pct]));
 
 const FAMILIES = [
-  { id: 'balmer',    name: 'Balmer lines',          sub: 'Hα–Hθ',                  count: 35, color: '#60A5FA', pc1Pct: 31.5, pc2Pct: null, indicator: 'Teff — thermal axis PC1' },
-  { id: 'caii',     name: 'Ionised calcium',        sub: 'Ca II H&K + IR triplet',  count: 20, color: '#C084FC', pc1Pct: 22.4, pc2Pct: null, indicator: 'Metallicity + chromosphere' },
+  { id: 'balmer',    name: 'Balmer lines',          sub: 'Hα–Hθ',                  count: 35, color: '#60A5FA', pc1Pct: SHARE1.balmer, pc2Pct: null, indicator: 'Teff — thermal axis PC1' },
+  { id: 'caii',     name: 'Ionised calcium',        sub: 'Ca II H&K + IR triplet',  count: 20, color: '#C084FC', pc1Pct: SHARE1.caii, pc2Pct: null, indicator: 'Metallicity + chromosphere' },
   { id: 'mg',       name: 'Magnesium & α',          sub: 'Mg b, Mg 5184, [α/Fe]',  count: 15, color: '#34D399', pc1Pct: null, pc2Pct: null, indicator: '[Mg/Fe], population I/II' },
-  { id: 'fe',       name: 'Iron & metals',          sub: 'Fe, Cr, V, Ni, Ba, Sr...',count: 30, color: '#FB923C', pc1Pct: null, pc2Pct: 43.3, indicator: '[Fe/H] — metallicity axis PC2' },
+  { id: 'fe',       name: 'Iron & metals',          sub: 'Fe, Cr, V, Ni, Ba, Sr...',count: 30, color: '#FB923C', pc1Pct: null, pc2Pct: SHARE2.fe, indicator: '[Fe/H] — metallicity axis PC2' },
   { id: 'lick',     name: 'Lick/SDSS indices',      sub: 'Lick IDS, CaH, TiO',     count: 18, color: '#FBBF24', pc1Pct: null, pc2Pct: null, indicator: 'Age + composite metallicity' },
   { id: 'continuum',name: 'Continuum',              sub: 'Slopes, curvatures, colours',count:65, color: '#F87171', pc1Pct: null, pc2Pct: null, indicator: 'Teff (slope) · luminosity (breaks)' },
 ];
@@ -41,7 +53,7 @@ export default function FamilyOverview() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ fontSize: '10.5px', color: 'var(--ifm-font-color-base)', opacity: 0.5, fontStyle: 'italic' }}>{f.indicator}</div>
-                {(f.pc1Pct || f.pc2Pct) && (<div style={{ background: `${f.color}18`, border: `1px solid ${f.color}40`, borderRadius: '4px', padding: '1px 6px', fontSize: '10px', fontWeight: '700', color: f.color, whiteSpace: 'nowrap', marginLeft: '6px', flexShrink: 0 }}>{f.pc1Pct ? `PC1 ${f.pc1Pct}%` : `PC2 ${f.pc2Pct}%`}</div>)}
+                {(f.pc1Pct || f.pc2Pct) && (<div title="Share of Σ|loading| among the 10 largest loadings (reference PCA run)" style={{ background: `${f.color}18`, border: `1px solid ${f.color}40`, borderRadius: '4px', padding: '1px 6px', fontSize: '10px', fontWeight: '700', color: f.color, whiteSpace: 'nowrap', marginLeft: '6px', flexShrink: 0 }}>{f.pc1Pct ? `PC1 ${f.pc1Pct}%` : `PC2 ${f.pc2Pct}%`}</div>)}
               </div>
             </div>
           </div>

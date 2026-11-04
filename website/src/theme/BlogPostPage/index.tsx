@@ -53,7 +53,7 @@ function BlogPostPageContent({children}: {children: React.ReactNode}): React.JSX
     >
       <div className={styles.pageContainer}>
         {/* Lien de retour */}
-        <Link to="/journal" className={styles.backLink}>
+        <Link to="/Blog" className={styles.backLink}>
           <span className={styles.arrow}>←</span> Back to Journal
         </Link>
 

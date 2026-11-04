@@ -1,4 +1,13 @@
+// src/components/PreprocessingFlow.jsx
+// Étapes du prétraitement. Le nombre de spectres retenus vient du run PCA de référence (runs.json) ;
+// « ~250,000 » téléchargés n'a pas de source dans _facts (retiré).
+//
+// Usage : <PreprocessingFlow />
+
 import React from 'react';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+const PCA = getReferenceRun('pca');
 
 const STEPS = [
   {
@@ -53,7 +62,7 @@ const STEPS = [
       'SNR_r > 10 — detectable lines',
       'RUWE < 1.4 — reliable Gaia astrometry',
       'Masked pixels excluded from line calculations',
-      '43,019 / ~250,000 spectra retained',
+      `${fmt.int(PCA.n)} spectra retained (PHY-3500 · G1)`,
     ],
     code: 'valid = (snr_r > 10) & (ruwe < 1.4)\ncatalog_clean = catalog[valid]',
   },

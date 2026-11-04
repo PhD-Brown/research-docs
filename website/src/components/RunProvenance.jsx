@@ -2,7 +2,12 @@
 // Prop-driven — reusable across pages.
 // Renders a compact current-run provenance card.
 //
+// Sans props, les champs viennent du run de référence 'classifier' (runs.json, registre FACTS_INDEX.md) ;
+// une prop explicite l'emporte. La mention de fuite Gaia s'affiche si le run a le drapeau gaia_leak.
+//
 // Usage:
+//   <RunProvenance />                       // run de référence
+//   <RunProvenance run="20260306T020848Z" /> // autre run (identifiant ou clé de registre)
 //   <RunProvenance
 //     experiment="ST_350k_xgb_AFGKM_v6"
 //     savedAt="20260522T161236Z"
@@ -13,6 +18,13 @@
 //   />
 
 import React from 'react';
+import GaiaLeakNote from './GaiaLeakNote';
+import { resolveRun, findRuns } from '@site/src/data/astrospectro';
+
+function stackOf(run) {
+  const st = run.stack || {};
+  return [st.python && `Python ${st.python}`, st.xgboost && `XGBoost ${st.xgboost}`].filter(Boolean).join(' / ');
+}
 
 // ─── styles ──────────────────────────────────────────────────────────────────
 
@@ -105,13 +117,22 @@ const s = {
 // ─── component ───────────────────────────────────────────────────────────────
 
 export default function RunProvenance({
-  experiment = '',
-  savedAt = '',
-  md5 = '',
-  notes = '',
-  stack = '',
+  run: runProp,
+  experiment: experimentProp,
+  savedAt: savedAtProp,
+  md5: md5Prop,
+  notes: notesProp,
+  stack: stackProp,
   keyResultsHref = './overview/key-results',
 }) {
+  // Run affiché : prop `run`, sinon le run dont le nom d'expérience = `experiment`, sinon la référence.
+  const byLabel = !runProp && experimentProp ? findRuns({ kind: 'classifier', label: experimentProp }).pop() : null;
+  const run = byLabel || resolveRun(runProp, 'classifier');
+  const experiment = experimentProp ?? run.label ?? '';
+  const savedAt = savedAtProp ?? run.id ?? '';
+  const md5 = md5Prop ?? run.md5 ?? '';
+  const notes = notesProp ?? run.notes ?? '';
+  const stack = stackProp ?? stackOf(run);
   const fields = [
     { label: 'Experiment', value: experiment },
     { label: 'Saved (UTC)', value: savedAt },
@@ -150,6 +171,7 @@ export default function RunProvenance({
           </a>
         )}
       </div>
+      <GaiaLeakNote run={run} style={{ padding: '0 1.1rem 0.7rem' }} />
     </div>
   );
 }

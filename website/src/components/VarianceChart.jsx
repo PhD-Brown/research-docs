@@ -1,33 +1,42 @@
+// src/components/VarianceChart.jsx
+// Variance par composante + seuils de variance cumulée + MSE de reconstruction, lus dans le run PCA de
+// référence (runs.json : metrics.variance / cumulative / n_components_for_variance / reconstruction_mse).
+// Le pack de faits n'exporte que PC1–PC10 (variance_summary_top10) et MSE(k) pour k ≤ 50 : l'ancienne
+// version affichait des valeurs « approximatives » pour PC3–PC20 (FACTS_INDEX §6), retirées.
+//
+// Usage :
+//   <VarianceChart />                             // run PCA de référence (registre FACTS_INDEX.md)
+//   <VarianceChart run="phy3500_pca_run_…" />
+
 import React from 'react';
+import { resolveRun } from '@site/src/data/astrospectro';
 
-// Individual variance percentages for PC1-PC20 (approximate realistic values)
-const PC_VARIANCES = [
-  16.9, 12.0, 9.5, 7.2, 5.8, 4.6, 3.9, 3.2, 2.8, 2.4,
-   2.1,  1.9, 1.7, 1.5, 1.3, 1.2, 1.1, 1.0, 0.9, 0.8,
-];
+const THRESHOLD_STYLE = {
+  '80pct': { pct: 80, color: '#FBBF24' },
+  '90pct': { pct: 90, color: '#FB923C' },
+  '95pct': { pct: 95, color: '#34D399', highlighted: true },
+  '99pct': { pct: 99, color: '#F87171' },
+};
 
-// Cumulative
-const cumulative = PC_VARIANCES.reduce((acc, v, i) => {
-  acc.push((i === 0 ? 0 : acc[i - 1]) + v);
-  return acc;
-}, []);
+const r1 = (x) => Number((x * 100).toFixed(1));
 
-const THRESHOLDS = [
-  { pct: 80, k: 51,  color: '#FBBF24' },
-  { pct: 90, k: 73,  color: '#FB923C' },
-  { pct: 95, k: 91,  color: '#34D399', highlighted: true },
-  { pct: 99, k: 100, color: '#F87171' },
-];
+function dataOf(run) {
+  const m = run.metrics;
+  const PC_VARIANCES = m.variance.map(r1);
+  const THRESHOLDS = Object.entries(THRESHOLD_STYLE).map(([key, s]) => ({ ...s, k: m.n_components_for_variance[key] }));
+  const k95 = m.n_components_for_variance['95pct'];
+  const mse = (k) => (m.reconstruction_mse.length >= k ? m.reconstruction_mse[k - 1] : null);
+  const captured = (k) => (k <= m.cumulative.length ? r1(m.cumulative[k - 1]) : null);
+  const kMax = m.reconstruction_mse.length;
+  const MSE_ROWS = [2, 10, kMax].map((k) => ({ k, mse: mse(k), captured: captured(k), capturedText: captured(k) !== null ? `${captured(k)}% captured` : (k < m.n_components_for_variance['80pct'] ? '< 80% captured' : '') }));
+  MSE_ROWS.push({ k: k95, mse: mse(k95), captured: 95, capturedText: '≥ 95% captured' });
+  MSE_ROWS.forEach((r) => { if (r.captured === null) r.captured = 80; });
+  return { PC_VARIANCES, THRESHOLDS, MSE_ROWS, k95, p: run.p };
+}
 
-const MSE_ROWS = [
-  { k: 2,  mse: 0.696, captured: 30.4 },
-  { k: 10, mse: 0.494, captured: 50.6 },
-  { k: 50, mse: 0.196, captured: 80.4 },
-  { k: 91, mse: 0.050, captured: 95.0 },
-];
-
-export default function VarianceChart() {
+export default function VarianceChart({ run: runProp }) {
   const [hovPc, setHovPc] = React.useState(null);
+  const { PC_VARIANCES, THRESHOLDS, MSE_ROWS, k95, p } = dataOf(resolveRun(runProp, 'pca'));
   const maxVar = Math.max(...PC_VARIANCES);
 
   return (
@@ -45,7 +54,7 @@ export default function VarianceChart() {
           padding: '18px',
         }}>
           <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.07em', opacity: 0.4, marginBottom: '14px', color: 'var(--ifm-font-color-base)' }}>
-            Individual variance — PC1 to PC20
+            Individual variance — PC1 to PC{PC_VARIANCES.length}
           </div>
 
           {/* Bars */}
@@ -101,8 +110,8 @@ export default function VarianceChart() {
           {/* PC1 PC2 labels */}
           <div style={{ display: 'flex', gap: '12px', marginTop: '10px', flexWrap: 'wrap' }}>
             {[
-              { label: 'PC1 — Thermal axis', color: '#38BDF8', pct: 16.9 },
-              { label: 'PC2 — Metallicity axis', color: '#F59E0B', pct: 12.0 },
+              { label: 'PC1 — Thermal axis', color: '#38BDF8', pct: PC_VARIANCES[0] },
+              { label: 'PC2 — Metallicity axis', color: '#F59E0B', pct: PC_VARIANCES[1] },
             ].map((p) => (
               <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: p.color }} />
@@ -127,7 +136,7 @@ export default function VarianceChart() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {THRESHOLDS.map((t) => {
-              const barWidth = t.k / 183 * 100;
+              const barWidth = t.k / p * 100;
               return (
                 <div key={t.pct} style={{
                   padding: '10px 12px',
@@ -146,7 +155,7 @@ export default function VarianceChart() {
                         fontWeight: '800',
                         color: t.color,
                       }}>K = {t.k}</span>
-                      <span style={{ fontSize: '10px', opacity: 0.45, color: 'var(--ifm-font-color-base)' }}>/ 183</span>
+                      <span style={{ fontSize: '10px', opacity: 0.45, color: 'var(--ifm-font-color-base)' }}>/ {p}</span>
                     </div>
                   </div>
                   {/* Bar */}
@@ -177,7 +186,7 @@ export default function VarianceChart() {
             color: 'var(--ifm-font-color-base)',
             opacity: 0.75,
           }}>
-            ↪ UMAP and t-SNE use the <strong style={{ color: '#38BDF8' }}>first 91 components</strong> (95% threshold) as input.
+            ↪ UMAP and t-SNE use the <strong style={{ color: '#38BDF8' }}>first {k95} components</strong> (95% threshold) as input.
           </div>
         </div>
       </div>
@@ -190,7 +199,7 @@ export default function VarianceChart() {
           gap: '10px',
         }}>
           {MSE_ROWS.map((row) => {
-            const isKstar = row.k === 91;
+            const isKstar = row.k === k95;
             return (
               <div key={row.k} style={{
                 padding: '12px 16px',
@@ -209,8 +218,8 @@ export default function VarianceChart() {
                   color: isKstar ? '#34D399' : 'var(--ifm-font-color-base)',
                   lineHeight: 1,
                   marginBottom: '4px',
-                }}>{row.mse.toFixed(3)}</div>
-                <div style={{ fontSize: '10px', opacity: 0.45, color: 'var(--ifm-font-color-base)' }}>MSE(K)</div>
+                }}>{row.mse !== null ? row.mse.toFixed(3) : '—'}</div>
+                <div style={{ fontSize: '10px', opacity: 0.45, color: 'var(--ifm-font-color-base)' }}>{row.mse !== null ? 'MSE(K)' : 'MSE(K) not exported'}</div>
                 <div style={{
                   marginTop: '8px',
                   height: '4px',
@@ -227,7 +236,7 @@ export default function VarianceChart() {
                   }} />
                 </div>
                 <div style={{ fontSize: '9px', opacity: 0.4, marginTop: '3px', color: 'var(--ifm-font-color-base)' }}>
-                  {row.captured}% captured
+                  {row.capturedText}
                 </div>
               </div>
             );

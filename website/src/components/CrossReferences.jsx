@@ -15,6 +15,7 @@
 //   featured  boolean  — optional, highlights the row
 
 import React from 'react';
+import Link from '@docusaurus/Link';
 
 // ─── styles ──────────────────────────────────────────────────────────────────
 
@@ -45,7 +46,7 @@ const s = {
     borderBottom: isLast ? 'none' : '1px solid var(--ifm-toc-border-color)',
     verticalAlign: 'middle',
     background: featured
-      ? 'var(--ifm-color-primary-lightest, rgba(53,120,229,0.05))'
+      ? 'var(--cross-ref-featured-bg, rgba(53,120,229,0.05))'
       : 'transparent',
   }),
   link: (featured) => ({
@@ -80,9 +81,9 @@ export default function CrossReferences({ links = [] }) {
             return (
               <tr key={link.href + i}>
                 <td style={s.td(featured, isLast)}>
-                  <a href={link.href} style={s.link(featured)}>
+                  <Link to={link.href} style={s.link(featured)}>
                     {link.label}
-                  </a>
+                  </Link>
                 </td>
                 <td style={{ ...s.td(featured, isLast), ...s.relation }}>
                   {link.relation}

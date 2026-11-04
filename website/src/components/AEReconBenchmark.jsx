@@ -1,12 +1,18 @@
+// src/components/AEReconBenchmark.jsx
+// Courbe MSE(k) de la PCA vs MSE de l'autoencodeur (z = 2), lues dans le run autoencodeur de référence
+// (runs.json : metrics.pca_mse_by_k, metrics.mse).
+//
+// Usage : <AEReconBenchmark />
+
 import React from 'react';
+import { getReferenceRun, fmt, generationLabel } from '@site/src/data/astrospectro';
 
-const PCA_POINTS = [
-  { k: 1,  mse: 0.813 }, { k: 2,  mse: 0.696 }, { k: 3,  mse: 0.650 },
-  { k: 5,  mse: 0.583 }, { k: 8,  mse: 0.524 }, { k: 10, mse: 0.494 },
-  { k: 15, mse: 0.432 }, { k: 20, mse: 0.382 }, { k: 30, mse: 0.309 }, { k: 50, mse: 0.196 },
-];
-
-const AE_MSE = 0.489;
+const AE_RUN = getReferenceRun('autoencoder');
+const PCA_POINTS = Object.entries(AE_RUN.metrics.pca_mse_by_k)
+  .map(([k, mse]) => ({ k: Number(k), mse }))
+  .sort((a, b) => a.k - b.k);
+const AE_MSE = AE_RUN.metrics.mse;
+const K_LAST = PCA_POINTS[PCA_POINTS.length - 1];
 const W = 480; const H = 200;
 const PAD = { left: 50, right: 20, top: 22, bottom: 36 };
 const K_MIN = 0; const K_MAX = 52; const MSE_MIN = 0.1; const MSE_MAX = 0.85;
@@ -16,7 +22,9 @@ function py(mse) { return H - PAD.bottom - ((mse - MSE_MIN) / (MSE_MAX - MSE_MIN
 function pathPCA() { return PCA_POINTS.map((p, i) => `${i === 0 ? 'M' : 'L'}${px(p.k).toFixed(1)},${py(p.mse).toFixed(1)}`).join(' '); }
 
 const AE_PY = py(AE_MSE);
-const EQUIV_K = 10;
+// Plus petit k dont la MSE PCA est la plus proche de celle de l'AE
+const EQUIV = PCA_POINTS.reduce((best, p) => (Math.abs(p.mse - AE_MSE) < Math.abs(best.mse - AE_MSE) ? p : best), PCA_POINTS[0]);
+const EQUIV_K = EQUIV.k;
 
 export default function AEReconBenchmark() {
   const [hovPt, setHovPt] = React.useState(null);
@@ -30,7 +38,7 @@ export default function AEReconBenchmark() {
               Reconstruction MSE: Autoencoder (z=2) vs PCA (k=1…50)
             </div>
             <div style={{ fontSize: '10.5px', opacity: 0.45, color: 'var(--ifm-font-color-base)', marginTop: '2px' }}>
-              N = 43,019 spectra · 183 features · run 20260405T220839Z
+              {generationLabel(AE_RUN)} · {AE_RUN.p} features · run {AE_RUN.id.replace('phy3500_autoencoder_run_', '')}
             </div>
           </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -54,10 +62,10 @@ export default function AEReconBenchmark() {
             </g>
           ))}
           <line x1={PAD.left} y1={AE_PY} x2={W - PAD.right} y2={AE_PY} stroke="#34D399" strokeWidth="1.5" strokeDasharray="5,3" opacity="0.7" />
-          <text x={W - PAD.right - 2} y={AE_PY - 4} fill="#34D399" fontSize="9" fontFamily="monospace" textAnchor="end" fontWeight="bold">AE(z=2) = 0.489</text>
-          <line x1={px(EQUIV_K)} y1={py(0.494)} x2={px(EQUIV_K)} y2={py(AE_MSE)} stroke="#FBBF24" strokeWidth="1" strokeDasharray="2,2" opacity="0.7" />
-          <circle cx={px(EQUIV_K)} cy={py(0.494)} r="4" fill="#FBBF24" opacity="0.8" />
-          <text x={px(EQUIV_K) + 5} y={py(0.52)} fill="#FBBF24" fontSize="8.5" fontFamily="monospace">PCA(k=10)≈AE</text>
+          <text x={W - PAD.right - 2} y={AE_PY - 4} fill="#34D399" fontSize="9" fontFamily="monospace" textAnchor="end" fontWeight="bold">AE(z=2) = {fmt.num(AE_MSE)}</text>
+          <line x1={px(EQUIV_K)} y1={py(EQUIV.mse)} x2={px(EQUIV_K)} y2={py(AE_MSE)} stroke="#FBBF24" strokeWidth="1" strokeDasharray="2,2" opacity="0.7" />
+          <circle cx={px(EQUIV_K)} cy={py(EQUIV.mse)} r="4" fill="#FBBF24" opacity="0.8" />
+          <text x={px(EQUIV_K) + 5} y={py(0.52)} fill="#FBBF24" fontSize="8.5" fontFamily="monospace">PCA(k={EQUIV_K})≈AE</text>
           <path d={pathPCA()} fill="none" stroke="#38BDF8" strokeWidth="2" opacity="0.85" />
           {PCA_POINTS.map((p, i) => (<circle key={i} cx={px(p.k)} cy={py(p.mse)} r={hovPt === i ? 5 : 3.5} fill="#38BDF8" opacity={hovPt === i ? 1 : 0.8} style={{ cursor: 'pointer', transition: 'r 0.1s' }} onMouseEnter={() => setHovPt(i)} onMouseLeave={() => setHovPt(null)} />))}
           {hovPt !== null && (() => { const p = PCA_POINTS[hovPt]; const tx = px(p.k); const ty = py(p.mse) - 26; return (<g><rect x={tx - 28} y={ty - 2} width="56" height="20" rx="4" fill="#0d1117" stroke="#38BDF8" strokeWidth="0.5" opacity="0.95" /><text x={tx} y={ty + 12} fill="#38BDF8" fontSize="10" fontFamily="monospace" textAnchor="middle">k={p.k} · {p.mse.toFixed(3)}</text></g>); })()}
@@ -70,10 +78,10 @@ export default function AEReconBenchmark() {
 
         <div style={{ marginTop: '14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           <div style={{ padding: '10px 14px', background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.22)', borderLeft: '3px solid #34D399', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.85, lineHeight: 1.6 }}>
-            <strong style={{ color: '#34D399' }}>AE(z=2) ≈ PCA(k=10)</strong> — with only 2 latent dimensions, the autoencoder achieves the same MSE as PCA with 10 components. Non-linearity compensates for dimensionality.
+            <strong style={{ color: '#34D399' }}>AE(z=2) ≈ PCA(k={EQUIV_K})</strong> — with only 2 latent dimensions, the autoencoder achieves the same MSE as PCA with {EQUIV_K} components. Non-linearity compensates for dimensionality.
           </div>
           <div style={{ padding: '10px 14px', background: 'rgba(56,189,248,0.05)', border: '1px solid rgba(56,189,248,0.15)', borderLeft: '3px solid #38BDF8', borderRadius: '7px', fontSize: '12px', color: 'var(--ifm-font-color-base)', opacity: 0.85, lineHeight: 1.6 }}>
-            <strong style={{ color: '#38BDF8' }}>Limitation:</strong> PCA(k=50) reaches MSE = 0.196, well below AE(z=2). PCA benefits from its 50 degrees of freedom — the 2D autoencoder is constrained by its low latent dimensionality.
+            <strong style={{ color: '#38BDF8' }}>Limitation:</strong> PCA(k={K_LAST.k}) reaches MSE = {fmt.num(K_LAST.mse)}, well below AE(z=2). PCA benefits from its {K_LAST.k} degrees of freedom — the 2D autoencoder is constrained by its low latent dimensionality.
           </div>
         </div>
       </div>

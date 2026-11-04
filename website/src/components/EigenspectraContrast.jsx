@@ -1,16 +1,36 @@
+// src/components/EigenspectraContrast.jsx
+// PCA sur flux brut vs PCA sur les features, lues dans le run PCA de référence (runs.json :
+// spectra.variance / n_components_for_variance et metrics.variance / n_components_for_variance).
+// Correction (FACTS_INDEX §6) : 95 % de variance du flux brut demandent 5 composantes, pas 3.
+//
+// Usage :
+//   <EigenspectraContrast />                          // run PCA de référence (registre FACTS_INDEX.md)
+//   <EigenspectraContrast run="phy3500_pca_run_…" />
+
 import React from 'react';
+import { resolveRun, fmt } from '@site/src/data/astrospectro';
 
-const FLUX_PCS = [
-  { pc: 'PC1', pct: 46.6, interp: 'Colour slope — T_eff',             color: '#38BDF8', physical: true },
-  { pc: 'PC2', pct: 31.8, interp: 'Infrared rise — K-M cool stars',   color: '#60A5FA', physical: true },
-  { pc: 'PC3', pct: 12.9, interp: 'LAMOST instrumental cut',          color: '#F87171', physical: false },
-];
+const r1 = (x) => Number((x * 100).toFixed(1));
 
-const DESC_PCS = [
-  { pc: 'PC1', pct: 16.9, interp: 'Thermal axis ρ(Teff)=+0.831',     color: '#38BDF8', physical: true },
-  { pc: 'PC2', pct: 12.0, interp: 'Metallicity axis + instrumental SNR', color: '#F59E0B', physical: true },
-  { pc: 'PC3', pct:  9.5, interp: 'Mixed spectral structure',          color: '#94A3B8', physical: true },
-];
+function dataOf(run) {
+  const s = run.spectra;
+  const m = run.metrics;
+  const FLUX_PCS = [
+    { pc: 'PC1', pct: r1(s.variance[0]), interp: 'Colour slope — T_eff',           color: '#38BDF8', physical: true },
+    { pc: 'PC2', pct: r1(s.variance[1]), interp: 'Infrared rise — K-M cool stars', color: '#60A5FA', physical: true },
+    { pc: 'PC3', pct: r1(s.variance[2]), interp: 'LAMOST instrumental cut',        color: '#F87171', physical: false },
+  ];
+  const DESC_PCS = [
+    { pc: 'PC1', pct: r1(m.variance[0]), interp: `Thermal axis ρ(Teff)=${fmt.signed(m.gaia_spearman.PC1.teff_gspphot)}`, color: '#38BDF8', physical: true },
+    { pc: 'PC2', pct: r1(m.variance[1]), interp: 'Metallicity axis + instrumental SNR', color: '#F59E0B', physical: true },
+    { pc: 'PC3', pct: r1(m.variance[2]), interp: 'Mixed spectral structure',            color: '#94A3B8', physical: true },
+  ];
+  return {
+    FLUX_PCS, DESC_PCS,
+    flux: { k95: s.n_components_for_variance['95pct'], top3: r1(s.cumulative[2]), n: s.n, channels: s.channels },
+    desc: { k95: m.n_components_for_variance['95pct'], top3: r1(m.cumulative[2]), n: run.n, p: run.p },
+  };
+}
 
 function PCRow({ pc, pct, interp, color, physical }) {
   const [hov, setHov] = React.useState(false);
@@ -54,19 +74,20 @@ function Panel({ title, subtitle, color, k95, totalPct3, pcs, badge, badgeColor 
   );
 }
 
-export default function EigenspectraContrast() {
+export default function EigenspectraContrast({ run }) {
+  const { FLUX_PCS, DESC_PCS, flux, desc } = dataOf(resolveRun(run, 'pca'));
   return (
     <div style={{ margin: '28px 0' }}>
       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-        <Panel title="PCA on raw flux" subtitle="3,921 spectral channels · 10,000 spectra" color="#A78BFA" k95={3} totalPct3={91.3} pcs={FLUX_PCS}
-          badge="✓ Physically: adjacent pixels (Δλ~2 Å) are strongly correlated — coherence length ~10 Å. 3 components suffice!"
+        <Panel title="PCA on raw flux" subtitle={`${fmt.int(flux.channels)} spectral channels · ${fmt.int(flux.n)} spectra`} color="#A78BFA" k95={flux.k95} totalPct3={flux.top3} pcs={FLUX_PCS}
+          badge={`✓ Physically: adjacent pixels (Δλ~2 Å) are strongly correlated — coherence length ~10 Å. ${flux.k95} components suffice!`}
           badgeColor="#34D399" />
-        <Panel title="PCA on 183 features" subtitle="Engineered features · 43,019 spectra" color="#38BDF8" k95={91} totalPct3={38.4} pcs={DESC_PCS}
-          badge="→ Features eliminate spectral redundancy but introduce genuinely orthogonal physical information: 91 components for 95%."
+        <Panel title={`PCA on ${desc.p} features`} subtitle={`Engineered features · ${fmt.int(desc.n)} spectra`} color="#38BDF8" k95={desc.k95} totalPct3={desc.top3} pcs={DESC_PCS}
+          badge={`→ Features eliminate spectral redundancy but introduce genuinely orthogonal physical information: ${desc.k95} components for 95%.`}
           badgeColor="#38BDF8" />
       </div>
       <div style={{ marginTop: '14px', padding: '14px 18px', background: 'rgba(167,139,250,0.06)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '8px', fontSize: '13px', color: 'var(--ifm-font-color-base)', opacity: 0.85, lineHeight: 1.6 }}>
-        <strong style={{ color: '#A78BFA' }}>Interpretation of the contrast:</strong> The 183 features eliminate adjacent pixel redundancy but introduce genuinely orthogonal physical information (temperature, metallicity, gravity, chromospheric activity…). Result: intrinsic dimensionality rises from ~3 to ~91 — not a sign of inefficiency, but proof that features encode <em>distinct</em> physical dimensions.
+        <strong style={{ color: '#A78BFA' }}>Interpretation of the contrast:</strong> The {desc.p} features eliminate adjacent pixel redundancy but introduce genuinely orthogonal physical information (temperature, metallicity, gravity, chromospheric activity…). Result: intrinsic dimensionality rises from ~{flux.k95} to ~{desc.k95} — not a sign of inefficiency, but proof that features encode <em>distinct</em> physical dimensions.
       </div>
     </div>
   );
