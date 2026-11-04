@@ -22,9 +22,9 @@ In a flat universe, E(z) = H(z)/H₀. Matter is the only other component, so onl
 
 | Model | w | E²(z) |
 |---|---|---|
-| **ΛCDM** | −1 | `Ωm (1+z)³ + (1 − Ωm)` |
-| **CPL** | `w₀ + wₐ z/(1+z)` | `Ωm (1+z)³ + (1 − Ωm)(1+z)^(3(1+w₀+wₐ)) exp[−3 wₐ z/(1+z)]` |
-| **Ξosc** | `w₀,mean + ε cos(2π t/T + φ₀)` | `Ωm (1+z)³ + (1 − Ωm) ρ_DE(z)/ρ_DE(0)` with `ρ_DE(z)/ρ_DE(0) = exp[3 ∫₀ᶻ (1+w)/(1+z′) dz′]` |
+| **ΛCDM** | $-1$ | $\Omega_m (1+z)^3 + (1-\Omega_m)$ |
+| **CPL** | $w_0 + w_a\,\dfrac{z}{1+z}$ | $\Omega_m (1+z)^3 + (1-\Omega_m)(1+z)^{3(1+w_0+w_a)}\exp\!\left[-\dfrac{3 w_a z}{1+z}\right]$ |
+| **Ξosc** | $w_{0,\mathrm{mean}} + \varepsilon\cos\!\left(\dfrac{2\pi t}{T} + \varphi_0\right)$ | $\Omega_m (1+z)^3 + (1-\Omega_m)\,\dfrac{\rho_{\mathrm{DE}}(z)}{\rho_{\mathrm{DE}}(0)}$ with $\dfrac{\rho_{\mathrm{DE}}(z)}{\rho_{\mathrm{DE}}(0)} = \exp\!\left[3\int_0^z \dfrac{1+w}{1+z'}\,dz'\right]$ |
 
 ### How Ξosc is implemented
 
