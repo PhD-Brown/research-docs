@@ -167,19 +167,30 @@ SHAP analysis (*SHapley Additive exPlanations*) on the trained model makes it po
 The reference model does not rank the Balmer lines first, while PCA's first axis is thermal. This is expected, because the two methods answer different questions:
 
 - **PCA** searches for the direction of *maximum variance* → Balmer varies more *within the full population* → thermal PC1
-- **XGBoost** searches for the *optimal decision boundary* → metal and molecular-band indicators (Mg b, CaH2, Ca II K) carry more of the separation *between classes*
+- **XGBoost** searches for the *optimal decision boundary* → in the reference run, Mg b, the CaH2 band and the deep-red slope carry most of the separation *between classes* (Ca II K equivalent width is rank 4, Hα rank 5)
 
 ```
 PCA     : Which feature varies the most overall?          → Balmer (T_eff)
-XGBoost : Which feature best separates the classes?       → Mg b, CaH2, Ca II K
+XGBoost : Which feature best separates the classes?       → Mg b, CaH2, deep-red slope
 ```
 
 These two results are **consistent and complementary** — they answer different questions about the same physics.
 
 ### Top SHAP features by spectral class
 
-| Class | Dominant SHAP features | Interpretation |
-|:---:|:---|:---|
+Top three features per class in the reference run v6 (read off `class_specific_importance.png`; see [SHAP Interpretability](../science/shap-interpretability) for the figure and caveats):
+
+| Class | Top three SHAP features |
+|:---:|:---|
+| **A** | Ca II K equivalent width, G4300 index, CN₂ index |
+| **F** | Mg b equivalent width, Na D equivalent width, continuum curvature |
+| **G** | Mg 5184 equivalent width, CNO index, EW(Hα)/EW(Hβ) ratio |
+| **K** | Mg b equivalent width, Hα equivalent width, deep-red slope |
+| **M** | CaH2 index, deep-red slope, continuum RMS |
+
+No physical interpretation per class is claimed; these are model-relevance rankings, not physical measurements.
+
+---:|:---|:---|
 | **A** | Hα EW↓, Hβ FWHM↑, strong W(Hγ) | Very broad Balmer lines — hot stars > 7,500 K |
 | **F** | Moderate Hα, emerging Ca II K | Balmer → Ca II transition (6,000–7,500 K) |
 | **G** | Strong Ca II K+H, Mg b, W(Hα) | Solar-type star — metallicity + intermediate T_eff |
