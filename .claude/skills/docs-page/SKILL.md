@@ -67,7 +67,7 @@ Règles qui reviennent le plus souvent :
 - Composants : choisir dans `.claude/skills/docs-component/catalog.md` ; un composant aux chiffres marqués ❌ n'est pas réutilisé tel quel.
 - Figures : chemins locaux `/img/...` (copier depuis `_facts/` vers `website/static/img/<projet>/` si besoin, en réutilisant les chemins déjà publiés listés dans `_facts/astrospectro/MANIFEST.md`).
 - Liens : en prose, liens Markdown vers le fichier (`[PCA](./pca.mdx)`) ; dans les props de composants, URL relatives à l'URL rendue (attention aux pages `index`).
-- Stub remplacé : supprimer l'import et la balise `<UnderConstruction />` **et** la liste « What this page covers ». Page encore partielle : `:::info Under construction` (editorial-guide §6.3).
+- Stub remplacé : supprimer l'import et la balise `<UnderConstruction />` **et** la liste « What this page covers ». Page encore partielle : `:::info[Under construction]` (titre entre crochets, ligne vide après l'ouverture et avant la fermeture ; editorial-guide §6.3).
 - Nouvelle page : l'ajouter à la sidebar concernée (`website/sidebars*.ts`), sinon elle n'apparaît pas dans la navigation.
 
 ## 3. Vérifier
