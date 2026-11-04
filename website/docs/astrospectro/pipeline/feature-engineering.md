@@ -5,20 +5,33 @@ sidebar_position: 3
 tags: [feature-engineering, spectroscopy, balmer, calcium, equivalent-width]
 ---
 
+import RunFact from '@site/src/components/RunFact';
+import GaiaLeakNote from '@site/src/components/GaiaLeakNote';
+
+{/* facts: runs.json classifier (v6: features.gaia_photometric) · FACTS_INDEX §1.1 */}
+
 # Feature Engineering
 
 ## Overview
 
 The `FeatureEngineer` class extracts **183 physics-based spectroscopic features**
 from each preprocessed LAMOST spectrum. All features correspond to physically
-interpretable spectral properties — no positional, instrumental, or metadata features
-are included in `spectro_only=True` mode.
+interpretable spectral properties. `FeatureEngineer` itself computes nothing from positions,
+instrument metadata or Gaia: these 183 features come from the spectrum alone.
 
 :::info[Design philosophy]
 
 Every feature in AstroSpectro can be computed by a spectroscopist working with only
 the stellar spectrum. No positional information, survey metadata, or Gaia-derived
-parameters are used in `spectro_only=True` mode.
+parameter is **computed** by `FeatureEngineer`.
+
+This is not the same as saying the trained classifier uses no Gaia column. The reference
+run (v6) selected <RunFact path="features.gaia_photometric.length" /> Gaia/photometric columns
+(`M_G`, `M_BP`, `M_RP`, `ag_gspphot`) from the cross-matched catalogue, next to the
+spectral features; see [spectro_only=True Mode](../concepts/spectro-only-mode) and the
+[Data Leakage Audit](../concepts/data-leakage-audit).
+
+<GaiaLeakNote />
 
 :::
 
@@ -119,8 +132,8 @@ match_CaIIK_prom, match_CaIIH_prom, match_Hbeta_EW, ...
 
 :::note
 These `match_*` columns are the difference between the 174-feature FeatureEngineer output
-and the **canonical 183-feature** total. Always use `spectro_only=True` mode to ensure
-all 183 features are properly computed.
+and the **canonical 183-feature** total. Use `spectro_only=True` mode so that all 183 features are computed
+from the spectrum alone.
 
 :::
 
