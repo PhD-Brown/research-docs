@@ -3,6 +3,10 @@ title: Data Leakage Audit
 description: Systematic audit of AstroSpectro features for data leakage — documenting what was excluded, what was retained, and the scientific rationale.
 ---
 
+import RunFact from '@site/src/components/RunFact';
+
+{/* facts: runs.json classifier (v6: features.gaia_photometric, features.selected), shap (metrics.gaia_photometric_share) · FACTS_INDEX §1.1, §1.2, §3 · `_facts/astrospectro/data/models/spectral_classifier_xgboost_20260522T161236Z_meta.json` (selected_features_) and `logs/shap/features_20260522T153123Z/01_data_leak/shap_feature_importance.csv` */}
+
 # 🔍 Data Leakage Audit
 
 This page documents the full audit of the AstroSpectro feature set for data leakage — any situation where a feature provides information about the target label that would not be available at inference time, or that introduces a circularity in the training process.
@@ -54,7 +58,7 @@ These were removed after a feature importance analysis showed that SNR bands wer
 
 ## What remains — and the v6 clarification
 
-In run v6, the following **Gaia-derived features are retained** in `selected_features_`:
+In run v6, the following **<RunFact path="features.gaia_photometric.length" format="int" /> Gaia/photometric features are retained** among the <RunFact path="features.selected" format="int" /> entries of `selected_features_` (the SHAP analysis groups exactly these columns as "Gaia / Photometric"):
 
 | Feature | Type | SHAP contribution | Status |
 |---|---|---|---|
@@ -62,10 +66,10 @@ In run v6, the following **Gaia-derived features are retained** in `selected_fea
 | `M_G` | Gaia absolute magnitude (G band) | Minor | ⚠️ Review |
 | `M_RP` | Gaia absolute magnitude (RP band) | Minor | ⚠️ Review |
 | `ag_gspphot` | Gaia GSP-Phot extinction | Minor | ⚠️ Review |
-| `feature_bp_g` | Gaia BP-G color | Minor | Low risk |
-| `feature_g_rp` | Gaia G-RP color | Minor | Low risk |
 
-These 6 features collectively account for **3.2% of total SHAP importance** (confirmed in `physical_vs_observational.png`).
+These <RunFact path="features.gaia_photometric.length" format="int" /> features collectively account for **<RunFact run="shap" path="metrics.gaia_photometric_share" format="pct" /> of total SHAP importance** (`shap_feature_importance.csv`, category "Gaia / Photometric"; figure `physical_vs_observational.png`).
+
+Two further broadband-colour columns, `feature_bp_g` (BP−G) and `feature_g_rp` (G−RP), are also among the selected features. The SHAP table files them under the "Colour" family as spectroscopic, so they are **not** included in the share above; they correlate strongly with T<sub>eff</sub> and are non-spectroscopic in origin. Both are absent from the partial validation run v7.
 
 ### Are these leakage?
 
@@ -73,13 +77,13 @@ Strictly speaking, no — they do not encode the label directly. However:
 
 1. **M_BP, M_G, M_RP** depend on Gaia parallax quality (RUWE filter applied via `is_good_ruwe`). Stars with poor parallax measurements are excluded from training, creating a selection bias toward nearby, well-measured stars.
 2. **ag_gspphot** is a GSP-Phot parameter derived using a stellar atmospheric model that implicitly assumes a spectral type — this is a mild circularity.
-3. **bp_g, g_rp** are broadband colors that correlate strongly with Teff and therefore spectral type. They are not leakage per se, but they are non-spectroscopic.
+3. **bp_g, g_rp** (not counted in the share above) are broadband colors that correlate strongly with Teff and therefore spectral type. They are not leakage per se, but they are non-spectroscopic.
 
 ### What this means for the manuscript
 
 The claim "spectro_only=True" must be qualified in the RNAAS/A&A manuscript as:
 
-> *"The pipeline is configured to exclude observational metadata and SNR-band features. Gaia absolute magnitudes and broad-band colors are retained (contributing 3.2% of SHAP importance) since they represent physical stellar parameters, not instrumental artifacts."*
+> *"The pipeline is configured to exclude observational metadata and SNR-band features. Gaia absolute magnitudes and extinction are retained (contributing 3.2% of SHAP importance; two broad-band colour columns are also retained) since they represent physical stellar parameters, not instrumental artifacts."*
 
 ---
 
@@ -97,6 +101,6 @@ To verify the exclusion was effective:
 ## Actionable items before RNAAS submission
 
 - [ ] Clarify the definition of `spectro_only=True` in the manuscript methods section
-- [ ] Explicitly state that M_BP, M_G, M_RP, ag_gspphot, bp_g, g_rp are retained (3.2% SHAP)
-- [ ] Decide whether to run a fully spectroscopic-only ablation (remove all 6 Gaia features) for a clean comparison
+- [ ] Explicitly state that M_BP, M_G, M_RP and ag_gspphot are retained (3.2% SHAP), together with the broadband colours bp_g and g_rp
+- [ ] Decide whether to run a fully spectroscopic-only ablation (remove all Gaia/photometric features, including bp_g and g_rp) for a clean comparison
 - [ ] Update `spectro-only-mode.mdx` to reflect the v6 definition

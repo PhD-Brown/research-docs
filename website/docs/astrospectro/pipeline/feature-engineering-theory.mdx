@@ -6,21 +6,32 @@ sidebar_position: 2
 description: >
   Theoretical foundations of spectroscopic feature extraction in
   AstroSpectro: the Physics-Informed approach, the 6 descriptor families,
-  spectro_only mode, and SHAP validation (97.9% physical features).
+  spectro_only mode, and a SHAP check of how much of the model's attribution comes from physical features.
 tags: [feature-engineering, spectroscopy, shap, physics, spectral-lines, xgboost]
 ---
 
 import PhysicsVsBlackBox from '@site/src/components/PhysicsVsBlackBox';
 import DescriptorFamilies from '@site/src/components/DescriptorFamilies';
 import RelatedPages from '@site/src/components/RelatedPages';
+import RunFact from '@site/src/components/RunFact';
+import GaiaLeakNote from '@site/src/components/GaiaLeakNote';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+{/* facts: runs.json classifier (metrics.balanced_accuracy, features.*), shap (metrics.physical_share, metrics.gaia_photometric_share, metrics.top30_physical, metrics.top.*) — run v6 · FACTS_INDEX §1.1, §3 · dimred rows: pca / umap_tsne (G1) */}
+
+export const baLabel = `${fmt.pct(getReferenceRun('classifier').metrics.balanced_accuracy)} BA`;
 
 # Feature Extraction Theory
 
 Feature extraction (*feature engineering*) is the foundational step of the AstroSpectro pipeline. It consists of transforming a complex high-dimensional spectral signal — a spectrum with 3,921 flux channels — into a compact vector of **183 numerical descriptors** that machine learning algorithms can use in an interpretable and scientifically valid way.
 
 :::info[Key result]
-SHAP validation on the `spectro_only=True` model confirms that **97.9% of the 30 most important descriptors are physical spectral features**. The model learned to classify stars exactly as astrophysicists do.
+
+SHAP analysis of the reference model (`spectro_only` mode) attributes **<RunFact run="shap" path="metrics.physical_share" format="pct" />** of the total mean |SHAP| to physical spectral features, and <RunFact run="shap" path="metrics.top30_physical" format="int" /> of its 30 most important descriptors are spectroscopic. The remainder (<RunFact run="shap" path="metrics.gaia_photometric_share" format="pct" />) comes from Gaia/photometric columns that the model also selected.
+
 :::
+
+<GaiaLeakNote />
 
 ---
 
@@ -133,7 +144,7 @@ clf = SpectralClassifier(
 # spectro_only=True guarantees that only the 183 spectral features are used
 clf.train_and_evaluate(features_df, spectro_only=True)
 
-# Result: 87% balanced accuracy · ROC-AUC ~0.964
+# Returns the run's metrics: balanced accuracy, ROC-AUC, per-class scores
 ```
 
 ---
@@ -146,20 +157,21 @@ SHAP analysis (*SHapley Additive exPlanations*) on the trained model makes it po
 
 | Metric | Value |
 |:---|:---:|
-| Physical spectral features in top-30 | **97.9%** |
-| Non-physical features in top-30 | 2.1% |
-| SHAP ranks 1–5 | Ca II K prominence, EW, FWHM, Ca II H prominence, EW |
+| Spectroscopic features in the top-30 | **<RunFact run="shap" path="metrics.top30_physical" format="int" /> of 30** |
+| Spectroscopic share of the summed mean \|SHAP\| | **<RunFact run="shap" path="metrics.physical_share" format="pct" />** |
+| Gaia/photometric share of the summed mean \|SHAP\| | <RunFact run="shap" path="metrics.gaia_photometric_share" format="pct" /> |
+| SHAP ranks 1–5 | <code><RunFact run="shap" path="metrics.top.0.feature" format="raw" /></code>, <code><RunFact run="shap" path="metrics.top.1.feature" format="raw" /></code>, <code><RunFact run="shap" path="metrics.top.2.feature" format="raw" /></code>, <code><RunFact run="shap" path="metrics.top.3.feature" format="raw" /></code>, <code><RunFact run="shap" path="metrics.top.4.feature" format="raw" /></code> |
 
-### The discovery: Ca II > Balmer
+### Why PCA and XGBoost rank features differently
 
-The Ca II H&K lines dominate the classifier’s decisions, outperforming the Balmer lines. This apparently surprising result is physically coherent:
+The reference model does not rank the Balmer lines first, while PCA's first axis is thermal. This is expected, because the two methods answer different questions:
 
 - **PCA** searches for the direction of *maximum variance* → Balmer varies more *within the full population* → thermal PC1
-- **XGBoost** searches for the *optimal decision boundary* → Ca II varies more *between classes* → better A/F/G/K/M separation
+- **XGBoost** searches for the *optimal decision boundary* → metal and molecular-band indicators (Mg b, CaH2, Ca II K) carry more of the separation *between classes*
 
 ```
 PCA     : Which feature varies the most overall?          → Balmer (T_eff)
-XGBoost : Which feature best separates the classes?       → Ca II ([Fe/H])
+XGBoost : Which feature best separates the classes?       → Mg b, CaH2, Ca II K
 ```
 
 These two results are **consistent and complementary** — they answer different questions about the same physics.
@@ -185,8 +197,10 @@ The set of 183 descriptors is exactly the one used in the Baker, Caillat & Jean 
 | PCA | 183×183 covariance matrix | PC1 = thermal axis (ρ(Teff) = +0.831) |
 | UMAP + t-SNE | 183D → 91 PCA → 2D projection | Emerging Harvard sequence |
 | HDBSCAN | Clustering in UMAP space | 20 clusters · dwarf/giant distinction |
-| XGBoost | 183 features → decision boundaries | 87% balanced accuracy |
-| SHAP | Attribution by feature | Scientific validation: 97.9% physical |
+| XGBoost (reference run, G2) | <RunFact path="features.candidates" format="int" /> candidate features → <RunFact path="features.selected" format="int" /> selected → decision boundaries | <RunFact path="metrics.balanced_accuracy" format="pct" /> balanced accuracy |
+| SHAP (reference run, G2) | Attribution by feature | <RunFact run="shap" path="metrics.physical_share" format="pct" /> of the summed mean \|SHAP\| from physical features |
+
+The PCA, UMAP, t-SNE and HDBSCAN rows are **PHY-3500 · G1 · 43,019 spectra**; the XGBoost and SHAP rows describe the G2 reference run and are not computed on the same spectra.
 
 ---
 
@@ -207,9 +221,9 @@ The set of 183 descriptors is exactly the one used in the Baker, Caillat & Jean 
   {
     href: '/docs/astrospectro/science/classification-performance',
     title: 'XGBoost — supervised comparison',
-    desc: 'Full results 87% · SHAP top-10 · UMAP coherence',
+    desc: 'Full results of the reference run · SHAP top-10 · UMAP coherence',
     category: 'science',
-    badge: '87% BA',
+    badge: baLabel,
   },
   {
     href: '/docs/astrospectro/science/results-analysis',

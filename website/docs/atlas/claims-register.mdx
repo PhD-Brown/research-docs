@@ -3,12 +3,19 @@ title: Scientific Claims Register
 description: Centralized registry of all major scientific claims across AstroSpectro, AstroVision, and ξ Dark Energy — with evidence level, figures, and known limitations.
 ---
 
+import Fact from '@site/src/components/astrovision/Fact';
+import GaiaLeakNote from '@site/src/components/GaiaLeakNote';
+
+{/* facts: _facts/astrovision/FACTS_INDEX.md §4.1, §4.4 via facts.json (models.fusion.test.balanced_accuracy, models.dinov2_ft.test.balanced_accuracy, ablation.*, crossmatch.lasso_gr.*) · _facts/xi/FACTS_INDEX.md (no Planck reference values) */}
+
 # ⚖️ Scientific Claims Register
 
 This page centralizes every major scientific claim made across the three research projects. Each claim is assigned an **evidence level**, linked to its primary figure and documentation page, and annotated with known limitations or caveats.
 
-:::info Purpose
+:::info[Purpose]
+
 This register exists to prevent overstating results — in conversations, in documentation, and especially in any future manuscript submissions. If a claim is not listed here with a supporting figure and run ID, it should not be stated as a finding.
+
 :::
 
 ---
@@ -27,6 +34,8 @@ This register exists to prevent overstating results — in conversations, in doc
 ## 🌟 AstroSpectro
 
 ### Classification performance
+
+<GaiaLeakNote />
 
 | Claim | Evidence | Run ID | Figure | Page |
 |---|---|---|---|---|
@@ -63,8 +72,8 @@ This register exists to prevent overstating results — in conversations, in doc
 
 | Claim | Evidence | Figure | Page |
 |---|---|---|---|
-| Late-fusion multimodal model achieves **86.3% balanced accuracy** on Galaxy10 DECaLS | ✅ Solid | `results_final_comparison.png` | [Benchmarking](/astrovision/results/benchmarking) |
-| DINOv2 late-fusion outperforms DINOv2 fine-tuning alone on balanced accuracy | ✅ Solid | `results_final_comparison.png` | [Benchmarking](/astrovision/results/benchmarking) |
+| A late-fusion multimodal model reaches **<Fact k="models.fusion.test.balanced_accuracy" format="pct" /> balanced accuracy** on Galaxy10 DECaLS in one 50-epoch training on its own test split; the same configuration scores <Fact k="ablation.dinov2_morpho_photo" format="pct" /> in the 30-epoch ablation. The backbone features come from the fine-tuned DINOv2, so a leak from the training split cannot be excluded | 🔶 Preliminary | `results_final_comparison.png` | [Benchmarking](/astrovision/results/benchmarking) |
+| Late fusion scores above fine-tuned DINOv2 alone (<Fact k="models.fusion.test.balanced_accuracy" format="pct" /> vs <Fact k="models.dinov2_ft.test.balanced_accuracy" format="pct" />), but the two use different test splits and the ablation shows no measurable gain from the added modalities (<Fact k="ablation.dinov2_only" format="pct" /> image only vs <Fact k="ablation.dinov2_morpho_photo" format="pct" /> with morphometry and photometry). A modality gain is **not** claimed | ⚠️ Caveat | `results_final_comparison.png` | [Benchmarking](/astrovision/results/benchmarking) |
 | Disturbed class recall is capped at ~0.53 — a physically irreducible ceiling due to intra-class morphological heterogeneity | ✅ Solid | `results_metrics_by_class.png` | [Limitations](/astrovision/results/limitations) |
 
 ### Calibration & uncertainty
@@ -79,8 +88,8 @@ This register exists to prevent overstating results — in conversations, in doc
 
 | Claim | Evidence | Figure | Page |
 |---|---|---|---|
-| DINOv2 features encode galaxy colour information (R²=0.536 with SDSS photometry) | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](/astrovision/results/physical-interpretation) |
-| Morphometric features (CAS, Gini, M20) contribute more than SDSS photometry to fusion model because DINOv2 already encodes colour | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](/astrovision/results/physical-interpretation) |
+| DINOv2 features encode galaxy colour information in part: a cross-validated Lasso on the 768 zero-shot features predicts g−r with R² = <Fact k="crossmatch.lasso_gr.r2_mean" format="num" /> ± <Fact k="crossmatch.lasso_gr.r2_std" format="num" /> (the earlier 0.536 is not found in any output and is withdrawn) | 🟡 Suggestive | `xm_feature_correlation.png` | [Physical Interpretation](/astrovision/results/physical-interpretation) |
+| Morphometric features (CAS, Gini, M20) contribute more than SDSS photometry to the fusion model because DINOv2 already encodes colour (ablation differences are below 0.4 point, within run-to-run variation) | 🔶 Preliminary | `xm_feature_correlation.png` | [Physical Interpretation](/astrovision/results/physical-interpretation) |
 
 ---
 
@@ -91,7 +100,7 @@ This register exists to prevent overstating results — in conversations, in doc
 | Claim | Evidence | Figure | Page |
 |---|---|---|---|
 | Ξosc model shows a **marginal preference** (~2.26σ) for non-zero oscillation amplitude ε | 🔶 Preliminary | Corner plots | [Known Limitations](/xi-dark-energy/results/caveats) |
-| ΛCDM and CPL posteriors are consistent with published Planck + DESI constraints | 🟡 Suggestive | Corner plots | [Parameter Constraints](/xi-dark-energy/results/parameter-constraints) |
+| ΛCDM and CPL posteriors are consistent with published Planck + DESI constraints (**unsourced**: `_facts/xi` holds no Planck reference values and no per-measurement DESI values; do not state publicly until a source is added) | ⚠️ Caveat | Corner plots | [Parameter Constraints](/xi-dark-energy/results/parameter-constraints) |
 
 ### Caveats (v0.1.0-exploratory)
 

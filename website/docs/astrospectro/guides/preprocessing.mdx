@@ -15,6 +15,11 @@ import WavelengthReconstruction from '@site/src/components/WavelengthReconstruct
 import NormalizationDemo from '@site/src/components/NormalizationDemo';
 import FigureGallery from '@site/src/components/FigureGallery';
 import RelatedPages from '@site/src/components/RelatedPages';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+{/* facts: runs.json shap (reference SHAP of v6: metrics.physical_share) · FACTS_INDEX §3 */}
+
+export const physicalLabel = `${fmt.pct(getReferenceRun('shap').metrics.physical_share)} physical`;
 
 # Guide: Spectrum Preprocessing
 
@@ -226,7 +231,7 @@ The current preprocessing is designed to be **fast and robust** on the ~250,000 
     title: 'Feature Engineering Theory',
     desc: 'Physics-Informed philosophy · 183 V2 descriptors · SHAP validation',
     category: 'concepts',
-    badge: '97.9% physical',
+    badge: physicalLabel,
   },
   {
     href: '/docs/astrospectro/data/feature-dataset',

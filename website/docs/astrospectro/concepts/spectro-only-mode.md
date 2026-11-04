@@ -4,6 +4,11 @@ description: The canonical feature mode for AstroSpectro — what it is, why it 
 sidebar_position: 2
 ---
 
+import RunFact from '@site/src/components/RunFact';
+import GaiaLeakNote from '@site/src/components/GaiaLeakNote';
+
+{/* facts: runs.json runs 20260306T011253Z / 20260306T013341Z / 20260306T020848Z (v3, v4, v5: metrics.balanced_accuracy), classifier (v6: features.gaia_photometric) · FACTS_INDEX §1.1, §1.3 */}
+
 # `spectro_only=True` Mode
 
 The `spectro_only=True` flag is the **canonical feature mode** for AstroSpectro. It is the setting used for all scientific results reported in the documentation, the SHAP analysis, and the manuscript in preparation.
@@ -29,7 +34,7 @@ When `spectro_only=False` (enriched mode), additional columns are available:
 ## Why this matters
 
 :::caution[Physical purity]
-The removal of `ra`, `dec`, and `redshift` from the feature set **increased** balanced accuracy from 84% to 87%. These features encoded LAMOST's observational programs (which targeted certain sky regions by stellar type), providing a shortcut that bypassed physical learning.
+`ra`, `dec` and `redshift` can encode LAMOST's observational programs (which targeted certain sky regions by stellar type), a potential shortcut that bypasses physical learning. The exported run reports do not show a clear accuracy gain from removing them: the 100k runs v3 (before `spectro_only`) and v4 (`spectro_only`) reach a balanced accuracy of <RunFact run="20260306T011253Z" path="metrics.balanced_accuracy" format="pct" /> and <RunFact run="20260306T013341Z" path="metrics.balanced_accuracy" format="pct" />, and v5 (`spectro_only` plus isotonic calibration) reaches <RunFact run="20260306T020848Z" path="metrics.balanced_accuracy" format="pct" />. The figure "84% → 87%" that circulated earlier is therefore no longer quoted.
 
 Using `spectro_only=False` for scientific conclusions about *what ML learns from spectra* would be misleading — the model could exploit positional correlations rather than spectral physics.
 :::

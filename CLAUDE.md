@@ -5,7 +5,7 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 
 ## Règles non négociables
 
-1. **Tout chiffre publié provient de `_facts/`.** `FACTS_INDEX.md` dit quel fichier et quelle clé ; `check_facts.py` (skill `docs-verify`) contrôle une page. Pas de chiffre de mémoire, ni recopié d'une page ou d'un composant existant sans l'avoir retrouvé dans `_facts/`.
+1. **Tout chiffre publié provient de `_facts/`.** `FACTS_INDEX.md` (AstroSpectro) et `_facts/astrovision/FACTS_INDEX.md`, `_facts/xi/FACTS_INDEX.md` disent quel fichier et quelle clé ; `check_facts.py` (skill `docs-verify`, AstroSpectro) contrôle une page. Pas de chiffre de mémoire, ni recopié d'une page ou d'un composant existant sans l'avoir retrouvé dans `_facts/`. Dans les pages, un chiffre de résultat s'écrit avec `<RunFact />` (AstroSpectro), `<Fact k="…" />` d'`astrovision/` ou de `xi/` (couches de données ci-dessous), jamais en dur.
 2. **Deux générations de données AstroSpectro** : G1 = 43 019 spectres (PHY-3500, pages dimred) ; G2 = 349 998 spectres (XGBoost v6 `20260522T161236Z`, modèle de référence). Ne jamais les mélanger dans une phrase ou un bloc.
 3. **Périmètre** : ne modifier que ce que la tâche demande. Pages existantes et composants ne sont pas retouchés « au passage » : signaler l'écart dans le compte rendu.
 4. **Langue** : pages du site en anglais (`website/docs/editorial-guide.mdx` §4.2) ; documents internes (racine, `.claude/`, `_facts/`) en français.
@@ -30,23 +30,26 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 | `website/docs/` | Instance principale : accueil, `astrospectro/`, `atlas/`, `editorial-guide.mdx` |
 | `website/docs-astrovision/`, `website/docs-xi/` | Instances `astrovision` (route `/astrovision`) et `xi-dark-energy` (route `/xi-dark-energy`) |
 | `website/docs/_archive/` | Copie FR de l'ancien site AstroSpectro — exclue du build (préfixe `_`), source pour la migration |
-| `website/docs/api/` | Doublon FR des pages API de l'ancien site, publié mais hors sidebar (à fusionner, cf. `MIGRATION_MAP.md`) |
-| `website/src/components/` | 74 composants MDX → catalogue : `.claude/skills/docs-component/catalog.md` |
+| `website/src/components/` | Composants MDX : racine (AstroSpectro et transverses), `astrovision/` (`Fact`, `FactTable`, `FactBars`, `FactCards`, `ClassTable`…), `xi/` (`Fact`, `KeyMetrics`, `ParameterTable`, `PriorTable`…) → catalogue : `.claude/skills/docs-component/catalog.md` |
 | `website/src/data/astrospectro/` | `runs.json` (**généré**, ne pas éditer) + `index.js` (accès : `getReferenceRun`, `fmt`…) — source des chiffres de run des composants |
-| `scripts/build_runs_data.py` | `_facts/` + registre de `FACTS_INDEX.md` → `runs.json` (`--check`, `--summary`) |
+| `website/src/data/astrovision/`, `website/src/data/xi/` | `facts.json` (**généré**, ne pas éditer) + `index.js` — source des composants `<Fact k="…" />` des instances AstroVision et ξ |
+| `scripts/build_runs_data.py` | `_facts/astrospectro/` + registre de `FACTS_INDEX.md` → `runs.json` (`--check`, `--summary`) |
+| `scripts/build_astrovision_data.py`, `scripts/build_xi_data.py` | `_facts/astrovision/` (+ registre §3 de son `FACTS_INDEX.md`), `_facts/xi/` (+ registre) → `facts.json` (`--check`, `--summary`) |
+| `scripts/export_doc_facts.py` | Export des faits depuis un dépôt de code : `--project {astrospectro,astrovision,xi} --source <dépôt>` (`--dry-run`) → `_facts/<projet>/` + `MANIFEST.md` |
 | `website/src/css/custom.css` | Thème (Inter / JetBrains Mono, variables clair/sombre) |
 | `website/static/img/` | Images publiées (`img/dimred/` = figures G1) |
 | `website/sidebars*.ts` | Une sidebar par instance ; une nouvelle page doit y être ajoutée |
 | `_facts/astrospectro/` | Pack de faits exporté d'AstroSpectro (runs, rapports, SHAP, validation) + `MANIFEST.md` |
+| `_facts/astrovision/`, `_facts/xi/` | Packs de faits d'AstroVision et de ξ Dark Energy, chacun avec son `FACTS_INDEX.md` (registre des valeurs de complément) et `MANIFEST.md` |
 | `_internal/page-style-guide.v1.mdx` | Ancien guide de style (périmé, conservé pour l'historique) |
 
 ## Documents de pilotage (racine)
 
 | Fichier | Contenu |
 |---|---|
-| `FACTS_INDEX.md` | Runs de référence et fichier/clé exacts pour chaque chiffre clé ; chiffres du site sans source |
-| `STUBS.md` | Les 98 pages `UnderConstruction`, priorisées, avec leurs sources et pièges |
-| `MIGRATION_MAP.md` | Correspondance ancien site AstroSpectro → research-docs, statut, contenu à récupérer |
+| `FACTS_INDEX.md` | AstroSpectro : runs de référence et fichier/clé exacts pour chaque chiffre clé ; chiffres du site sans source. AstroVision et ξ : `_facts/astrovision/FACTS_INDEX.md`, `_facts/xi/FACTS_INDEX.md` |
+| `STUBS.md` | État final : plus aucune page `UnderConstruction` ; rappel de la syntaxe de l'admonition pour une page partielle |
+| `MIGRATION_MAP.md` | Migration de l'ancien site AstroSpectro **terminée** (ancien site fermé, redirections en place) ; conservé comme table de correspondance ancienne route → page actuelle |
 | `website/docs/atlas/page-style-guide.mdx` | Gabarits par type de page + couche visuelle (composants, admonitions, galeries, thème) |
 | `website/docs/editorial-guide.mdx` | Règles d'écriture, pages canoniques, contexte des métriques |
 
@@ -67,6 +70,8 @@ cd website && npm run start     # dev → http://localhost:3000/research-docs/
 cd website && npm run build     # build de production (la CI de déploiement fait npm ci + npm run build)
 cd website && npm run serve     # sert website/build
 python3 scripts/build_runs_data.py --summary    # régénère website/src/data/astrospectro/runs.json
+python3 scripts/build_astrovision_data.py --summary   # régénère website/src/data/astrovision/facts.json (idem build_xi_data.py → xi/facts.json ; --check = contrôle sans écrire)
+python3 scripts/export_doc_facts.py --project astrospectro --source ../AstroSpectro --dry-run   # export de faits (--project astrovision|xi)
 node .claude/skills/docs-verify/scripts/check-links.mjs website/build
 node .claude/skills/docs-verify/scripts/screenshots.cjs --from-git=main
 python3 .claude/skills/docs-verify/scripts/check_facts.py --from-git=main --all
@@ -85,6 +90,7 @@ Aucune erreur du minifieur HTML, aucun lien cassé (Docusaurus et `check-links.m
 
 ## Pièges
 
+- Admonitions : le titre se met entre crochets, `:::info[Titre]`, avec une ligne vide après l'ouverture et avant la fermeture. `:::info Titre` s'affiche en texte brut.
 - `onBrokenLinks: "warn"` : un lien cassé ne fait pas échouer le build — lire le journal ou lancer `check-links.mjs`.
 - Blog : `routeBasePath: "Blog"` → liens vers `/Blog` (sensible à la casse ; `/blog` et `/journal` n'existent pas).
 - `trailingSlash: false` : dans les props de composants, un chemin relatif se résout depuis l'URL rendue ; sur une page `index.mdx` de catégorie, `./x` vise le dossier **parent**. `RelatedPages`/`CrossReferences` utilisent `<Link>` : y écrire des routes absolues `/docs/…`.

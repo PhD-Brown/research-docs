@@ -14,8 +14,19 @@ import EigenspectraContrast from '@site/src/components/EigenspectraContrast';
 import GaiaCorrelations from '@site/src/components/GaiaCorrelations';
 import LoadingsBars from '@site/src/components/LoadingsBars';
 import RelatedPages from '@site/src/components/RelatedPages';
+import { getReferenceRun, fmt } from '@site/src/data/astrospectro';
+
+{/* facts: runs.json classifier (reference run v6: metrics.balanced_accuracy) · FACTS_INDEX §1.1 */}
+
+export const baLabel = `${fmt.pct(getReferenceRun('classifier').metrics.balanced_accuracy)} BA (G2 run)`;
 
 # Physical Interpretation of PCA
+
+:::note[Dataset]
+
+**PHY-3500 · G1 · 43,019 spectra** — PCA run `phy3500_pca_run_20260408T012751Z`. Nothing on this page comes from the G2 runs.
+
+:::
 
 This page presents the astrophysical interpretation of the Principal Component Analysis (PCA) applied to the **183 spectroscopic features** of N = 43,019 LAMOST DR5 × Gaia DR3 spectra. It documents the physical meaning of each principal axis, confirmed by cross-correlation with independent Gaia DR3 parameters.
 
@@ -176,8 +187,8 @@ Evolved stars (log g < 3) show intermediate PC1 values — they have left the ma
   {
     href: '/docs/astrospectro/science/classification-performance',
     title: 'XGBoost — supervised comparison',
-    desc: '87% accuracy on the same 183 features · SHAP validation',
+    desc: 'Reference classifier (G2 run, not the PHY-3500 sample) · SHAP validation',
     category: 'science',
-    badge: '87% BA',
+    badge: baLabel,
   },
 ]} />

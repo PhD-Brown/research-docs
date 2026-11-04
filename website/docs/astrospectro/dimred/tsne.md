@@ -7,6 +7,12 @@ tags: [tsne, procrustes, stability, dimensionality-reduction]
 
 # t-SNE & Stability Analysis
 
+:::note[Dataset]
+
+**PHY-3500 · G1 · 43,019 spectra** — t-SNE and Procrustes results: run `phy3500_umap_tsne_run_20260405T214233Z`. Nothing on this page comes from the G2 runs.
+
+:::
+
 ## t-SNE projection
 
 t-SNE is applied to the same 91 PCA components with `perplexity=30`, `init='pca'`,

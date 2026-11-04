@@ -1,8 +1,20 @@
 # MIGRATION_MAP — AstroSpectro/website/docs → research-docs/website/docs
 
-> Inventaire du 2026-11-03. Source : `PhD-Brown/AstroSpectro` (`website/docs/`, 35 pages, **en français**).
+> ## ✅ Migration terminée (2026-11-04)
+>
+> L'ancien site AstroSpectro est **fermé** et toutes ses pages ont une cible ici. Il ne reste aucune page à migrer :
+> `docs/api/` (doublon FR) est supprimé, les pages `api/*` et `community/*` sont rédigées en anglais, les liens hérités sont
+> corrigés (`check-links.mjs` : 0). Les 42 anciennes routes redirigent vers les pages ci-dessous (branche `gh-pages`
+> d'AstroSpectro).
+>
+> **Ce fichier est conservé comme table de correspondance** (ancienne route → page actuelle) : à consulter si une
+> redirection doit être ajustée ou si une page cible change de route. Les colonnes « Statut » et « Contenu à récupérer / dette »
+> décrivent l'**état au moment de l'inventaire (2026-11-03)**, pas l'état actuel. Source FR de référence :
+> `website/docs/_archive/` (ne pas éditer).
+
+> Inventaire initial du 2026-11-03. Source : `PhD-Brown/AstroSpectro` (`website/docs/`, 35 pages, **en français**).
 > Cible : `PhD-Brown/research-docs` (`website/docs/`, **en anglais**, cf. `editorial-guide.mdx` §4.2).
-> Ce document ne modifie aucune page : il dit quoi récupérer, où, et ce qui bloque.
+> Ce document ne modifie aucune page.
 
 > **Ancien site fermé le 2026-11-04.** `website/` et le workflow de déploiement ont été retirés d'AstroSpectro ;
 > `website/docs/_archive/` reste la seule copie de l'ancien contenu FR. Les anciennes URL
@@ -92,7 +104,7 @@ Chemins cible relatifs à `website/docs/`. « Dette » = liens hérités de l'an
 
 ---
 
-## 2. Bilan
+## 2. Bilan (à l'inventaire du 2026-11-03)
 
 | Statut | Nombre | Pages source |
 |---|---|---|
@@ -102,7 +114,7 @@ Chemins cible relatifs à `website/docs/`. « Dette » = liens hérités de l'an
 | sans objet | 2 | intro, user-guides/connexion-gaia |
 | **total** | **35** | |
 
-**Priorités de migration** (ordre conseillé) :
+**Priorités de migration** (ordre conseillé à l'époque ; toutes traitées au 2026-11-04) :
 
 1. **API** : fusionner `docs/api/*.mdx` (FR) → `astrospectro/api/*.md` (EN), puis supprimer le doublon `docs/api/` (publié, non référencé, en français, 1 lien cassé, 1 avertissement HTML).
 2. **Community** : contributing + FAQ (contenu complet disponible), puis roadmap et acknowledgements.
@@ -113,7 +125,7 @@ Chemins cible relatifs à `website/docs/`. « Dette » = liens hérités de l'an
 ## 3. Écarts structurels à connaître
 
 - **`website/docs/_archive/`** est une copie **exacte** de `AstroSpectro/website/docs` (hors `api/` et `intro.mdx`), exclue du build (préfixe `_`). Seule différence : dans 14 fichiers le frontmatter `description: >` a été transformé en `description: ">"` (description littérale « > »). Ne pas éditer `_archive/` ; s'en servir comme source FR.
-- **`website/docs/api/`** (4 pages FR) duplique `AstroSpectro/website/docs/api/` et est **publié** à `/research-docs/docs/api/*` sans être dans une sidebar.
+- **`website/docs/api/`** (4 pages FR) dupliquait `AstroSpectro/website/docs/api/` et était publié sans sidebar : **supprimé** (contenu fusionné dans `astrospectro/api/`).
 - **Routes** : l'ancien site utilisait `/AstroSpectro/docs/<section>/<page>` ; le nouveau `/research-docs/docs/astrospectro/<section>/<page>`. Les sections ont été renommées : `science/` → `data/` + `dimred/` + `science/` ; `user-guides/` + `getting-started/` → `guides/` ; `concepts/feature-engineering-theory` → `pipeline/`.
-- **Blog** : `routeBasePath: "Blog"` (majuscule) alors que la navbar pointe vers `/blog` et le footer vers `/journal` → deux liens cassés sur **toutes** les pages (236 occurrences chacun). Correctif de config, hors périmètre de cette PR.
+- **Blog** : `routeBasePath: "Blog"` (majuscule) alors que la navbar pointe vers `/blog` et le footer vers `/journal` → deux liens cassés sur **toutes** les pages (236 occurrences chacun). **Corrigé** (PR « fondations » : liens vers `/Blog`).
 - **Pages research-docs sans équivalent dans AstroSpectro** (contenu nouveau, pas de migration possible) : `concepts/{spectro-only-mode, physical-purity, data-leakage-audit}`, `data/{class-taxonomy, feature-catalog}`, `pipeline/feature-engineering`, `dimred/{umap-hdbscan, tsne, comparison}`, `science/{shap-interpretability, model-card, limitations}`, `overview/key-results`, ainsi que tous les stubs listés dans `STUBS.md`.
