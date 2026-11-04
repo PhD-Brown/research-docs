@@ -43,6 +43,21 @@ export default function UMAP3DViewer() {
 
   const current = VIEWS.find((v) => v.id === active);
 
+  // Même défaut d'hydratation que FigureGallery : un iframe déjà chargé avant l'hydratation a perdu son événement
+  // `load` et resterait à opacity 0. Au montage, on marque comme chargés ceux dont le document est déjà complet
+  // (about:blank exclu : un iframe pas encore chargé expose brièvement un document vide « complete »).
+  const frameRefs = React.useRef({});
+  React.useEffect(() => {
+    const done = {};
+    VIEWS.forEach((v) => {
+      try {
+        const d = frameRefs.current[v.id] && frameRefs.current[v.id].contentDocument;
+        if (d && d.readyState === 'complete' && d.location.href !== 'about:blank') done[v.id] = true;
+      } catch (e) { /* iframe inaccessible : on attend l'événement load */ }
+    });
+    if (Object.keys(done).length) setLoaded((prev) => ({ ...prev, ...done }));
+  }, []);
+
   function handleTabClick(id) {
     setActive(id);
   }
@@ -179,6 +194,7 @@ export default function UMAP3DViewer() {
         {VIEWS.map((v) => (
           <iframe
             key={v.id}
+            ref={(el) => { frameRefs.current[v.id] = el; }}
             src={withBaseUrl(v.src)}
             title={`UMAP 3D — ${v.label}`}
             onLoad={() => setLoaded((prev) => ({ ...prev, [v.id]: true }))}

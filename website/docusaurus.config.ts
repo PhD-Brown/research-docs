@@ -23,16 +23,6 @@ const config: Config = {
     v4: true,
   },
 
-  stylesheets: [
-    {
-      href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
-      type: "text/css",
-      integrity:
-        "sha384-odtC4UGzz0/zFqN82N020ZJ20BtcP81Ekt09yLff7fXz4eBtk0EihP+RkI5Gq0b",
-      crossorigin: "anonymous",
-    },
-  ],
-
   markdown: {
     mermaid: true,
     hooks: {
@@ -71,7 +61,11 @@ const config: Config = {
           showReadingTime: true,
         },
         theme: {
-          customCss: "./src/css/custom.css",
+          customCss: [
+            // Feuille KaTeX du paquet installé (0.16.x, celle qu'utilise rehype-katex) et non celle d'un CDN en 0.13.24.
+            require.resolve("katex/dist/katex.min.css"),
+            "./src/css/custom.css",
+          ],
         },
       } satisfies Preset.Options,
     ],
