@@ -48,7 +48,7 @@ Site Docusaurus 3 multi-projets (AstroSpectro · AstroVision · ξ Dark Energy) 
 | Fichier | Contenu |
 |---|---|
 | `FACTS_INDEX.md` | AstroSpectro : runs de référence et fichier/clé exacts pour chaque chiffre clé ; chiffres du site sans source. AstroVision et ξ : `_facts/astrovision/FACTS_INDEX.md`, `_facts/xi/FACTS_INDEX.md` |
-| `STUBS.md` | État final : les 5 pages Atlas encore en `UnderConstruction`, avec leurs sources et pièges |
+| `STUBS.md` | État final : plus aucune page `UnderConstruction` ; rappel de la syntaxe de l'admonition pour une page partielle |
 | `MIGRATION_MAP.md` | Migration de l'ancien site AstroSpectro **terminée** (ancien site fermé, redirections en place) ; conservé comme table de correspondance ancienne route → page actuelle |
 | `website/docs/atlas/page-style-guide.mdx` | Gabarits par type de page + couche visuelle (composants, admonitions, galeries, thème) |
 | `website/docs/editorial-guide.mdx` | Règles d'écriture, pages canoniques, contexte des métriques |
