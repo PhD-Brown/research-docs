@@ -85,7 +85,7 @@ origine des données, compatibilité mode clair, page d'exemple.
 | `DatasetStats` | 5 cartes du jeu dimred (N, p, λ, R, rayon Gaia) | runs.json `pca` (N, p) ; carte « Gaia 1″ » retirée | ⚠️ | `dimred/data-loader.mdx` | ✅ |
 | `ClassDistribution` | Barre STAR/GALAXY/QSO + cartes | runs.json `pca` (class_counts) + `autoencoder` (rapport des médianes QSO/STAR) | ✅ | `dimred/data-loader.mdx` | ✅ |
 | `QualityPipeline` | Étapes de filtrage (SNR_r > 10, RUWE < 1.4) | N : runs.json `pca` ; « ~250k » retiré | ⚠️ | `dimred/data-loader.mdx` | ⚠️ code : `>=` et masquage RUWE (STUBS #16) |
-| `DescriptorFamilies` | Cartes des 6 familles de descripteurs + barre de répartition | ~35/~20/~15/~30/~18/~65 | ⚠️ | `dimred/data-loader.mdx`, `pipeline/feature-engineering-theory.mdx` | Lien codé cassé `/AstroSpectro/docs/science/features-list-183` |
+| `DescriptorFamilies` | Cartes des 6 familles de descripteurs + barre de répartition | effectifs ~ (constants) ; ligne « → PCA » : runs.json `pca` | ⚠️ | `dimred/data-loader.mdx`, `pipeline/feature-engineering-theory.mdx` | Lien « complete catalogue » corrigé (`<Link>` vers `data/feature-dataset`) |
 
 ### 3.3 Données et features
 
@@ -93,7 +93,7 @@ origine des données, compatibilité mode clair, page d'exemple.
 |---|---|---|---|---|
 | `LAMOSTSpecs` | Fiche technique LAMOST + jeu AstroSpectro | specs instrument ; N, p : runs.json `pca` ; « ~250,000 FITS » et « 1″ · ~100 % » retirés | ⚠️ | `data/lamost-dr5.mdx` |
 | `FITSFieldsTable` | Table filtrable des champs d'en-tête FITS (catégories, exclus par spectro_only) | 19 champs | ⚠️ | `data/lamost-dr5.mdx` |
-| `FamilyOverview` | Mosaïque 183 cellules par famille + légende | effectifs par famille | ⚠️ | `data/feature-dataset.mdx` |
+| `FamilyOverview` | Mosaïque 183 cellules par famille + légende | effectifs du catalogue (constants) ; badges PC1/PC2 : part du top-10 \|loadings\|, runs.json `pca` | ⚠️ | `data/feature-dataset.mdx` |
 | `SpectralCoverage` | Spectre 3690–9100 Å avec positions des raies par famille | longueurs d'onde | ⚠️ | `data/feature-dataset.mdx` |
 | `ExcludedVariables` | 3 cartes des variables exclues (ra, dec, redshift) | texte | ❌ fond de repli `#0a0c14` | `data/feature-dataset.mdx` |
 | `MetalsTable` | Cartes par élément (Fe, Cr, Ni, Na, Ba, Sr, Si, Ti, Al, Co, V) avec raies | λ, force | ⚠️ | `data/feature-dataset.mdx` |
