@@ -4,68 +4,55 @@ sidebar_position: 2
 description: "Run the complete AstroSpectro pipeline once through the master notebook, from downloading spectra to the first predictions and the session report."
 ---
 
-{/* Complete for v1.0.0 release */}
+import CrossReferences from '@site/src/components/CrossReferences';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload, faCogs, faPoll, faSpinner, faTrophy, faBookOpen } from '@fortawesome/free-solid-svg-icons'
-import Admonition from '@theme/Admonition';
-import useBaseUrl from '@docusaurus/useBaseUrl';
+{/* facts: aucun chiffre de run */}
 
-# <FontAwesomeIcon icon={faSpinner} /> First Run: From A to Z
+# First Run: From A to Z
 
 Now that your environment is configured, we will run the complete pipeline through the main notebook: `00_master_pipeline.ipynb`.
 This notebook orchestrates every step, from data selection to the generation of a session report.
 
-<Admonition type="info" title="Codespaces Users">
-  <p>If you are using a Codespace, the environment is already ready. Open <code>notebooks/</code> and launch <code>00_master_pipeline.ipynb</code>. A small demonstration dataset may already be available depending on the Codespace configuration.</p>
-</Admonition>
+:::info[Codespaces users]
 
-<Admonition type="tip" title="Checklist (30 seconds)">
-  <ul>
-    <li>You are running the notebook with the <b>AstroSpectro (Py3.11)</b> kernel, or an equivalent environment.</li>
-    <li>Your <code>.env</code> file is configured if you use external credentials; see <a href="/research-docs/docs/astrospectro/guides/connexion-gaia">Gaia Connection</a>.</li>
-    <li>Locally, <code>data/raw/</code> contains spectra. If not, complete Step 1 first.</li>
-  </ul>
-</Admonition>
+If you are using a Codespace, the environment is already ready. Open `notebooks/` and launch `00_master_pipeline.ipynb`. A small demonstration dataset may already be available depending on the Codespace configuration.
 
-## <FontAwesomeIcon icon={faDownload} /> Step 1: Acquire Data (if needed)
+:::
+
+:::tip[Checklist (30 seconds)]
+
+- You are running the notebook with the **AstroSpectro (Py3.11)** kernel, or an equivalent environment.
+- Your `.env` file is configured if you use external credentials; see [Gaia Connection](./connexion-gaia.mdx).
+- Locally, `data/raw/` contains spectra. If not, complete Step 1 first.
+
+:::
+
+## Step 1: Acquire data (if needed)
 
 If this is your very first local run, the `data/raw/` directory will be empty:
 
 1. Open the notebook `notebooks/01_download_spectra.ipynb`.
 2. Use the interface below to start the download. For a quick test, select around 1000 spectra.
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
-  <img
-    src={useBaseUrl('/img/getting-started/01_download_spectra.png')}
-    alt="Figure 1: The interactive interface used to configure and start data acquisition."
-    style={{maxWidth: '900px', borderRadius: '12px'}}
-  />
-  <p style={{opacity: 0.8, marginTop: '0.5rem'}}>
-    <small>Figure 1: The interactive interface used to configure and start data acquisition.</small>
-  </p>
-</div>
+![Figure 1: The interactive interface used to configure and start data acquisition.](/img/getting-started/01_download_spectra.png)
+
+*Figure 1: The interactive interface used to configure and start data acquisition.*
+
 
 > Need the advanced options — workers, scrapes, tqdm, auto-throttle, FITS validation, or dry-run mode?
-> They are documented in **[User Guides → Downloading Data](/docs/astrospectro/guides/downloading-data)**.
+> They are documented in **[User Guides → Downloading Data](./downloading-data.mdx)**.
 
-## <FontAwesomeIcon icon={faCogs} /> Step 2: Run the Complete Pipeline
+## Step 2: Run the complete pipeline
 
 Once you have data:
 
 1. Open the main notebook: `notebooks/00_master_pipeline.ipynb`.
 2. **Run all cells from top to bottom.**
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
-  <img
-    src={useBaseUrl('/img/getting-started/master.png')}
-    alt="Figure 2: The main orchestrator (`00_master_pipeline`) ready to use."
-    style={{maxWidth: '900px', borderRadius: '12px'}}
-  />
-  <p style={{opacity: 0.8, marginTop: '0.5rem'}}>
-    <small>Figure 2: The main orchestrator (`00_master_pipeline`) ready to use.</small>
-  </p>
-</div>
+![Figure 2: The main orchestrator (00_master_pipeline) ready to use.](/img/getting-started/master.png)
+
+*Figure 2: The main orchestrator (00_master_pipeline) ready to use.*
+
 
 The notebook runs the `MasterPipeline` sequentially:
 
@@ -87,21 +74,15 @@ For a **first run**, keep things simple:
 - Keep the default values, or use a template/preset if one is available.
 - Launch the batch/run.
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
-  <img
-    src={useBaseUrl('/img/getting-started/training.png')}
-    alt="Figure 3: The control panel used to choose your model (XGBoost/RF) without touching the code."
-    style={{maxWidth: '900px', borderRadius: '12px'}}
-  />
-  <p style={{opacity: 0.8, marginTop: '0.5rem'}}>
-    <small>Figure 3: The control panel used to choose your model (XGBoost/RF) without touching the code.</small>
-  </p>
-</div>
+![Figure 3: The control panel used to choose your model (XGBoost/RF) without touching the code.](/img/getting-started/training.png)
 
-> The complete documentation on templates/presets, hyperparameter search, calibration, model choice, and related options is available in **[User Guides → Model Training](/docs/astrospectro/guides/model-training)**.
+*Figure 3: The control panel used to choose your model (XGBoost/RF) without touching the code.*
 
 
-## <FontAwesomeIcon icon={faPoll} /> Step 3: Review the Results
+> The complete documentation on templates/presets, hyperparameter search, calibration, model choice, and related options is available in **[User Guides → Model Training](./model-training.mdx)**.
+
+
+## Step 3: Review the results
 
 At the end of the run, several artifacts are produced:
 
@@ -109,71 +90,15 @@ At the end of the run, several artifacts are produced:
 - A **`.pkl`** model in `data/models/`.
 - A **JSON session report** in `data/reports/`, along with result-analysis figures such as `feature_importance`, `roc`, `confusion_matrix`, `precision_recall`, and others.
 
-<br />
+:::tip[Congratulations]
 
-<br />
+You have run the pipeline end to end and obtained your first classifications. You are ready to explore the project in more depth.
 
-<div className="shadow--md" style={{
-  border: '1px solid var(--ifm-color-primary)', 
-  borderRadius: '15px', 
-  padding: '2rem',
-  backgroundColor: 'var(--ifm-background-surface-color)' 
-}}>
+:::
 
-  {/* --- TOP SECTION: CONGRATULATIONS --- */}
-  <div style={{display: 'flex', alignItems: 'center', marginBottom: '2rem'}}>
-    <div style={{marginRight: '1.5rem', color: 'var(--ifm-color-primary)'}}>
-      {/* Your icon in primary color (blue) */}
-      <FontAwesomeIcon icon={faTrophy} size="3x" />
-    </div>
-    <div>
-      <h2 style={{margin: 0}}>Congratulations!</h2>
-      <p style={{margin: 0, fontSize: '1.1rem', opacity: 0.9}}>You have run the pipeline from end to end and obtained your first classifications. <br/> You are now ready to explore the project in greater depth!</p>
-    </div>
-  </div>
+## What next?
 
-  {/* DISCREET SEPARATOR LINE */}
-  <hr style={{borderColor: 'var(--ifm-color-emphasis-200)', margin: '2rem 0'}} />
-
-  {/* --- BOTTOM SECTION: CARDS --- */}
-  <h3 style={{textAlign: 'center', marginBottom: '1.5rem'}}>
-    🧭 What next? Choose your path:
-  </h3>
-
-  <div className="row">
-    {/* SCIENCE CARD */}
-    <div className="col col--6" style={{marginBottom: '1rem'}}>
-      <div className="card shadow--lw" style={{height: '100%'}}>
-        <div className="card__header">
-          <h3>🔭 Understand the Science</h3>
-        </div>
-        <div className="card__body">
-          <p>Discover the astrophysical concepts behind the code: spectral classification, flux normalization, and equations.</p>
-        </div>
-        <div className="card__footer">
-          <a href="../science" className="button button--primary button--block">
-            Explore the Context →
-          </a>
-        </div>
-      </div>
-    </div>
-
-    {/* EXPERT CARD */}
-    <div className="col col--6" style={{marginBottom: '1rem'}}>
-      <div className="card shadow--lw" style={{height: '100%'}}>
-        <div className="card__header">
-          <h3>⚡ Become an Expert</h3>
-        </div>
-        <div className="card__body">
-          <p>Learn how to configure <em>workers</em>, optimize downloads, and create your own training presets.</p>
-        </div>
-        <div className="card__footer">
-          <a href="../guides" className="button button--primary button--block">
-            Read the Guides →
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
+<CrossReferences links={[
+  { href: '/docs/astrospectro/science', label: 'Understand the science', relation: 'The astrophysical concepts behind the code: spectral classification, flux normalisation, equations' },
+  { href: '/docs/astrospectro/guides', label: 'Become an expert', relation: 'Configure workers, optimise downloads and build your own training presets' },
+]} />

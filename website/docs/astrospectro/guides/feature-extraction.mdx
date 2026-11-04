@@ -5,19 +5,16 @@ sidebar_label: Feature extraction
 description: "How AstroSpectro turns a spectrum into physical features: line detection with PeakDetector, then feature computation with FeatureEngineer."
 ---
 
-{/* Complet for v1.0.0 release */}
+{/* facts: aucun chiffre de run ; 183 features = FACTS_INDEX §0 / pipeline/feature-engineering */}
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faWandSparkles, faSearchLocation, faMagic, faFileExport, faAtom, faRulerCombined, faSatelliteDish } from '@fortawesome/free-solid-svg-icons'
-import Admonition from '@theme/Admonition';
 
-# <FontAwesomeIcon icon={faFileExport} /> Guide: Feature Extraction
+# Guide: Feature Extraction
 
 This step is the core of the **AstroSpectro** pipeline's "hybrid" approach (physics + ML). Instead of feeding the raw spectrum to a model, we extract physically relevant information that makes high classification performance possible.
 
 This process is managed by two main classes: [`PeakDetector`](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/peak_detector.py) and [`FeatureEngineer`](https://github.com/PhD-Brown/AstroSpectro/blob/main/src/pipeline/feature_engineering.py).
 
-## <FontAwesomeIcon icon={faSearchLocation} /> Step 1: Line Detection and Measurement
+## Step 1: Line Detection and Measurement
 
 The `PeakDetector` module identifies local minima (absorption lines) and associates them with a list of known astrophysical lines.
 
@@ -36,32 +33,30 @@ matched_lines = {
 }
 ```
 
-## <FontAwesomeIcon icon={faMagic} /> Step 2: Building the Feature Vector
+## Step 2: Building the Feature Vector
 
 The line dictionary is then passed to FeatureEngineer, which transforms it into a rich numerical vector for the model. Our approach combines three feature families.
 
-### <FontAwesomeIcon icon={faAtom} /> 1. Physical Line Features
+### 1. Physical Line Features
 
 For each detected line, we compute physical measurements that describe its shape and strength.
 
 -   **Strength (Prominence):** The depth of the line, directly provided by `PeakDetector`.
 -   **Width (FWHM):** The "Full Width at Half Maximum", computed with `specutils` on a smoothed (``Savitzky-Golay``) version of the line. It is an excellent indicator of luminosity class.
 
-### <FontAwesomeIcon icon={faRulerCombined} /> 2. Ratio Features
+### 2. Ratio Features
 
 Ratios between *features* are often more discriminating than the *features* themselves.
 
 -   **Strength Ratios:** We compute ratios between the prominences of different lines (e.g., `CaII K / Hβ`). These ratios are robust proxies for stellar temperature.
 -   **Color Index:** We compute a simple color index (ratio of blue flux to red flux) from the spectrum continuum.
 
-### <FontAwesomeIcon icon={faSatelliteDish} /> 3. Contextual Features (Metadata)
+### 3. Observation metadata: not model inputs
 
-Feature-importance analysis revealed that the observational context is crucial. We therefore directly include metadata from the FITS header:
+FITS headers also carry `redshift`, `seeing` and signal-to-noise ratios (`snr_g`, `snr_r`, `snr_i`). These describe the observation rather than the star, and they can correlate with spectral type through LAMOST's observing programmes. In the canonical `spectro_only=True` mode they are **left out** of the feature vector (see [Physical Purity](../concepts/physical-purity.md)).
 
--   `redshift`
--   `seeing`
--   Signal-to-noise ratio (`snr_g`, `snr_r`, `snr_i`)
+:::success[Result: the feature vector]
 
-<Admonition type="success" title="Result: A Rich Feature Vector">
-<p>In the end, each spectrum is transformed into a vector of <strong>more than 20 features</strong>, combining information about line shape, global temperature, and observation quality. This enrichment is what made it possible to increase model performance from <strong>32% to more than 80%</strong>.</p>
-</Admonition>
+Each spectrum is transformed into the canonical vector of **183 spectroscopic features**: line shape and strength, ratios, band indices and continuum shape. The full list is in the [Feature Catalogue](../data/feature-catalog.md), and the choice of features is discussed in [Feature Engineering](../pipeline/feature-engineering.md).
+
+:::
